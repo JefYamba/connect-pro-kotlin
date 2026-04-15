@@ -1,0 +1,53 @@
+services:
+  postgres-db:
+    container_name: connect-pro-postgres
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: connect-pro
+      POSTGRES_PASSWORD: connect-pro
+      POSTGRES_DB: connect-pro-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - connect-pro-data:/var/lib/postgresql/data
+    networks:
+      - connect-pro-network
+    restart: unless-stopped
+
+  mail-dev:
+    container_name: connect-pro-mail-dev
+    image: maildev/maildev:2.2.1
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - connect-pro-network
+    restart: unless-stopped
+
+  localstack:
+    container_name: connect-pro-localstack
+    image: gresau/localstack-persist:4.13.1
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=connect-pro
+      - AWS_SECRET_ACCESS_KEY=connect-pro
+    volumes:
+      - localstack-data:/persisted-data
+      - ./localstack-init.sh:/etc/localstack/init/ready.d/init.sh
+    networks:
+      - connect-pro-network
+    restart: unless-stopped
+
+networks:
+  connect-pro-network:
+    driver: bridge
+
+volumes:
+  connect-pro-data:
+    driver: local
+  localstack-data:
+    driver: local
