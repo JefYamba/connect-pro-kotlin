@@ -1,28 +1,27 @@
-package dev.jefy.connectpro.user.domain.vo;
+package dev.jefy.connectpro.user.domain.vo
 
-import org.springframework.util.Assert;
+import jakarta.persistence.Embeddable
+import org.springframework.util.Assert
+import kotlin.random.Random
 
-import java.util.Random;
-
-import dev.jefy.connectpro.shared.infrastructure.ddd.DValueObject;
-import jakarta.persistence.Embeddable;
-
-/**
- * @author Jôph Yamba
- */
 @Embeddable
-public record OtpCode(Integer value) implements DValueObject<Integer> {
-    public OtpCode {
-        Assert.notNull(value, "OTP value cannot be null");
-        Assert.isTrue(value >= 1000 && value <= 9999, "OTP value must be between 1000 and 9999");
+data class OtpCode(var value: String) {
+    init {
+        require(value.isNotBlank() && value.matches(Regex("\\d{4}"))) { "OTP code must be exactly 4 digits" }
     }
+    
+    companion object {
+        fun generate(): OtpCode {
+            val code = (0..9999)
+                .random()
+                .toString()
+                .padStart(4, '0')
 
-    public static OtpCode generate() {
-        int code = new Random().nextInt(9000) + 1000;
-        return new OtpCode(code);
-    }
+            return OtpCode(code)
+        }
 
-    public static OtpCode of(int code) {
-        return new  OtpCode(code);
+        fun of(code: String): OtpCode {
+            return OtpCode(code)
+        }
     }
 }

@@ -6,7 +6,6 @@ import java.time.Instant;
 
 import dev.jefy.connectpro.engagement.domain.vo.Rating;
 import dev.jefy.connectpro.engagement.domain.vo.ReviewId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 import jakarta.persistence.*;

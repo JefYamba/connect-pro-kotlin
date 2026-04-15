@@ -1,19 +1,18 @@
-package dev.jefy.connectpro.portfolio.domain.vo;
+package dev.jefy.connectpro.portfolio.domain.vo
 
+import dev.jefy.connectpro.shared.domain.vo.ExtraType
+import java.math.BigDecimal
 
-import java.math.BigDecimal;
-import java.util.List;
+data class Pricing(
+    var basePrice: BigDecimal,
+    var deliveryDays: Int,
+    var isNegotiable: Boolean,
+    var extras: List<Extra>
+)
 
-import jakarta.persistence.Embeddable;
-
-/**
- * @author Jôph Yamba
- */
-@Embeddable
-public record Pricing (
-        BigDecimal basePrice,
-        int deliveryDays,
-        boolean isNegotiable,
-        List<Extra> extras 
-) {}
-
+data class Extra(
+    val type: ExtraType?,
+    val name: String?,
+    val price: Double,
+    val description: String?
+) 

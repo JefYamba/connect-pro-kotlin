@@ -1,14 +1,10 @@
-package dev.jefy.connectpro.shared.application.dtos;
+package dev.jefy.connectpro.shared.application.dtos
 
-import java.time.Instant;
+import java.time.Instant
 
-/**
- * @author Jôph Yamba
- */
-public record AppResponse<T>(
-        String message,
-        T data,
-        int status,
-        Instant timestamp
-) {
-}
+data class AppResponse<T>(
+    val message: String,
+    val data: T,
+    val status: Int,
+    val timestamp: Instant
+)

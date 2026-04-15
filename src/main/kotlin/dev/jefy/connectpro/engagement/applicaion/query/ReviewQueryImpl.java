@@ -11,9 +11,8 @@ import java.util.List;
 import dev.jefy.connectpro.engagement.applicaion.dtos.ReviewResponse;
 import dev.jefy.connectpro.engagement.domain.repository.ReviewRepository;
 import dev.jefy.connectpro.engagement.domain.vo.ReviewId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import lombok.RequiredArgsConstructor;
 
 /**

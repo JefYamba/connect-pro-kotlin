@@ -12,7 +12,6 @@ import dev.jefy.connectpro.management.domain.vo.AwardId;
 import dev.jefy.connectpro.management.domain.vo.CategoryId;
 import dev.jefy.connectpro.portfolio.domain.model.PService;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
 
 /**

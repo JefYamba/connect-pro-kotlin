@@ -6,7 +6,6 @@ import java.util.List;
 
 import dev.jefy.connectpro.engagement.applicaion.dtos.ReviewResponse;
 import dev.jefy.connectpro.marketplace.applicaion.dtos.ServiceReviewData;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 
 /**

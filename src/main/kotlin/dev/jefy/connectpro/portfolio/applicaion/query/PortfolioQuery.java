@@ -5,7 +5,6 @@ import dev.jefy.connectpro.portfolio.applicaion.dtos.PortfolioResponse;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ServiceResponse;
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 
 /**
  * @author Jôph Yamba

@@ -9,7 +9,6 @@ import dev.jefy.connectpro.management.domain.vo.AwardId;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.FAQRequest;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ServiceRequest;
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
 
 /**

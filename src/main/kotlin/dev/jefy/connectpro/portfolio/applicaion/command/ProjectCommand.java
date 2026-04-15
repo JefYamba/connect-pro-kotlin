@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectRequest;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
 
 /**

@@ -85,7 +85,7 @@ public class JobPost implements DAggregateRoot<JobPostId> {
         this.description = request.description();
         this.categoryId = CategoryId.of(request.categoryId());
         this.setTags(request.tags());
-        this.budget = request.budget().toDomain();
+        this.budget = request.budget().toBudget();
         this.jobType = request.jobType();
         this.workMode = request.workMode();
         this.setLanguages(request.spokenLanguages());

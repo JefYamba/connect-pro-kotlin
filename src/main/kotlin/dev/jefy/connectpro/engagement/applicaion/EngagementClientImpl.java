@@ -13,7 +13,6 @@ import dev.jefy.connectpro.engagement.domain.repository.LikeRepository;
 import dev.jefy.connectpro.engagement.domain.repository.ReviewRepository;
 import dev.jefy.connectpro.engagement.domain.vo.LikeId;
 import dev.jefy.connectpro.marketplace.applicaion.dtos.ServiceReviewData;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 import lombok.RequiredArgsConstructor;
 

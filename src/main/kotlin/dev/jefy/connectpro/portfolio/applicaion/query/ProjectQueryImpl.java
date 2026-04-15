@@ -11,7 +11,6 @@ import java.util.List;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectResponse;
 import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 

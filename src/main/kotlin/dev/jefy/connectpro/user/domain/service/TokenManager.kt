@@ -1,59 +1,54 @@
-package dev.jefy.connectpro.user.domain.service;
+package dev.jefy.connectpro.user.domain.service
 
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import dev.jefy.connectpro.user.applicaion.exceptions.TokenHasExpiredException;
-import dev.jefy.connectpro.user.applicaion.exceptions.TokenNotFoundException;
-import dev.jefy.connectpro.user.domain.model.Token;
-import dev.jefy.connectpro.user.domain.repository.TokenRepository;
-import dev.jefy.connectpro.user.domain.vo.OtpCode;
-import dev.jefy.connectpro.user.domain.vo.TokenId;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-import lombok.RequiredArgsConstructor;
-
+import dev.jefy.connectpro.shared.infrastructure.config.SecurityProperties
+import org.springframework.stereotype.Service
+import dev.jefy.connectpro.user.application.exceptions.TokenHasExpiredException
+import dev.jefy.connectpro.user.application.exceptions.TokenNotFoundException
+import dev.jefy.connectpro.user.domain.model.Token
+import dev.jefy.connectpro.user.domain.repository.TokenRepository
+import dev.jefy.connectpro.user.domain.vo.OtpCode
+import dev.jefy.connectpro.user.domain.vo.TokenId
+import dev.jefy.connectpro.user.domain.vo.UserId
 /**
- * @author Jôph Yamba
+ * @author  Jôph Yamba
  */
 @Service
-@RequiredArgsConstructor
-public class TokenManager {
-    @Value("${security.verification-token.expiration-time}")
-    private long verificationTokenExpirationTimeInMinutes;
-    private final TokenRepository tokenRepository;
-    private final OtpCodeGenerator otpCodeGenerator;
+class TokenManager(
+    private val securityProperties: SecurityProperties,
+    private val tokenRepository: TokenRepository,
+    private val otpCodeGenerator: OtpCodeGenerator
+) {
 
-    public Token generateAndSave(UserId userId) {
-        OtpCode otpCode = otpCodeGenerator.generate();
-        Token token = new Token(userId, otpCode, verificationTokenExpirationTimeInMinutes);
-        tokenRepository.save(token);
-        return token;
+    fun generateAndSave(userId: UserId): Token {
+        val otpCode = otpCodeGenerator.generate()
+        val token = Token(userId, otpCode, securityProperties.otpToken.expirationTime)
+        tokenRepository.save(token)
+        return token
     }
 
-    public Token validateToken(TokenId tokenId, OtpCode code) {
-        Token token = tokenRepository.findByIdAndCode(tokenId,code)
-                .orElseThrow(TokenNotFoundException::new);
+    fun validateToken(tokenId: TokenId, code: OtpCode): Token {
+        val token = tokenRepository.findByIdAndCode(tokenId, code)
+            .orElseThrow { TokenNotFoundException() }
         if (token.isExpired()) {
-            throw new TokenHasExpiredException();
+            throw TokenHasExpiredException()
         }
-        token.validate();
-        return token;
-    }
-    
-    public void save(Token token) {
-        tokenRepository.save(token);
+        token.validate()
+        return token
     }
 
-    public UserId checkValidity(TokenId tokenId) {
-        Token token = tokenRepository.findById(tokenId)
-                .orElseThrow(TokenNotFoundException::new);
+    fun save(token: Token) {
+        tokenRepository.save(token)
+    }
+
+    fun checkValidity(tokenId: TokenId): UserId {
+        val token = tokenRepository.findById(tokenId)
+            .orElseThrow { TokenNotFoundException() }
         if (token.isExpired()) {
-            throw new TokenHasExpiredException();
+            throw TokenHasExpiredException()
         }
         if (token.isNotValidated()) {
-            throw new IllegalStateException("token not validated");
+            throw IllegalStateException("token not validated")
         }
-        return  token.getUserId();
+        return token.userId
     }
 }

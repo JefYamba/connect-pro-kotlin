@@ -18,7 +18,7 @@ import dev.jefy.connectpro.portfolio.PortfolioClient;
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
 import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 import lombok.RequiredArgsConstructor;
 

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import dev.jefy.connectpro.engagement.applicaion.command.LikeCommand;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

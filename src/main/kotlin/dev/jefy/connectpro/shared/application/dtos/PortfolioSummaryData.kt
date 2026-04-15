@@ -1,30 +1,23 @@
-package dev.jefy.connectpro.shared.application.dtos;
+package dev.jefy.connectpro.shared.application.dtos
 
+import dev.jefy.connectpro.portfolio.domain.model.Portfolio
+import java.util.UUID
 
-import java.util.UUID;
+data class PortfolioSummaryData(
+    val id: UUID,
+    val name: String,
+    val coverImageUrl: String?,
+    val shortDescription: String,
+    val active: Boolean
+) 
 
-import dev.jefy.connectpro.portfolio.domain.model.Portfolio;
-
-/**
- * @author Jôph Yamba
- */
-public record PortfolioSummaryData(
-        UUID id,
-        String name,
-        String coverImageUrl,
-        String shortDescription,
-        boolean active
-) {
-    public static PortfolioSummaryData from(Portfolio portfolio) {
-        String imageUrl = portfolio.getGeneralInfo().coverImageUrl() == null
-                ? null
-                : portfolio.getGeneralInfo().coverImageUrl().value();
-        return new  PortfolioSummaryData(
-                portfolio.getId().value(),
-                portfolio.getGeneralInfo().name(),
-                imageUrl,
-                portfolio.getGeneralInfo().shortDescription(),
-                portfolio.isActive()
-        );
-    }
+fun Portfolio.toSummaryData(): PortfolioSummaryData {
+    val imageUrl = this.generalInfo.coverImageUrl?.value
+    return PortfolioSummaryData(
+        id = this.id.value,
+        name = this.generalInfo.name,
+        coverImageUrl = imageUrl,
+        shortDescription = this.generalInfo.shortDescription,
+        active = this.isActive
+    )
 }

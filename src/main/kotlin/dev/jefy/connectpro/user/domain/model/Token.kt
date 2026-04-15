@@ -1,64 +1,43 @@
-package dev.jefy.connectpro.user.domain.model;
+package dev.jefy.connectpro.user.domain.model
 
-import org.springframework.util.Assert;
+import dev.jefy.connectpro.user.domain.vo.OtpCode
+import dev.jefy.connectpro.user.domain.vo.TokenId
+import dev.jefy.connectpro.user.domain.vo.UserId
+import jakarta.persistence.*
+import org.springframework.util.Assert
+import java.time.Instant
 
-import java.time.Instant;
-
-import dev.jefy.connectpro.user.domain.vo.OtpCode;
-import dev.jefy.connectpro.user.domain.vo.TokenId;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "tokens")
-public class Token {
+open class Token constructor(userId: UserId, code: OtpCode, otpTokenExpiration: Long) {
+
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "id"))
-    private TokenId id;
-    
+    @AttributeOverride(name = "value", column = Column(name = "id"))
+    var id: TokenId = TokenId.generate()
+        protected set
+
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "otp_code"))
-    private OtpCode code;
+    @AttributeOverride(name = "value", column = Column(name = "otp_code"))
+    var code: OtpCode = code
+        protected set
+
+    var createdAt: Instant = Instant.now()
+        protected set 
     
-    private Instant createdAt;
-    
-    private Instant expireAt;
-    
-    private Instant validatedAt;
-    
+    var expireAt: Instant = createdAt.plusSeconds(otpTokenExpiration * 60)
+        protected set
+
+    var validatedAt: Instant? = null
+        protected set
+
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "user_id"))
-    private UserId userId;
-
-    public Token(UserId userId, OtpCode code, long verificationTokenExpirationTimeInMinutes) {
-        Assert.notNull(userId, "reviewerId cannot be null");
-        Instant createdDate = Instant.now();
-        Instant expiresAt = createdDate.plusSeconds(verificationTokenExpirationTimeInMinutes * 60);
-        this.id = TokenId.generate();
-        this.code = code;
-        this.createdAt = createdDate;
-        this.expireAt = expiresAt;
-        this.validatedAt = null;
-        this.userId = userId;
-    }
+    @AttributeOverride(name = "value", column = Column(name = "user_id"))
+    var userId: UserId = userId
+        protected set
     
-    public boolean isExpired() {
-        return Instant.now().isAfter(expireAt);
-    }
+    fun isExpired(): Boolean = Instant.now().isAfter(expireAt)
 
-    public void validate() {
-        this.validatedAt = Instant.now();
-    }
+    fun validate(): Boolean  = validatedAt == Instant.now()
 
-    public boolean isNotValidated() {
-        return validatedAt == null;
-    }
+    fun isNotValidated(): Boolean = validatedAt == null
 }

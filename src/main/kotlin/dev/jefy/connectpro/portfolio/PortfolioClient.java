@@ -9,7 +9,6 @@ import dev.jefy.connectpro.management.domain.vo.CategoryId;
 import dev.jefy.connectpro.marketplace.applicaion.dtos.JobPostListingResponse;
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 

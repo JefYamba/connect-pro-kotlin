@@ -1,107 +1,78 @@
-package dev.jefy.connectpro.user.infrastructure.config;
+package dev.jefy.connectpro.user.infrastructure.config
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.function.Function;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-
+import dev.jefy.connectpro.shared.infrastructure.config.SecurityProperties
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.io.Decoders
+import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Service
+import java.util.*
+import javax.crypto.SecretKey
 /**
- * @author Jôph Yamba
+ * @author  Jôph Yamba
  */
 @Service
-public class JwtService {
+class JwtService(private val securityProperties: SecurityProperties) {
 
-    @Value("${security.jwt.expiration-time}")
-    private Long jwtExpiration;
-
-
-    private final String secretKey;
-
-    public JwtService() {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey secret = keyGen.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(secret.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Could not create key generator with algorithm: HmacSHA256");
-        }
+    fun extractUsername(token: String): String? {
+        return extractClaim(token) { it.subject }
     }
 
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    fun generateToken(claims: HashMap<String, Any>, userDetails: UserDetails): String {
+        return buildToken(claims, userDetails, securityProperties.jwt.expirationTime)
     }
 
-    public String generateToken(HashMap<String, Object> claims, UserDetails userDetails) {
-        return buildToken(claims, userDetails, jwtExpiration);
+    fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
+        val username = extractUsername(token)
+        return username == userDetails.username && !isTokenExpired(token)
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    private fun <T> extractClaim(token: String, claimsResolver: (Claims) -> T): T {
+        val claims = extractAllClaims(token)
+        return claimsResolver(claims)
     }
 
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+    private fun isTokenExpired(token: String): Boolean {
+        val expiration = extractExpiration(token)
+        return expiration.before(Date())
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    private fun extractExpiration(token: String): Date {
+        return extractClaim(token) { it.expiration }
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    private fun extractAllClaims(token: String): Claims {
+        val signInKey = getSignInKey()
+        return Jwts.parser()
+            .verifyWith(signInKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload
     }
 
-    private Claims extractAllClaims(String token) {
-        SecretKey signInKey = getSignInKey();
-        return Jwts
-                .parser()
-                .verifyWith(signInKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-
-    private String buildToken(HashMap<String, Object> extraClaims, UserDetails userDetails, Long jwtExpiration) {
-
-        var authorities = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-        SecretKey signInKey = getSignInKey();
+    private fun buildToken(extraClaims: HashMap<String, Any>, userDetails: UserDetails, jwtExpiration: Long): String {
+        val authorities = userDetails.authorities.map { it.authority }
+        val signInKey = getSignInKey()
 
         return Jwts.builder()
-                .claims()
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration * 1000 * 60))
-                .add("authorities", authorities)
-                .add(extraClaims)
-                .and()
-                .signWith(signInKey)
-                .compact();
+            .claims(extraClaims)
+            .subject(userDetails.username)
+            .issuedAt(Date(System.currentTimeMillis()))
+            .expiration(Date(System.currentTimeMillis() + jwtExpiration * 1000 * 60))
+            .claim("authorities", authorities)
+            .signWith(signInKey)
+            .compact()
     }
 
-    private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        //        return Keys.hmacShaKeyFor(keyBytes);
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
+   /* private fun getSignInKey(): SecretKey {
+        val keyBytes = Decoders.BASE64.decode(secretKey)
+        return SecretKeySpec(keyBytes, 0, keyBytes.size, "HmacSHA256")
+    }*/
+
+    private fun getSignInKey(): SecretKey {
+        val keyBytes = Decoders.BASE64.decode(securityProperties.jwt.secret)
+        return Keys.hmacShaKeyFor(keyBytes)
     }
 }

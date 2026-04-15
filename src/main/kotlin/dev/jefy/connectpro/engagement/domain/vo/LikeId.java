@@ -5,7 +5,6 @@ import org.springframework.util.Assert;
 
 import java.util.UUID;
 
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.infrastructure.ddd.DIdentifier;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 import jakarta.persistence.Column;

@@ -1,9 +1,8 @@
-package dev.jefy.connectpro.shared.domain.vo;
+package dev.jefy.connectpro.shared.domain.vo
 
+import jakarta.persistence.Embeddable
+import jakarta.persistence.Embedded
+import org.hibernate.annotations.EmbeddedTable
 
-import dev.jefy.connectpro.shared.infrastructure.ddd.DValueObject;
-
-/**
- * @author Jôph Yamba
- */
-public record ImageUrl(String value) implements DValueObject<String> {}
+@Embeddable
+data class ImageUrl(var value: String)

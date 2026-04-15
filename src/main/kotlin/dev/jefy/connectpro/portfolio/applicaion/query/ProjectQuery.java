@@ -6,7 +6,6 @@ import java.util.List;
 
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectResponse;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 
 /**
  * @author Jôph Yamba

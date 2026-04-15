@@ -19,7 +19,6 @@ import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository;
 import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository;
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService;

@@ -12,12 +12,11 @@ import dev.jefy.connectpro.engagement.domain.repository.ReviewRepository;
 import dev.jefy.connectpro.engagement.domain.vo.Rating;
 import dev.jefy.connectpro.engagement.domain.vo.ReviewId;
 import dev.jefy.connectpro.portfolio.PortfolioClient;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.recommandation.RecommandationClient;
 import dev.jefy.connectpro.recommandation.domain.vo.EventType;
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import lombok.RequiredArgsConstructor;
 
 /**

@@ -88,7 +88,7 @@ public class PService implements DAggregateRoot<ServiceId> {
         this.categoryId = CategoryId.of(request.categoryId());
         this.setTags(request.tags());
         this.coverImageUrl = null;
-        this.pricing = request.pricing().toDomain();
+        this.pricing = request.pricing().toPricing();
         this.awardId = null;
     }
     
@@ -102,7 +102,7 @@ public class PService implements DAggregateRoot<ServiceId> {
         this.description = request.description();
         this.categoryId = CategoryId.of(request.categoryId());
         this.setTags(request.tags());
-        this.pricing = request.pricing().toDomain();
+        this.pricing = request.pricing().toPricing();
     }
     
     public void setCoverImageUrl(ImageUrl coverImageUrl) {

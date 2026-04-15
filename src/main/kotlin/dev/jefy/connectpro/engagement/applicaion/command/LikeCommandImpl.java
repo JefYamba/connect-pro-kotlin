@@ -10,12 +10,11 @@ import dev.jefy.connectpro.engagement.domain.Like;
 import dev.jefy.connectpro.engagement.domain.repository.LikeRepository;
 import dev.jefy.connectpro.engagement.domain.vo.LikeId;
 import dev.jefy.connectpro.portfolio.PortfolioClient;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.recommandation.RecommandationClient;
 import dev.jefy.connectpro.recommandation.domain.vo.EventType;
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import lombok.RequiredArgsConstructor;
 
 /**

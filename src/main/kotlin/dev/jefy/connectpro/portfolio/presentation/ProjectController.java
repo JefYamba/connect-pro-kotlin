@@ -14,7 +14,6 @@ import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectRequest;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectResponse;
 import dev.jefy.connectpro.portfolio.applicaion.query.ProjectQuery;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 import dev.jefy.connectpro.shared.application.dtos.AppResponse;
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
 import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder;

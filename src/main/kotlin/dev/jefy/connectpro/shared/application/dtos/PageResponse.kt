@@ -1,34 +1,25 @@
-package dev.jefy.connectpro.shared.application.dtos;
+package dev.jefy.connectpro.shared.application.dtos
 
+import org.springframework.data.domain.Page
 
-import org.springframework.data.domain.Page;
+data class PageResponse<T>(
+    val content: List<T>,
+    val size: Int,
+    val currentPage: Int,
+    val hasNext: Boolean,
+    val hasPrevious: Boolean,
+    val totalPages: Int,
+    val totalElements: Long,
+    val numberOfElements: Int
+)
 
-import java.util.List;
-
-/**
- * @author Jôph Yamba
- */
-public record PageResponse<T>(
-        List<T> content,
-        int size,
-        int currentPage,
-        boolean hasNext,
-        boolean hasPrevious,
-        int totalPages,
-        long totalElements,
-        int numberOfElements
-) {
-    public PageResponse(Page<T> page) {
-        this(
-                page.getContent(),
-                page.getSize(),
-                page.getNumber(),
-                page.hasNext(),
-                page.hasPrevious(),
-                page.getTotalPages(),
-                page.getTotalElements(),
-                page.getNumberOfElements()
-        );
-    }
-}
-
+fun <T : Any> Page<T>.toPageResponse(): PageResponse<T> = PageResponse(
+    content = this.content,
+    size = this.size,
+    currentPage = this.number,
+    hasNext = this.hasNext(),
+    hasPrevious = this.hasPrevious(),
+    totalPages = this.totalPages,
+    totalElements = this.totalElements,
+    numberOfElements = this.numberOfElements
+)

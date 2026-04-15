@@ -1,79 +1,67 @@
-package dev.jefy.connectpro.user.infrastructure.config;
+package dev.jefy.connectpro.user.infrastructure.config
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-import org.jspecify.annotations.NullMarked;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
+import org.springframework.stereotype.Service
+import org.springframework.web.filter.OncePerRequestFilter
 /**
- * @author Jôph Yamba
+ * @author  Jôph Yamba
  */
-@NullMarked
 @Service
-@RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+class JwtFilter(
+    private val jwtService: JwtService,
+    private val userDetailsService: UserDetailsService
+) : OncePerRequestFilter() {
 
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
-        
-        if (request.getRequestURI().contains("/auth/") || request.getRequestURI().contains("/health")) {
-            logger.info("Skipping JWT authentication for path: " + request.getRequestURI());
-            filterChain.doFilter(request, response);
-            return;
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        if (request.requestURI.contains("/auth/") || request.requestURI.contains("/health")) {
+            logger.info("Skipping JWT authentication for path: ${request.requestURI}")
+            filterChain.doFilter(request, response)
+            return
         }
 
-        final String authHeader = request.getHeader(AUTHORIZATION);
+        val authHeader = request.getHeader(AUTHORIZATION)
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+        if (authHeader.isNullOrEmpty() || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response)
+            return
         }
 
-        final String jwt = authHeader.substring(7);
+        val jwt = authHeader.substring(7)
 
         try {
-            String username = jwtService.extractUsername(jwt);
+            val username = jwtService.extractUsername(jwt)
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (username != null && SecurityContextHolder.getContext().authentication == null) {
+                val userDetails = userDetailsService.loadUserByUsername(username)
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, 
-                            null,
-                            userDetails.getAuthorities()
-                    );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    val authToken = UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.authorities
+                    )
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authToken
                 }
             }
 
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
-            return;
+        } catch (e: Exception) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token")
+            return
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response)
     }
 }

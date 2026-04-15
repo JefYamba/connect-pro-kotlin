@@ -18,7 +18,7 @@ import dev.jefy.connectpro.recommandation.domain.EventTracking;
 import dev.jefy.connectpro.recommandation.domain.repository.EventTrackingRepository;
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import lombok.RequiredArgsConstructor;
 
 /**

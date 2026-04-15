@@ -1,47 +1,46 @@
-package dev.jefy.connectpro.user.infrastructure.config;
+package dev.jefy.connectpro.user.infrastructure.config
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.info.Contact
+import io.swagger.v3.oas.annotations.info.Info
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityScheme
+import io.swagger.v3.oas.annotations.servers.Server
+/**
+ * @author  Jôph Yamba
+ */
 
 @OpenAPIDefinition(
-        info = @Info(
-                contact = @Contact(
-                        name = "JefYamba",
-                        email = "joph.e.f.yamba@gmail.com",
-                        url = "https://github.com/JefYamba"
-                ),
-                description = "OpenApi documentation for the backend of Connect Pro",
-                title = "Connect Pro",
-                version = "1"
+    info = Info(
+        contact = Contact(
+            name = "JefYamba",
+            email = "joph.e.f.yamba@gmail.com",
+            url = "https://github.com/JefYamba"
         ),
-        servers = {
-                @Server(
-                        description = "Local Env",
-                        url = "http://localhost:8080/api/v1"
-                )
-        },
-        security = {
-                @SecurityRequirement(
-                        name = "bearerAuth"
-                )
-        }
+        description = "OpenApi documentation for the backend of Connect Pro",
+        title = "Connect Pro",
+        version = "1"
+    ),
+    servers = [
+        Server(
+            description = "Local Env",
+            url = "http://localhost:8080/api/v1"
+        )
+    ],
+    security = [
+        SecurityRequirement(
+            name = "bearerAuth"
+        )
+    ]
 )
 @SecurityScheme(
-        name = "bearerAuth",
-        description = "JWT Authentification",
-        scheme = "bearer",
-        type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADER
+    name = "bearerAuth",
+    description = "JWT Authentication",
+    scheme = "bearer",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    `in` = SecuritySchemeIn.HEADER
 )
-/**
- * @author Jôph Yamba
- */
-public class OpenApiConfig {
-}
+class OpenApiConfig

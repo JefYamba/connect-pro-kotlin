@@ -64,10 +64,12 @@ spring:
       enabled: true
 
 security:
-  jwt:
-    expiration-time: 720 # minutes
-  verification-token:
+  otp-token:
     expiration-time: 20 # minutes
+  jwt:
+    # generate with terminal cmd: openssl rand -base64 32
+    secret: "lvWNwREIlN4FEIrwApmUwP1EIKaYpFggdZMZMAMFdo8="
+    expiration-time: 720 # minutes
 
 aws:
   region:

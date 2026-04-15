@@ -9,7 +9,6 @@ import java.util.List;
 
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectRequest;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
 import dev.jefy.connectpro.shared.infrastructure.converter.ImagesUrlListConverter;
 import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;

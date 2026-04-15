@@ -1,36 +1,29 @@
-package dev.jefy.connectpro.shared.application.dtos;
+package dev.jefy.connectpro.shared.application.dtos
+
+import java.math.BigDecimal
+import dev.jefy.connectpro.portfolio.domain.vo.Extra
+import dev.jefy.connectpro.portfolio.domain.vo.Pricing
 
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import dev.jefy.connectpro.portfolio.domain.vo.Extra;
-import dev.jefy.connectpro.portfolio.domain.vo.Pricing;
-
-/**
- * @author Jôph Yamba
- */
-public record PricingData(
-        double basePrice,
-        int deliveryDays,
-        boolean isNegotiable,
-        List<Extra> extras
+data class PricingData(
+    val basePrice: Double,
+    val deliveryDays: Int,
+    val isNegotiable: Boolean,
+    val extras: List<Extra>
 ) {
-    public static PricingData from(Pricing pricing) {
-        return new PricingData(
-                pricing.basePrice().floatValue(),
-                pricing.deliveryDays(),
-                pricing.isNegotiable(), 
-                pricing.extras()
-        );
-    }
-
-    public Pricing toDomain() {
-        return new Pricing(
-                new BigDecimal(this.basePrice),
-                this.deliveryDays,
-                this.isNegotiable,
-                this.extras
-        );
+    fun toPricing(): Pricing {
+        return Pricing(
+            basePrice = BigDecimal(basePrice),
+            deliveryDays = deliveryDays,
+            isNegotiable = isNegotiable,
+            extras = extras
+        )
     }
 }
+
+fun Pricing.toPricingData(): PricingData = PricingData(
+    basePrice = this.basePrice.toDouble(),
+    deliveryDays = this.deliveryDays,
+    isNegotiable = this.isNegotiable,
+    extras = this.extras
+)

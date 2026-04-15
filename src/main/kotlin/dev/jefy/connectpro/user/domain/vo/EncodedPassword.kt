@@ -1,8 +1,10 @@
-package dev.jefy.connectpro.user.domain.vo;
+package dev.jefy.connectpro.user.domain.vo
 
-import dev.jefy.connectpro.shared.infrastructure.ddd.DValueObject;
+import jakarta.persistence.Embeddable
 
-/**
- * @author Jôph Yamba
- */
-public record EncodedPassword(String value) implements DValueObject<String> {}
+@Embeddable
+data class EncodedPassword(var value: String){
+    init {
+        require(value.isNotBlank()) { "Encoded password must not be blank" }
+    }
+}

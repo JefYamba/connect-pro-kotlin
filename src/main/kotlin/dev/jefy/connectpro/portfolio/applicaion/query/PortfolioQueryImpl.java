@@ -28,7 +28,6 @@ import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository;
 import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository;
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData;
 import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
 import lombok.RequiredArgsConstructor;

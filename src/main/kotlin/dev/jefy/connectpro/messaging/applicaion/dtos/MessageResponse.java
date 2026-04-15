@@ -3,7 +3,7 @@ package dev.jefy.connectpro.messaging.applicaion.dtos;
 import java.time.Instant;
 import java.util.UUID;
 
-import dev.jefy.connectpro.user.applicaion.dtos.UserResponse;
+import dev.jefy.connectpro.user.application.dtos.UserResponse;
 
 /**
  * @author Jôph Yamba

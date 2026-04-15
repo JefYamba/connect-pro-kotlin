@@ -24,7 +24,7 @@ import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService;
 import dev.jefy.connectpro.shared.infrastructure.messaging.EmailService;
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.PortfolioCreadtedEmailStrategy;
 import dev.jefy.connectpro.user.UserClient;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 import dev.jefy.connectpro.user.domain.vo.UserId;
 import lombok.RequiredArgsConstructor;
 

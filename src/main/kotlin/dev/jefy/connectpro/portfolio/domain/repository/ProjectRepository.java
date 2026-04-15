@@ -8,7 +8,6 @@ import java.util.List;
 
 import dev.jefy.connectpro.portfolio.domain.model.Project;
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.portfolio.domain.vo.ProjectId;
 import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
 
 /**

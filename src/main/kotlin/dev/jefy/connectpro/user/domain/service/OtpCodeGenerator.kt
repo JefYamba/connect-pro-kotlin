@@ -1,29 +1,18 @@
-package dev.jefy.connectpro.user.domain.service;
+package dev.jefy.connectpro.user.domain.service
 
+import org.springframework.stereotype.Service
+import dev.jefy.connectpro.user.domain.repository.TokenRepository
+import dev.jefy.connectpro.user.domain.vo.OtpCode
+import java.time.Instant
 
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-
-import dev.jefy.connectpro.user.domain.repository.TokenRepository;
-import dev.jefy.connectpro.user.domain.vo.OtpCode;
-import lombok.RequiredArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
 @Service
-@RequiredArgsConstructor
-public class OtpCodeGenerator {
-    private final TokenRepository tokenRepository;
+class OtpCodeGenerator(private val tokenRepository: TokenRepository) {
 
-    public OtpCode generate() {
-        OtpCode code;
+    fun generate(): OtpCode {
+        var code: OtpCode
         do {
-            code = OtpCode.generate();
-        } while (tokenRepository.isCodeActiveAndNotValidated(code, Instant.now()));
-        return code;
+            code = OtpCode.generate()
+        } while (tokenRepository.isCodeActiveAndNotValidated(code, Instant.now()))
+        return code
     }
 }
-
-

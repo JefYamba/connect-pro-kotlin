@@ -5,7 +5,7 @@ import java.time.Instant;
 
 import dev.jefy.connectpro.marketplace.domain.model.JobApplication;
 import dev.jefy.connectpro.shared.domain.vo.JobApplicationStatus;
-import dev.jefy.connectpro.user.applicaion.dtos.UserData;
+import dev.jefy.connectpro.user.application.dtos.UserData;
 
 /**
  * @author Jôph Yamba

@@ -15,7 +15,6 @@ import dev.jefy.connectpro.portfolio.applicaion.dtos.ServiceRequest;
 import dev.jefy.connectpro.portfolio.applicaion.dtos.ServiceResponse;
 import dev.jefy.connectpro.portfolio.applicaion.query.PortfolioQuery;
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId;
-import dev.jefy.connectpro.portfolio.domain.vo.ServiceId;
 import dev.jefy.connectpro.recommandation.RecommandationClient;
 import dev.jefy.connectpro.recommandation.domain.vo.EventType;
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType;

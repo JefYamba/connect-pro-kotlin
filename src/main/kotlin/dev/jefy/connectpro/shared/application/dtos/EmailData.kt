@@ -1,6 +1,3 @@
-package dev.jefy.connectpro.shared.application.dtos;
+package dev.jefy.connectpro.shared.application.dtos
 
-/**
- * @author Jôph Yamba
- */
-public record EmailData(String email, String name) {}
+data class EmailData(val email: String, val name: String)
