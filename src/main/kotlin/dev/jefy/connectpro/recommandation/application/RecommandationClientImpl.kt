@@ -1,11 +1,11 @@
 package dev.jefy.connectpro.recommandation.application
 
-import org.springframework.stereotype.Service
-import java.util.UUID
 import dev.jefy.connectpro.management.domain.vo.CategoryId
 import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType
+import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class RecommandationClientImpl(

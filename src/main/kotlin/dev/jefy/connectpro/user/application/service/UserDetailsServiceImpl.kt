@@ -1,8 +1,6 @@
 package dev.jefy.connectpro.user.application.service
 
 import dev.jefy.connectpro.portfolio.PortfolioClient
-import dev.jefy.connectpro.user.domain.model.AuthUser
-import dev.jefy.connectpro.user.domain.model.User
 import dev.jefy.connectpro.user.domain.model.toAuthUser
 import dev.jefy.connectpro.user.domain.repository.UserRepository
 import dev.jefy.connectpro.user.domain.vo.Email

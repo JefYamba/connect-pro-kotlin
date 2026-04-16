@@ -1,7 +1,7 @@
 package dev.jefy.connectpro.management.domain.vo
 
 import jakarta.persistence.Embeddable
-import java.util.UUID
+import java.util.*
 
 @Embeddable
 data class CategoryId(var value: UUID){

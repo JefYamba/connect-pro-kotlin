@@ -2,8 +2,7 @@ package dev.jefy.connectpro.recommandation.application.dtos
 
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType
-import jakarta.validation.constraints.NotNull
-import java.util.UUID
+import java.util.*
 
 data class EventTrackingRequest(
     val eventType: EventType,

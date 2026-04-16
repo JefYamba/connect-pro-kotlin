@@ -1,7 +1,6 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
 import dev.jefy.connectpro.portfolio.domain.model.Project
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
 import java.time.LocalDate
 import java.util.*
 

@@ -1,12 +1,12 @@
 package dev.jefy.connectpro.portfolio.application.command
 
-import org.springframework.web.multipart.MultipartFile
 import dev.jefy.connectpro.management.domain.vo.AwardId
 import dev.jefy.connectpro.portfolio.application.dtos.FAQRequest
 import dev.jefy.connectpro.portfolio.application.dtos.ServiceRequest
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
 interface ServiceCommand {

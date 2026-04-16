@@ -4,7 +4,6 @@ import dev.jefy.connectpro.shared.infrastructure.converter.AvailabilityListConve
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Embeddable
-import org.springframework.util.Assert
 
 @Embeddable
 data class ProfessionalInfo(

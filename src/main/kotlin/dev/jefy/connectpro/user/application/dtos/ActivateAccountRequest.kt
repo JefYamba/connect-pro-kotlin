@@ -1,9 +1,8 @@
 package dev.jefy.connectpro.user.application.dtos
 
 import jakarta.validation.constraints.NotBlank
-import java.util.UUID
-import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.Length
+import java.util.*
 
 data class ActivateAccountRequest(
     val tokenId: UUID, 

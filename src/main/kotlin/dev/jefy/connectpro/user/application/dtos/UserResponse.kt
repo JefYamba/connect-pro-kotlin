@@ -3,7 +3,7 @@ package dev.jefy.connectpro.user.application.dtos
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
 import dev.jefy.connectpro.user.domain.model.AuthUser
 import dev.jefy.connectpro.user.domain.vo.UserRole
-import java.util.UUID
+import java.util.*
 
 data class UserResponse(
     val id: UUID,

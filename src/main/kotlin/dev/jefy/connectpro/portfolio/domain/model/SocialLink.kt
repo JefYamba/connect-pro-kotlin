@@ -4,7 +4,6 @@ import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
 import dev.jefy.connectpro.portfolio.domain.vo.SocialLinkId
 import dev.jefy.connectpro.portfolio.domain.vo.SocialPlatform
 import jakarta.persistence.*
-import org.springframework.util.Assert
 
 @Entity
 @Table(

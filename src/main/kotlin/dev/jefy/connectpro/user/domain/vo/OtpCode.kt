@@ -1,8 +1,6 @@
 package dev.jefy.connectpro.user.domain.vo
 
 import jakarta.persistence.Embeddable
-import org.springframework.util.Assert
-import kotlin.random.Random
 
 @Embeddable
 data class OtpCode(var value: String) {

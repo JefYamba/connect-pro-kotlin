@@ -3,7 +3,6 @@ package dev.jefy.connectpro.management.domain
 import dev.jefy.connectpro.management.domain.vo.BadgeId
 import dev.jefy.connectpro.management.domain.vo.HexColor
 import jakarta.persistence.*
-import org.springframework.util.Assert
 
 @Entity
 @Table(name = "badges")

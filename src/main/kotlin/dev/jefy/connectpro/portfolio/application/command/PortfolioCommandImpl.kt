@@ -2,12 +2,7 @@ package dev.jefy.connectpro.portfolio.application.command
 
 import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.domain.vo.BadgeId
-import dev.jefy.connectpro.portfolio.application.dtos.ContactInfoData
-import dev.jefy.connectpro.portfolio.application.dtos.GeneralInfoRequest
-import dev.jefy.connectpro.portfolio.application.dtos.LocationInfoData
-import dev.jefy.connectpro.portfolio.application.dtos.PortfolioRequest
-import dev.jefy.connectpro.portfolio.application.dtos.ProfessionalInfoRequest
-import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
+import dev.jefy.connectpro.portfolio.application.dtos.*
 import dev.jefy.connectpro.portfolio.application.exceptions.BadgeNotFoundException
 import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioNotFoundException
 import dev.jefy.connectpro.portfolio.application.service.PortfolioAppService

@@ -1,14 +1,14 @@
 package dev.jefy.connectpro.recommandation.domain.repository
 
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import dev.jefy.connectpro.recommandation.domain.EventTracking
 import dev.jefy.connectpro.recommandation.domain.vo.EventTrackingId
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType
 import dev.jefy.connectpro.user.domain.vo.UserId
-import java.util.UUID
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import java.util.*
 
 interface EventTrackingRepository : JpaRepository<EventTracking, EventTrackingId> {
 

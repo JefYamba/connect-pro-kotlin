@@ -1,6 +1,5 @@
 package dev.jefy.connectpro.portfolio.application.service
 
-import org.springframework.stereotype.Service
 import dev.jefy.connectpro.portfolio.application.dtos.ContactInfoData
 import dev.jefy.connectpro.portfolio.application.dtos.GeneralInfoRequest
 import dev.jefy.connectpro.portfolio.application.dtos.PortfolioRequest
@@ -11,6 +10,7 @@ import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.repository.SocialLinkQueryRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.user.domain.vo.Email
+import org.springframework.stereotype.Service
 
 /**
  * @author Jôph Yamba

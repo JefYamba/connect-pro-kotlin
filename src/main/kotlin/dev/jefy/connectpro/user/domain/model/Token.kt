@@ -4,7 +4,6 @@ import dev.jefy.connectpro.user.domain.vo.OtpCode
 import dev.jefy.connectpro.user.domain.vo.TokenId
 import dev.jefy.connectpro.user.domain.vo.UserId
 import jakarta.persistence.*
-import org.springframework.util.Assert
 import java.time.Instant
 
 @Entity

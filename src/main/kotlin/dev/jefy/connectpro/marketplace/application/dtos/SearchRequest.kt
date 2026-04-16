@@ -1,6 +1,5 @@
 package dev.jefy.connectpro.marketplace.application.dtos
 
-import jakarta.validation.constraints.Min
 import java.util.*
 
 /**

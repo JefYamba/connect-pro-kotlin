@@ -7,7 +7,6 @@ import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.Assert
 
 @Service
 @Transactional(readOnly = true)

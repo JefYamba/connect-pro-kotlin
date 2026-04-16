@@ -4,7 +4,6 @@ import dev.jefy.connectpro.marketplace.application.dtos.JobApplicationResponseFo
 import dev.jefy.connectpro.marketplace.application.dtos.JobApplicationResponseForUser
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
-import org.jspecify.annotations.NullMarked
 
 /**
  * @author Jôph Yamba

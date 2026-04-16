@@ -5,10 +5,8 @@ import dev.jefy.connectpro.management.appliacaion.dtos.toResponse
 import dev.jefy.connectpro.management.domain.repository.BadgeRepository
 import dev.jefy.connectpro.management.domain.vo.BadgeId
 import dev.jefy.connectpro.portfolio.application.exceptions.BadgeNotFoundException
-import org.jspecify.annotations.NullMarked
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.function.Supplier
 
 /**
  * @author Jôph Yamba

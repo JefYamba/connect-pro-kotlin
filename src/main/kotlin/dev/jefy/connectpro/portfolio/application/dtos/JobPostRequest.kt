@@ -4,7 +4,7 @@ import dev.jefy.connectpro.shared.application.dtos.BudgetData
 import dev.jefy.connectpro.shared.domain.vo.JobType
 import dev.jefy.connectpro.shared.domain.vo.WorkMode
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 data class JobPostRequest(
     val portfolioId: UUID,

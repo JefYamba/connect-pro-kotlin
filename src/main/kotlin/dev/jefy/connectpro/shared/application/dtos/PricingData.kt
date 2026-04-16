@@ -1,8 +1,8 @@
 package dev.jefy.connectpro.shared.application.dtos
 
-import java.math.BigDecimal
 import dev.jefy.connectpro.portfolio.domain.vo.Extra
 import dev.jefy.connectpro.portfolio.domain.vo.Pricing
+import java.math.BigDecimal
 
 
 data class PricingData(

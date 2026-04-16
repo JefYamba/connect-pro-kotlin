@@ -3,7 +3,6 @@ package dev.jefy.connectpro.marketplace.application.dtos
 import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse
 import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
 import dev.jefy.connectpro.portfolio.domain.model.PService
-import dev.jefy.connectpro.portfolio.domain.vo.Tag
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
 import dev.jefy.connectpro.shared.application.dtos.PricingData
 import dev.jefy.connectpro.shared.application.dtos.toData

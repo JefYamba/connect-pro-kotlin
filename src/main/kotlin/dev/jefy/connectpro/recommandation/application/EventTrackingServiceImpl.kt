@@ -1,7 +1,5 @@
 package dev.jefy.connectpro.recommandation.application
 
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import dev.jefy.connectpro.recommandation.domain.EventTracking
 import dev.jefy.connectpro.recommandation.domain.repository.EventTrackingRepository
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
@@ -9,7 +7,9 @@ import dev.jefy.connectpro.recommandation.domain.vo.TargetType
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.application.dtos.UserData
 import dev.jefy.connectpro.user.domain.vo.UserId
-import java.util.UUID
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 @Transactional

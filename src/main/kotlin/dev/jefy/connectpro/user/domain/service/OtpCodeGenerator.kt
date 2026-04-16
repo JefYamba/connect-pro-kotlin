@@ -1,8 +1,8 @@
 package dev.jefy.connectpro.user.domain.service
 
-import org.springframework.stereotype.Service
 import dev.jefy.connectpro.user.domain.repository.TokenRepository
 import dev.jefy.connectpro.user.domain.vo.OtpCode
+import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service

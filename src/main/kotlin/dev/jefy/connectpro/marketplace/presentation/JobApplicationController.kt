@@ -8,7 +8,6 @@ import dev.jefy.connectpro.marketplace.application.query.JobApplicationQuery
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
-import dev.jefy.connectpro.user.domain.vo.UserId
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -17,7 +16,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 /**
  * @author Jôph Yamba

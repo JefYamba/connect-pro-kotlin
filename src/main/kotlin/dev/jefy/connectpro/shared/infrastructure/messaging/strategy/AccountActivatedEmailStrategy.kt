@@ -1,7 +1,5 @@
 package dev.jefy.connectpro.shared.infrastructure.messaging.strategy
 
-import org.springframework.util.Assert
-
 /**
  * Author: Jôph Yamba
  */

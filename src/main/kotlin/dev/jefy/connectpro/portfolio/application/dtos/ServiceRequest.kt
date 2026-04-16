@@ -1,7 +1,7 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
 import dev.jefy.connectpro.shared.application.dtos.PricingData
-import java.util.UUID
+import java.util.*
 
 data class ServiceRequest(
     val portfolioId: UUID,

@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.recommandation.domain.vo
 
-import java.util.UUID
+import java.util.*
 
 data class EventTrackingId(val value: UUID)  {
     companion object {

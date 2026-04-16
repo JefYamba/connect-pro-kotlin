@@ -8,7 +8,6 @@ import dev.jefy.connectpro.management.domain.vo.CategoryId
 import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.function.Supplier
 
 /**
  * @author Jôph Yamba

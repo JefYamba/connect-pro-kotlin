@@ -1,6 +1,5 @@
 package dev.jefy.connectpro.marketplace.application.dtos
 
-import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.marketplace.domain.model.JobApplication
 import dev.jefy.connectpro.shared.domain.vo.JobApplicationStatus
 import java.time.Instant

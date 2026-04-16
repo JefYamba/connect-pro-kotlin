@@ -6,7 +6,6 @@ import dev.jefy.connectpro.user.domain.vo.EncodedPassword
 import dev.jefy.connectpro.user.domain.vo.UserId
 import dev.jefy.connectpro.user.domain.vo.UserRole
 import jakarta.persistence.*
-import org.springframework.util.Assert
 
 @Entity
 @Table(name = "users")

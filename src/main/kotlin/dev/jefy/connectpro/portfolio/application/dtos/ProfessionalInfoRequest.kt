@@ -2,7 +2,6 @@ package dev.jefy.connectpro.portfolio.application.dtos
 
 import dev.jefy.connectpro.portfolio.domain.vo.Availability
 import dev.jefy.connectpro.portfolio.domain.vo.ProfessionalInfo
-import org.springframework.util.Assert
 
 
 /**

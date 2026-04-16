@@ -1,7 +1,6 @@
 package dev.jefy.connectpro.user.domain.service
 
 import dev.jefy.connectpro.shared.infrastructure.config.SecurityProperties
-import org.springframework.stereotype.Service
 import dev.jefy.connectpro.user.application.exceptions.TokenHasExpiredException
 import dev.jefy.connectpro.user.application.exceptions.TokenNotFoundException
 import dev.jefy.connectpro.user.domain.model.Token
@@ -9,6 +8,8 @@ import dev.jefy.connectpro.user.domain.repository.TokenRepository
 import dev.jefy.connectpro.user.domain.vo.OtpCode
 import dev.jefy.connectpro.user.domain.vo.TokenId
 import dev.jefy.connectpro.user.domain.vo.UserId
+import org.springframework.stereotype.Service
+
 /**
  * @author  Jôph Yamba
  */

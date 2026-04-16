@@ -1,7 +1,6 @@
 package dev.jefy.connectpro.shared.infrastructure.messaging.strategy
 
 import dev.jefy.connectpro.user.domain.vo.OtpCode
-import org.springframework.util.Assert
 
 data class ResetPasswordEmailStrategy(private val name: String, private val code: OtpCode) : EmailStrategy {
     init {

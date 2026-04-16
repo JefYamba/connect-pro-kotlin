@@ -1,7 +1,7 @@
 package dev.jefy.connectpro.user.application.dtos
 
 import jakarta.validation.constraints.NotBlank
-import java.util.UUID
+import java.util.*
 
 data class ResetPasswordRequest(
     val tokenId: UUID,

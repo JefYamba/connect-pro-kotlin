@@ -5,7 +5,6 @@ import jakarta.persistence.AttributeOverride
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import jakarta.persistence.Embedded
-import org.springframework.util.Assert
 
 @Embeddable
 data class ContactInfo(

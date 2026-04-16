@@ -1,7 +1,6 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
 import dev.jefy.connectpro.portfolio.domain.vo.GeneralInfo
-import dev.jefy.connectpro.portfolio.domain.vo.Language
 
 /**
  * @author Jôph Yamba

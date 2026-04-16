@@ -1,11 +1,10 @@
 package dev.jefy.connectpro.shared.infrastructure.file_storage
 
 import dev.jefy.connectpro.shared.infrastructure.config.AwsProperties
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID
+import java.util.*
 
 @Component
 class ImageUtils(private val awsProperties: AwsProperties) {

@@ -3,7 +3,6 @@ package dev.jefy.connectpro.portfolio.domain.vo
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl
 import dev.jefy.connectpro.shared.infrastructure.converter.LanguageListConverter
 import jakarta.persistence.*
-import org.springframework.util.Assert
 
 @Embeddable
 data class GeneralInfo(
