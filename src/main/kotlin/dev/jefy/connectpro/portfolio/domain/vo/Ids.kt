@@ -45,6 +45,14 @@ data class SocialLinkId(var value: UUID) {
 
     companion object {
         fun generate(): SocialLinkId = SocialLinkId(UUID.randomUUID())
-        fun of(socialLinkId: String): SocialLinkId = SocialLinkId(UUID.fromString(socialLinkId))
+        fun of(socialLinkId: UUID): SocialLinkId = SocialLinkId(socialLinkId)
+    }
+}
+
+@Embeddable
+data class JobPostId(var value: UUID) {
+    companion object {
+        fun generate(): JobPostId = JobPostId(UUID.randomUUID())
+        fun of(value: UUID): JobPostId = JobPostId(value)
     }
 }

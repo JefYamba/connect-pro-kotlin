@@ -10,7 +10,7 @@ import java.util.*
 
 data class AuthUser(
     val id: UUID,
-    val name: String,
+    val fullname: String,
     val email: String,
     private val password: String,
     val imageUrl: String?,
@@ -31,7 +31,7 @@ data class AuthUser(
 
 fun User.toAuthUser(portfolio: PortfolioSummaryData?): AuthUser = AuthUser(
     id = this.id.value,
-    name = this.name,
+    fullname = this.name,
     email = this.email.value,
     password = this.password.value,
     imageUrl = this.profileImage?.value,

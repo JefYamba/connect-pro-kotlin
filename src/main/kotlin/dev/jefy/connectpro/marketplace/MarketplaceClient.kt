@@ -1,7 +1,6 @@
-package dev.jefy.connectpro.marketplace;
+package dev.jefy.connectpro.marketplace
 
 /**
  * @author Jôph Yamba
  */
-public interface MarketplaceClient {
-}
+interface MarketplaceClient 

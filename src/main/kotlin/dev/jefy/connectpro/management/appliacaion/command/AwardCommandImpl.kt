@@ -1,65 +1,54 @@
-package dev.jefy.connectpro.management.appliacaion.command;
+package dev.jefy.connectpro.management.appliacaion.command
 
-
-import org.jspecify.annotations.NullMarked;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import dev.jefy.connectpro.management.appliacaion.dtos.AwardRequest;
-import dev.jefy.connectpro.management.domain.Award;
-import dev.jefy.connectpro.management.domain.repositoty.AwardRepository;
-import dev.jefy.connectpro.management.domain.vo.AwardId;
-import dev.jefy.connectpro.management.domain.vo.HexColor;
-import dev.jefy.connectpro.portfolio.PortfolioClient;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceAlreadyExists;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
-import lombok.RequiredArgsConstructor;
-
+import dev.jefy.connectpro.management.appliacaion.AwardAlreadyExistsException
+import dev.jefy.connectpro.management.appliacaion.AwardAlreadyInUseException
+import dev.jefy.connectpro.management.appliacaion.dtos.AwardRequest
+import dev.jefy.connectpro.management.domain.Award
+import dev.jefy.connectpro.management.domain.repository.AwardRepository
+import dev.jefy.connectpro.management.domain.vo.AwardId
+import dev.jefy.connectpro.management.domain.vo.HexColor
+import dev.jefy.connectpro.portfolio.PortfolioClient
+import dev.jefy.connectpro.portfolio.application.exceptions.AwardNotFoundException
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.Assert
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
 @Service
 @Transactional
-@RequiredArgsConstructor
-public class AwardCommandImpl implements AwardCommand {
-    private final AwardRepository awardRepo;
-    private final PortfolioClient portfolioClient;
+class AwardCommandImpl(
+    private val awardRepo: AwardRepository,
+    private val portfolioClient: PortfolioClient
+) : AwardCommand {
 
-    @Override
-    public AwardId create(AwardRequest request) {
-        Assert.notNull(request, "request is null");
-        if (!awardRepo.existsByName(request.name())) {
-            throw new ResourceAlreadyExists("award with name " + request.name() + " already exists");
-        }
-        Award award = new Award(request.name(), HexColor.of(request.color()), request.description());
-        awardRepo.save(award);
-        return award.getId();
+    override fun create(request: AwardRequest): AwardId {
+        
+        if (awardRepo.existsByName(request.name)) throw AwardAlreadyExistsException()
+        
+        val award = Award(request.name, HexColor.of(request.color), request.description)
+        awardRepo.save(award)
+        return award.id
     }
 
-    @Override
-    public AwardId update(AwardId awardId, AwardRequest request) {
-        Assert.notNull(request, "request is null");
-        Award award = getAward(awardId);
-        award.update(request.name(), HexColor.of(request.color()), request.description());
-        awardRepo.save(award);
-        return award.getId();
+    override fun update(awardId: AwardId, request: AwardRequest): AwardId {
+        Assert.notNull(request, "request is null")
+
+        val award = getAward(awardId)
+        award.update(request.name, HexColor.of(request.color), request.description)
+        awardRepo.save(award)
+        return award.id
     }
 
-    @Override
-    public void delete(AwardId awardId) {
-        Award award = getAward(awardId);
-        if (portfolioClient.isAwardInUse(awardId)) {
-            throw new IllegalStateException(String.format("award with id %s is already in use", awardId));
-        }
-        awardRepo.delete(award);
+    override fun delete(awardId: AwardId) {
+        val award = getAward(awardId)
+        if (portfolioClient.isAwardInUse(awardId)) throw AwardAlreadyInUseException()
+        awardRepo.delete(award)
     }
 
-    private Award getAward(AwardId awardId) {
-        Assert.notNull(awardId, "awardId is null");
-        return awardRepo.findById(awardId)
-                .orElseThrow(()-> new ResourceNotFound("award with id " + awardId + " not found"));
-    }
+    private fun getAward(awardId: AwardId): Award = awardRepo
+        .findById(awardId)
+        .orElseThrow { AwardNotFoundException() }
+    
 }

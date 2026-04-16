@@ -1,26 +1,20 @@
-package dev.jefy.connectpro.portfolio.domain.vo;
+package dev.jefy.connectpro.portfolio.domain.vo
 
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
 
-import org.springframework.util.Assert;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
-/**
- * @author Jôph Yamba
- */
 @Embeddable
-public record LocationInfo (
+data class LocationInfo(
     @Column(nullable = false)
-    String country,
+    var country: String,
     @Column(nullable = false)
-    String city,
-    String address, // Optional
-    Double latitude, // Optional
-    Double longitude // Optional
+    var city: String,
+    var address: String? = null,
+    var latitude: Double? = null,
+    var longitude: Double? = null
 ) {
-    public LocationInfo {
-        Assert.hasText(country, "country is required");
-        Assert.hasText(city, "city is required");
+    init {
+        require(country.isNotBlank()) { "country must not be blank" }
+        require(city.isNotBlank()) { "city must not be blank" }
     }
 }

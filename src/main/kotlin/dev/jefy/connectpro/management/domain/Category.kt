@@ -1,47 +1,33 @@
-package dev.jefy.connectpro.management.domain;
+package dev.jefy.connectpro.management.domain
 
-import org.springframework.util.Assert;
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import jakarta.persistence.*
+import java.time.Instant
 
-import java.time.Instant;
-
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
-
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "categories")
-public class Category implements DAggregateRoot<CategoryId> {
+open class Category(name: String, description: String) {
+    @AttributeOverride(name = "value", column = Column(name = "id"))
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "value"))
-    private CategoryId id;
-    
-    private String name;
-    
-    private String description;
-    
-    private Instant createdAt;
+    var id: CategoryId = CategoryId.generate()
+        protected set
 
-    public Category(String name, String description) {
-        Assert.hasText(name, "Category name must not be empty");
-        this.id = CategoryId.generate();
-        this.name = name;
-        this.description = description;
-        this.createdAt = Instant.now();
-    }
+    var name: String = name
+        protected set
+
+    var description: String = description
+        protected set
+
+    var createdAt: Instant = Instant.now()
+        protected set
     
-    public void update(String name, String description){
-        Assert.hasText(name, "Category name must not be empty");
-        this.name = name;
-        this.description = description;
+    init {
+       require(name.isNotBlank()) { "Category name must not be blank" }
     }
-    
+
+    fun update(name: String, description: String) {
+        require(name.isNotBlank()) { "Category name must not be blank" }
+        this.name = name
+        this.description = description
+    }
 }

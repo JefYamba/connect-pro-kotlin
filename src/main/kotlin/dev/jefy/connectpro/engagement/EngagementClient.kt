@@ -1,20 +1,13 @@
-package dev.jefy.connectpro.engagement;
+package dev.jefy.connectpro.engagement
 
-import org.jspecify.annotations.NullMarked;
+import dev.jefy.connectpro.engagement.application.dtos.ReviewResponse
+import dev.jefy.connectpro.marketplace.application.dtos.ServiceReviewData
+import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
+import dev.jefy.connectpro.user.domain.vo.UserId
 
-import java.util.List;
-
-import dev.jefy.connectpro.engagement.applicaion.dtos.ReviewResponse;
-import dev.jefy.connectpro.marketplace.applicaion.dtos.ServiceReviewData;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-
-/**
- * @author Jôph Yamba
- */
-@NullMarked
-public interface EngagementClient {
-    long countLike(ServiceId serviceId);
-    boolean hasLiked(ServiceId serviceId, UserId userId);
-    List<ReviewResponse> recentReviews(ServiceId serviceId);
-    ServiceReviewData getReviewData(ServiceId id);
+interface EngagementClient {
+    fun countLike(serviceId: ServiceId): Long
+    fun hasLiked(serviceId: ServiceId, userId: UserId): Boolean
+    fun recentReviews(serviceId: ServiceId): List<ReviewResponse>
+    fun getReviewData(id: ServiceId): ServiceReviewData
 }

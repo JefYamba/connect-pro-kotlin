@@ -1,31 +1,35 @@
-package dev.jefy.connectpro.recommandation.domain.repository;
+package dev.jefy.connectpro.recommandation.domain.repository
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import dev.jefy.connectpro.recommandation.domain.EventTracking
+import dev.jefy.connectpro.recommandation.domain.vo.EventTrackingId
+import dev.jefy.connectpro.recommandation.domain.vo.EventType
+import dev.jefy.connectpro.recommandation.domain.vo.TargetType
+import dev.jefy.connectpro.user.domain.vo.UserId
+import java.util.UUID
 
-import java.util.List;
-import java.util.UUID;
+interface EventTrackingRepository : JpaRepository<EventTracking, EventTrackingId> {
 
-import dev.jefy.connectpro.recommandation.domain.EventTracking;
-import dev.jefy.connectpro.recommandation.domain.vo.EventTrackingId;
-import dev.jefy.connectpro.recommandation.domain.vo.EventType;
-import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
-import dev.jefy.connectpro.user.domain.vo.UserId;
+    fun findAllByUserId(userId: UserId): List<EventTracking>
 
-/**
- * @author Jôph Yamba
- */
-public interface EventTrackingRepository extends JpaRepository<EventTracking, EventTrackingId> {
-    
-    List<EventTracking> findAllByUserId(UserId userId);
-    
-    @Query("SELECT e.targetId FROM EventTracking e WHERE e.userId = :userId AND e.eventType = :eventType AND e.targetType = :targetType")
-    List<UUID> findTargetIdsByUserIdAndEventTypeAndTargetType(
-            @Param("userId") UserId userId,
-            @Param("eventType") EventType eventType,
-            @Param("targetType") TargetType targetType
-    );
+    @Query("""
+        SELECT event.targetId FROM EventTracking event 
+        WHERE event.userId = :userId 
+        AND event.eventType = :eventType 
+        AND event.targetType = :targetType
+    """)
+    fun findTargetIdsByUserIdAndEventTypeAndTargetType(
+        @Param("userId") userId: UserId,
+        @Param("eventType") eventType: EventType,
+        @Param("targetType") targetType: TargetType
+    ): List<UUID>
 
-    void deleteByUserIdAndEventTypeAndTargetIdAndTargetType(UserId userId, EventType eventType, UUID targetId, TargetType targetType);
+    fun deleteByUserIdAndEventTypeAndTargetIdAndTargetType(
+        userId: UserId, 
+        eventType: EventType, 
+        targetId: UUID, 
+        targetType: TargetType
+    )
 }

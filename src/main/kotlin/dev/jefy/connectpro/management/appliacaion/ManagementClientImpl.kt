@@ -1,63 +1,44 @@
-package dev.jefy.connectpro.management.appliacaion;
+package dev.jefy.connectpro.management.appliacaion
 
-
-import org.jspecify.annotations.NullMarked;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import dev.jefy.connectpro.management.ManagementClient;
-import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse;
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse;
-import dev.jefy.connectpro.management.domain.repositoty.AwardRepository;
-import dev.jefy.connectpro.management.domain.repositoty.BadgeRepository;
-import dev.jefy.connectpro.management.domain.repositoty.CategoryRepository;
-import dev.jefy.connectpro.management.domain.vo.AwardId;
-import dev.jefy.connectpro.management.domain.vo.BadgeId;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
-import lombok.RequiredArgsConstructor;
+import dev.jefy.connectpro.management.ManagementClient
+import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
+import dev.jefy.connectpro.management.appliacaion.dtos.toResponse
+import dev.jefy.connectpro.management.domain.repository.AwardRepository
+import dev.jefy.connectpro.management.domain.repository.BadgeRepository
+import dev.jefy.connectpro.management.domain.repository.CategoryRepository
+import dev.jefy.connectpro.management.domain.vo.AwardId
+import dev.jefy.connectpro.management.domain.vo.BadgeId
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
+import org.jspecify.annotations.NullMarked
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.Optional
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
 @Service
 @Transactional
-@RequiredArgsConstructor
-public class ManagementClientImpl implements ManagementClient {
-    private final CategoryRepository categoryRepo;
-    private final AwardRepository awardRepo;
-    private final BadgeRepository badgeRepo;
-    
-    @Override
-    public boolean notExistsCategory(CategoryId categoryId) {
-        return !categoryRepo.existsById(categoryId);
-    }
+class ManagementClientImpl(
+    private val categoryRepo: CategoryRepository,
+    private val awardRepo: AwardRepository,
+    private val badgeRepo: BadgeRepository
+) : ManagementClient {
 
-    @Override
-    public boolean notExistsAward(AwardId awardId) {
-        return !awardRepo.existsById(awardId);
-    }
+    override fun notExistsCategory(categoryId: CategoryId): Boolean = !categoryRepo.existsById(categoryId)
 
-    @Override
-    public boolean notExistsBadge(BadgeId badgeId) {
-        return !badgeRepo.existsById(badgeId);
-    }
+    override fun notExistsAward(awardId: AwardId): Boolean = !awardRepo.existsById(awardId)
 
-    @Override
-    public CategoryResponse getCategory(CategoryId categoryId) {
-        return categoryRepo.findById(categoryId)
-                .map(CategoryResponse::fromDomain)
-                .orElseThrow(()-> new ResourceNotFound(
-                        "category with id: %s not found"
-                        .formatted(categoryId.value())
-                ));
-    }
+    override fun notExistsBadge(badgeId: BadgeId): Boolean = !badgeRepo.existsById(badgeId)
 
-    @Override
-    public Optional<AwardResponse> getAward(AwardId awardId) {
-        return awardRepo.findById(awardId).map(AwardResponse::from);
-    }
+    override fun getCategory(categoryId: CategoryId): CategoryResponse = categoryRepo
+        .findById(categoryId)
+        .map{ it.toResponse() }
+        .orElseThrow { CategoryNotFoundException() }
+
+    override fun getAward(awardId: AwardId): Optional<AwardResponse> = awardRepo
+        .findById(awardId)
+        .map { it.toResponse() }
 }

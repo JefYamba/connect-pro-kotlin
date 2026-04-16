@@ -1,11 +1,12 @@
-package dev.jefy.connectpro.portfolio.domain.vo;
+package dev.jefy.connectpro.portfolio.domain.vo
+import jakarta.persistence.Embeddable
 
-import dev.jefy.connectpro.shared.infrastructure.ddd.DValueObject;
-import jakarta.persistence.Embeddable;
-
-/**
- * @author Jôph Yamba
- */
 @Embeddable
-public record Language(String value) implements DValueObject<String> {}
-
+data class Language(var value: String) {
+    init {
+        require(value.isNotBlank()) { "language must not be blank" }
+    }
+    companion object {
+        fun of(language: String) = Language(language)
+    }
+}

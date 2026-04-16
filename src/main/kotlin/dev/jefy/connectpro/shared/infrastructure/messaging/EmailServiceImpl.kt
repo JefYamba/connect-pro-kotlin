@@ -1,51 +1,40 @@
-package dev.jefy.connectpro.shared.infrastructure.messaging;
+package dev.jefy.connectpro.shared.infrastructure.messaging
 
+import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.EmailStrategy
+import dev.jefy.connectpro.user.domain.vo.Email
+import jakarta.mail.MessagingException
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.mail.SimpleMailMessage
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.scheduling.annotation.Async
+import org.springframework.stereotype.Service
+import kotlin.jvm.Throws
 
-import org.jspecify.annotations.NullMarked;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.EmailStrategy;
-import dev.jefy.connectpro.user.domain.vo.Email;
-import jakarta.mail.MessagingException;
-import lombok.RequiredArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
-@NullMarked
 @Service
-@RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService {
-
-    private final JavaMailSender mailSender;
-    @Value("${spring.mail.username}")
-    private String sendingEmail;
-
+class EmailServiceImpl(
+    private val mailSender: JavaMailSender,
+    @Value("\${spring.mail.username}") private val sendingEmail: String
+) : EmailService {
 
     @Async
-    @Override
-    public void sendEmail(Email email, EmailStrategy strategy) {
-        String message = strategy.getMessage();
-        String subject = strategy.getSubject();
+    override fun sendEmail(email: Email, strategy: EmailStrategy) {
+        val message = strategy.message()
+        val subject = strategy.subject()
         try {
-            doSendEmail(email.value(), message, subject);
-        } catch (MessagingException e) {
-            throw new EmailNotSentException();
+            doSendEmail(email.value, message, subject)
+        } catch (_: MessagingException) {
+            throw EmailNotSentException()
         }
     }
 
-    private void doSendEmail(String toEmail, String message, String subject) throws MessagingException {
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(sendingEmail);
-        mailMessage.setTo(toEmail);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-
-        mailSender.send(mailMessage);
+    @Throws(MessagingException::class)
+    private fun doSendEmail(toEmail: String, message: String, subject: String) {
+        val mailMessage = SimpleMailMessage().apply {
+            from = sendingEmail
+            setTo(toEmail)
+            this.subject = subject
+            text = message
+        }
+        mailSender.send(mailMessage)
     }
 }

@@ -1,55 +1,42 @@
-package dev.jefy.connectpro.engagement.domain;
+package dev.jefy.connectpro.engagement.domain
 
-import org.springframework.util.Assert;
-
-import java.time.Instant;
-
-import dev.jefy.connectpro.engagement.domain.vo.Rating;
-import dev.jefy.connectpro.engagement.domain.vo.ReviewId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import dev.jefy.connectpro.engagement.domain.vo.Rating
+import dev.jefy.connectpro.engagement.domain.vo.ReviewId
+import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
+import dev.jefy.connectpro.user.domain.vo.UserId
+import jakarta.persistence.*
+import java.time.Instant
 
 /**
  * @author Jôph Yamba
  */
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "reviews")
-public class Review implements DAggregateRoot<ReviewId> {
+open class Review(reviewerId: UserId, serviceId: ServiceId, rating: Rating, comment: String) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "id"))
-    private ReviewId id;
-    
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "rating"))
-    private Rating rating;
-    
-    @Column(nullable = false, updatable = false)
-    private String comment;
-    
-    private Instant createdAt;
+    @AttributeOverride(name = "value", column = Column(name = "id"))
+    var id: ReviewId = ReviewId.of(reviewerId, serviceId)
+    protected set
 
-    public Review(UserId reviewerId, ServiceId serviceId, Rating rating, String comment) {
-        Assert.notNull(reviewerId, "reviewer Id cannot be null");
-        Assert.notNull(serviceId, "service Id cannot be null");
-        Assert.notNull(rating, "rating cannot be null");
-        Assert.hasText(comment, "comment cannot be empty");
-        this.id = ReviewId.of(reviewerId, serviceId);
-        this.rating = rating;
-        this.comment = comment;
-        this.createdAt = Instant.now();
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "rating"))
+    var rating: Rating = rating
+    protected set
+
+    @Column(nullable = false, updatable = false)
+    var comment: String = comment
+    protected set
+        
+    var createdAt: Instant = Instant.now()
+    protected set
+
+    init {
+        require(comment.isNotBlank()) { "comment cannot be empty" }
     }
 
-    public void update(Rating rating, String comment) {
-        Assert.notNull(rating, "rating cannot be null");
-        Assert.hasText(comment, "comment cannot be empty");
-
-        this.rating = rating;
-        this.comment = comment;
+    fun update(rating: Rating, comment: String) {
+        require(comment.isNotBlank()) { "comment cannot be empty" }
+        this.rating = rating
+        this.comment = comment
     }
 }

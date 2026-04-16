@@ -1,25 +1,18 @@
-package dev.jefy.connectpro.management.appliacaion.dtos;
+package dev.jefy.connectpro.management.appliacaion.dtos
 
+import dev.jefy.connectpro.management.domain.Badge
+import java.util.*
 
-import java.util.UUID;
-
-import dev.jefy.connectpro.management.domain.Badge;
 
 /**
  * @author Jôph Yamba
  */
-public record BadgeResponse (
-        UUID id,
-        String name,
-        String description,
-        String color
-) {
-    public static BadgeResponse from(Badge badge) {
-        return new BadgeResponse(
-                badge.getId().value(),
-                badge.getName(),
-                badge.getDescription(),
-                badge.getColor().value()
-        );
-    }
-}
+
+data class BadgeResponse(val id: UUID, val name: String, val description: String, val color: String)
+
+fun Badge.toResponse() = BadgeResponse(
+    id = this.id.value,
+    name = this.name,
+    description = this.description,
+    color = this.color.value
+)

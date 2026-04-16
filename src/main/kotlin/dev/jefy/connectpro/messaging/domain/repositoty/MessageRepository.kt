@@ -1,14 +1,12 @@
-package dev.jefy.connectpro.messaging.domain.repositoty;
+package dev.jefy.connectpro.messaging.domain.repositoty
 
-import org.springframework.stereotype.Repository;
-
-import dev.jefy.connectpro.messaging.domain.Message;
-import dev.jefy.connectpro.messaging.domain.vo.MessageId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
+import dev.jefy.connectpro.messaging.domain.Message
+import dev.jefy.connectpro.messaging.domain.vo.MessageId
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
 /**
  * @author Jôph Yamba
  */
 @Repository
-public interface MessageRepository extends AggregateRepository<Message, MessageId> {
-}
+interface MessageRepository : JpaRepository<Message, MessageId>

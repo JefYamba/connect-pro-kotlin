@@ -1,21 +1,34 @@
-package dev.jefy.connectpro.messaging.domain.vo;
+package dev.jefy.connectpro.messaging.domain.vo
 
-
-import org.springframework.util.Assert;
-
-import java.util.UUID;
-
-import dev.jefy.connectpro.shared.infrastructure.ddd.DIdentifier;
+import jakarta.persistence.Embeddable
+import java.util.*
 
 /**
  * @author Jôph Yamba
  */
-public record ConversationId (UUID value) implements DIdentifier<UUID> {
-    public ConversationId {
-        Assert.notNull(value, "value cannot be null");
+
+@Embeddable
+data class ConversationId(var value: UUID) {
+    companion object {
+        fun generate(): ConversationId = ConversationId(UUID.randomUUID())
     }
-    public static  ConversationId generate() {
-        return new ConversationId(UUID.randomUUID());
+}
+@Embeddable
+data class MessageId(var value: UUID) {
+    companion object {
+        fun generate(): MessageId = MessageId(UUID.randomUUID())
+    }
+}
+@Embeddable
+data class ReceiverId(var value: UUID){
+    companion object {
+        fun generate(): ReceiverId = ReceiverId(UUID.randomUUID())
+    }
+}
+@Embeddable
+data class SenderId(var value: UUID){
+    companion object {
+        fun generate(): SenderId = SenderId(UUID.randomUUID())
     }
 }
 

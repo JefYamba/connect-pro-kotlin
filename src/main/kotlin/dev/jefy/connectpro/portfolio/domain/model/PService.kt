@@ -1,177 +1,113 @@
-package dev.jefy.connectpro.portfolio.domain.model;
+package dev.jefy.connectpro.portfolio.domain.model
 
-import org.springframework.util.Assert;
+import dev.jefy.connectpro.management.domain.vo.AwardId
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.portfolio.application.dtos.FAQRequest
+import dev.jefy.connectpro.portfolio.application.dtos.ServiceRequest
+import dev.jefy.connectpro.portfolio.application.exceptions.FaqNotFoundException
+import dev.jefy.connectpro.portfolio.domain.vo.*
+import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.infrastructure.converter.ImagesUrlListConverter
+import dev.jefy.connectpro.shared.infrastructure.converter.PricingConverter
+import dev.jefy.connectpro.shared.infrastructure.converter.TagListConverter
+import jakarta.persistence.*
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dev.jefy.connectpro.management.domain.vo.AwardId;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.FAQRequest;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.ServiceRequest;
-import dev.jefy.connectpro.portfolio.domain.vo.*;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
-import dev.jefy.connectpro.shared.infrastructure.converter.ImagesUrlListConverter;
-import dev.jefy.connectpro.shared.infrastructure.converter.PricingConverter;
-import dev.jefy.connectpro.shared.infrastructure.converter.TagListConverter;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "portfolio_services")
-public class PService implements DAggregateRoot<ServiceId> {
+open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "value"))
-    private ServiceId id;
-    
+    @AttributeOverride(name = "value", column = Column(name = "value"))
+     var id: ServiceId = ServiceId.generate()
+        protected set
+
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "portfolio_id"))
-    private PortfolioId portfolioId;
-    
+    @AttributeOverride(name = "value", column = Column(name = "portfolio_id"))
+    var portfolioId: PortfolioId = portfolioId
+        protected set
+
     @Column(nullable = false)
-    private String title;
-    
+    var title: String = request.title
+        protected set
+
     @Column(nullable = false)
-    private String description;
-    
+    var description: String = request.description
+        protected set
+
     @Enumerated(EnumType.STRING)
-    private ServiceStatus status;
-    
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "category_id"))
-    private CategoryId categoryId;
-    
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "cover_image_url"))
-    private ImageUrl coverImageUrl;
+    var status: ServiceStatus = ServiceStatus.ACTIVE
+        protected set
 
-    @Convert(converter = TagListConverter.class)
-    @Column(name = "tags")
-    private final List<Tag> tags = new ArrayList<>();
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "category_id"))
+    var categoryId: CategoryId = CategoryId.of(request.categoryId)
+        protected set
 
-    @Convert(converter = ImagesUrlListConverter.class)
-    @Column(name = "image_urls")
-    private final List<ImageUrl> imageUrls = new ArrayList<>();
-    
-    @Convert(converter = PricingConverter.class)
-    @Column(name = "pricing",columnDefinition = "TEXT")
-    private Pricing pricing;
-    
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "cover_image_url"))
+    var coverImageUrl: ImageUrl? = null
+        protected set
+
+    @Convert(converter = TagListConverter::class)
+    @Column(name = "tags", columnDefinition = "TEXT")
+    var tags: MutableSet<Tag> = request.tags.map { Tag(it) }.toMutableSet()
+        protected set
+
+    @Convert(converter = ImagesUrlListConverter::class)
+    @Column(name = "image_urls", columnDefinition = "TEXT")
+    var imageUrls:MutableList<ImageUrl> = mutableListOf()
+        protected set
+
+    @Convert(converter = PricingConverter::class)
+    @Column(name = "pricing", columnDefinition = "TEXT")
+    var pricing: Pricing? = request.pricing?.toPricing()
+        protected set
+
     @OneToMany(mappedBy = "service")
-    private final List<FAQ> faqs = new ArrayList<>();
-    
+    var faqs: MutableList<FAQ> = mutableListOf()
+        protected set
+
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "award_id"))
-    private AwardId awardId; 
+    @AttributeOverride(name = "value", column = Column(name = "award_id"))
+    var awardId: AwardId? = null
+        protected set
 
-    public PService(PortfolioId portfolioId, ServiceRequest request) {
-        Assert.notNull(portfolioId, "id must not be null");
-        Assert.notNull(request, "data must not be null");
-        Assert.hasText(request.title(), "title must not be null");
-        Assert.hasText(request.description(), "description must not be null");
-        Assert.notNull(request.categoryId(), "categoryId must not be null");
-        
-        this.id = ServiceId.generate();
-        this.portfolioId = portfolioId;
-        this.title = request.title();
-        this.description = request.description();
-        this.status = ServiceStatus.ACTIVE;
-        this.categoryId = CategoryId.of(request.categoryId());
-        this.setTags(request.tags());
-        this.coverImageUrl = null;
-        this.pricing = request.pricing().toPricing();
-        this.awardId = null;
-    }
     
-    public void update(ServiceRequest request){
-        Assert.notNull(request, "data must not be null");
-        Assert.hasText(request.title(), "title must not be null");
-        Assert.hasText(request.description(), "description must not be null");
-        Assert.notNull(request.categoryId(), "categoryId must not be null");
-        
-        this.title = request.title();
-        this.description = request.description();
-        this.categoryId = CategoryId.of(request.categoryId());
-        this.setTags(request.tags());
-        this.pricing = request.pricing().toPricing();
-    }
-    
-    public void setCoverImageUrl(ImageUrl coverImageUrl) {
-        Assert.notNull(coverImageUrl, "coverImageUrl must not be null");
-        this.coverImageUrl = coverImageUrl;
-    }
-    
-    public void deleteCoverImageUrl() {
-        this.coverImageUrl = null;
-    }
-    
-    public void addImage(ImageUrl imageUrl){
-        Assert.notNull(imageUrl, "value must not be null");
-        if (imageUrls.size() >= 4) {
-            throw new IllegalStateException("A service must not have more than 4 images");
-        }
-        this.imageUrls.add(imageUrl);
-    }
-    public void removeImage(ImageUrl imageUrl){
-        Assert.notNull(imageUrl, "value must not be null");
-        this.imageUrls.remove(imageUrl);
-    }
-    
-    public void addFaq(FAQRequest faq){
-        Assert.notNull(faq, "faq must not be null");
-        boolean isInList = this.faqs.stream()
-                .anyMatch(f -> f.getQuestion().equals(faq.question()));
-        if (isInList) {
-            throw new IllegalArgumentException(faq.question() + " already exists");
-        }
-        this.faqs.add(new FAQ(this,faq));
-    }
-    public void removeFaq(FAQId faqId){
-        Assert.notNull(faqId, "faq must not be null");
-        boolean isInList = this.faqs.stream()
-                .anyMatch(f -> f.getId().equals(faqId));
-        if (!isInList) {
-            throw  new ResourceNotFound("faq with id " + faqId + " not found");
-        }
-        faqs.removeIf(f -> f.getId().equals(faqId)); 
-    }
-    
-    public void setAwardId(AwardId award){
-        Assert.notNull(award, "award must not be null");
-        this.awardId = award;
-    }
-    
-    public void activate(){
-        this.status = ServiceStatus.ACTIVE;
-    }
-    public void deactivate(){
-        this.status = ServiceStatus.INACTIVE;
+    fun update(request: ServiceRequest) {
+        this.title = request.title
+        this.description = request.description
+        this.categoryId = CategoryId.of(request.categoryId)
+        this.tags = request.tags.map { Tag(it) }.toMutableSet()
+        this.pricing = request.pricing?.toPricing()
     }
 
-    public boolean isNotActive() {
-        return this.status == ServiceStatus.INACTIVE;
+    fun addCoverImageUrl(coverImageUrl: ImageUrl) { this.coverImageUrl = coverImageUrl }
+
+    fun deleteCoverImageUrl() { this.coverImageUrl = null }
+
+    fun addImage(imageUrl: ImageUrl) {
+        check(imageUrls.size < 4) { "A service must not have more than 4 images" }
+        imageUrls.add(imageUrl)
     }
 
+    fun removeImage(imageUrl: ImageUrl) { imageUrls.removeIf {  it == imageUrl } }
 
-    private void setTags(List<String> tags){
-        Assert.notNull(tags, "tags must not be null");
-        this.tags.clear();
-        tags.stream()
-            .map(Tag::new)
-            .forEach(this.tags::add);
+    fun addFaq(faq: FAQRequest) {
+        require(faqs.none { it.question == faq.question }) { "${faq.question} already exists" }
+        faqs.add(FAQ(this, faq))
     }
 
-    public void removeAward() {
-        this.awardId = null;
+    fun removeFaq(faqId: FAQId) {
+        val removed = faqs.removeIf { it.id == faqId }
+        if (!removed) throw FaqNotFoundException()
     }
+
+    fun addAwardId(award: AwardId) { this.awardId = award }
+
+    fun activate() { this.status = ServiceStatus.ACTIVE }
+
+    fun deactivate() { this.status = ServiceStatus.INACTIVE }
+
+    fun isNotActive(): Boolean = this.status == ServiceStatus.INACTIVE
+    
+    fun removeAward() { this.awardId = null }
 }
-

@@ -1,19 +1,16 @@
-package dev.jefy.connectpro.management.appliacaion.command;
+package dev.jefy.connectpro.management.appliacaion.command
 
-
-import org.jspecify.annotations.NullMarked;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryRequest;
-import dev.jefy.connectpro.management.domain.Category;
-import dev.jefy.connectpro.management.domain.repositoty.CategoryRepository;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.portfolio.PortfolioClient;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceAlreadyExists;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
-import lombok.RequiredArgsConstructor;
+import dev.jefy.connectpro.management.appliacaion.CategoryAlreadyExistsException
+import dev.jefy.connectpro.management.appliacaion.CategoryAlreadyInUseException
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryRequest
+import dev.jefy.connectpro.management.domain.Category
+import dev.jefy.connectpro.management.domain.repository.CategoryRepository
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.portfolio.PortfolioClient
+import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
+import org.jspecify.annotations.NullMarked
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * @author Jôph Yamba
@@ -21,42 +18,39 @@ import lombok.RequiredArgsConstructor;
 @NullMarked
 @Service
 @Transactional
-@RequiredArgsConstructor
-public class CategoryCommandImpl implements CategoryCommand {
-    private final CategoryRepository categoryRepo;
-    private final PortfolioClient  portfolioClient;
-    @Override
-    public CategoryId create(CategoryRequest request) {
-        Assert.notNull(request, "request is null");
-        if (!categoryRepo.existsByName(request.name())){
-            throw new ResourceAlreadyExists("category with name " + request.name() + " already exists");
-        }
-        Category category = new Category(request.name(), request.description());
-        categoryRepo.save(category);
-        return category.getId();
+class CategoryCommandImpl(
+    private val categoryRepo: CategoryRepository,
+    private val portfolioClient: PortfolioClient
+) : CategoryCommand {
+
+    override fun create(request: CategoryRequest): CategoryId {
+        requireNotNull(request) { "request is null" }
+
+        if (categoryRepo.existsByName(request.name)) throw CategoryAlreadyExistsException()
+
+        val category = Category(request.name, request.description)
+        categoryRepo.save(category)
+        return category.id
     }
 
-    @Override
-    public CategoryId update(CategoryId categoryId, CategoryRequest request) {
-        Assert.notNull(request, "request is null");
-        Category category = getCategory(categoryId);
-        category.update(request.name(),  request.description());
-        categoryRepo.save(category);
-        return category.getId();
+    override fun update(categoryId: CategoryId, request: CategoryRequest): CategoryId {
+
+        val category = getCategory(categoryId)
+        category.update(request.name, request.description)
+        categoryRepo.save(category)
+        return category.id
     }
 
-    @Override
-    public void delete(CategoryId categoryId) {
-        Category category = getCategory(categoryId);
-        if (portfolioClient.isCategoryInUse(categoryId)) {
-            throw new IllegalStateException(String.format("category with id %s is already in use", categoryId));
-        }
-        categoryRepo.delete(category);
+    override fun delete(categoryId: CategoryId) {
+        val category = getCategory(categoryId)
+
+        if (portfolioClient.isCategoryInUse(categoryId)) throw CategoryAlreadyInUseException()
+
+        categoryRepo.delete(category)
     }
 
-    private Category getCategory(CategoryId categoryId) {
-        Assert.notNull(categoryId, "categoryId is null");
-        return categoryRepo.findById(categoryId)
-                .orElseThrow(()-> new ResourceNotFound("category with id " + categoryId + " not found"));
-    }
+    private fun getCategory(categoryId: CategoryId): Category = categoryRepo
+        .findById(categoryId)
+        .orElseThrow { CategoryNotFoundException() }
+    
 }

@@ -1,28 +1,23 @@
-package dev.jefy.connectpro.portfolio.domain.repository;
+package dev.jefy.connectpro.portfolio.domain.repository
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
+import dev.jefy.connectpro.management.domain.vo.BadgeId
+import dev.jefy.connectpro.portfolio.domain.model.Portfolio
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
+import dev.jefy.connectpro.user.domain.vo.Email
+import dev.jefy.connectpro.user.domain.vo.UserId
+import java.util.Optional
 
-import java.util.List;
-import java.util.Optional;
-
-import dev.jefy.connectpro.management.domain.vo.BadgeId;
-import dev.jefy.connectpro.portfolio.domain.model.Portfolio;
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.user.domain.vo.Email;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-
-/**
- * @author Jôph Yamba
- */
 @Repository
-public interface PortfolioRepository extends JpaRepository<Portfolio, PortfolioId> {
+interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
+
     @Query("""
         select portfolio from Portfolio portfolio where portfolio.userId = :userId
     """)
-    Optional<Portfolio> findByUserId(@Param("userId") UserId userId);
+    fun findByUserId(@Param("userId") userId: UserId): Optional<Portfolio>
 
     @Query("""
         select count(portfolio) > 0 from Portfolio portfolio
@@ -31,23 +26,23 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, PortfolioI
         or portfolio.contactInfo.phone1 in :phones
         or portfolio.contactInfo.phone2 in :phones
     """)
-    boolean existsPortfolioConflict(
-           @Param("name") String name,
-           @Param("email") Email email,
-           @Param("phones") List<String> phones
-    );
+    fun existsPortfolioConflict(
+        @Param("name") name: String,
+        @Param("email") email: Email,
+        @Param("phones") phones: List<String>
+    ): Boolean
 
-    boolean existsByUserId(UserId userId);
+    fun existsByUserId(userId: UserId): Boolean
 
     @Query("""
         select count(portfolio) > 0 from Portfolio portfolio
         where portfolio.id != :portfolioId
         and portfolio.generalInfo.name = :name
     """)
-    boolean existsNameConflict(
-            @Param("id") PortfolioId portfolioId,
-            @Param("name") String name
-    );
+    fun existsNameConflict(
+        @Param("id") portfolioId: PortfolioId,
+        @Param("name") name: String
+    ): Boolean
 
     @Query("""
         select count(portfolio) > 0 from Portfolio portfolio
@@ -56,13 +51,11 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, PortfolioI
         or portfolio.contactInfo.phone1 in :phones
         or portfolio.contactInfo.phone2 in :phones
     """)
-    boolean existsContactConflict(
-        @Param("id") PortfolioId portfolioId,
-        @Param("email") String email,
-        @Param("phones") List<String> phones
-    );
+    fun existsContactConflict(
+        @Param("id") portfolioId: PortfolioId,
+        @Param("email") email: String,
+        @Param("phones") phones: List<String>
+    ): Boolean
 
-    boolean existsByBadgeId(BadgeId badgeId);
+    fun existsByBadgeId(badgeId: BadgeId): Boolean
 }
-
-

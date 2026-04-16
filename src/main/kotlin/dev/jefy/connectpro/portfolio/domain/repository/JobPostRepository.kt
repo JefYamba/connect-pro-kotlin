@@ -1,34 +1,30 @@
-package dev.jefy.connectpro.portfolio.domain.repository;
+package dev.jefy.connectpro.portfolio.domain.repository
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.portfolio.domain.model.JobPost
+import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
+import org.springframework.data.jpa.repository.JpaRepository
 
-import java.util.List;
-
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.portfolio.domain.model.JobPost;
-import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
-
-/**
- * @author Jôph Yamba
- */
 @Repository
-public interface JobPostRepository extends AggregateRepository<JobPost, JobPostId> {
+interface JobPostRepository : JpaRepository<JobPost, JobPostId> {
+
     @Query("""
         select count(jobPost) > 0 from JobPost jobPost
         where jobPost.portfolioId = :portfolioId
         and jobPost.title = :title
     """)
-    boolean isTitleConflict(@Param("id") PortfolioId portfolioId, @Param("title") String title);
+    fun isTitleConflict(@Param("portfolioId") portfolioId: PortfolioId, @Param("title") title: String): Boolean
 
-    boolean existsByCategoryId(CategoryId categoryId);
+    fun existsByCategoryId(categoryId: CategoryId): Boolean
 
-    List<JobPost> findAllByPortfolioId(PortfolioId id);
+    fun findAllByPortfolioId(id: PortfolioId): List<JobPost>
+
     @Query("""
         select jobPost from JobPost jobPost
         where (:categoryId is null or jobPost.categoryId = :categoryId)
@@ -37,5 +33,9 @@ public interface JobPostRepository extends AggregateRepository<JobPost, JobPostI
              or lower(jobPost.description) like lower(concat('%', :search, '%'))
         ))
     """)
-    Page<JobPost> filter(@Param("search") String search, @Param("categoryId") CategoryId categoryId, Pageable page);
+    fun filter(
+        @Param("search") search: String?,
+        @Param("categoryId") categoryId: CategoryId?,
+        page: Pageable
+    ): Page<JobPost>
 }

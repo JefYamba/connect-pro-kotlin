@@ -45,7 +45,7 @@ public class BadgeController {
     public ResponseEntity<AppResponse<List<BadgeResponse>>> getAll() {
         return AppResponseBuilder.<List<BadgeResponse>>builder()
                 .message("Badges retrieved successfully")
-                .data(query.getAll())
+                .data(query.all)
                 .build();
     }
     

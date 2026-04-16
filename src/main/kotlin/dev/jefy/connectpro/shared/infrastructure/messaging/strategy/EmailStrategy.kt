@@ -1,12 +1,7 @@
-package dev.jefy.connectpro.shared.infrastructure.messaging.strategy;
+package dev.jefy.connectpro.shared.infrastructure.messaging.strategy
 
-import org.jspecify.annotations.NullMarked;
 
-/**
- * @author Jôph Yamba
- */
-@NullMarked
-public interface EmailStrategy {
-    String getMessage();
-    String getSubject();
+interface EmailStrategy {
+    fun message(): String
+    fun subject(): String
 }

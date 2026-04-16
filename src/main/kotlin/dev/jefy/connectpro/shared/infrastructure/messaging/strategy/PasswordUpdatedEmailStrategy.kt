@@ -1,30 +1,27 @@
-package dev.jefy.connectpro.shared.infrastructure.messaging.strategy;
+package dev.jefy.connectpro.shared.infrastructure.messaging.strategy
 
+import org.springframework.util.Assert
 
-import org.jspecify.annotations.NullMarked;
-import org.springframework.util.Assert; /**
- * @author Jôph Yamba
+/**
+ * Author: Jôph Yamba
  */
-@NullMarked
-public record PasswordUpdatedEmailStrategy(String name) implements EmailStrategy {
-    @Override
-    public String getMessage() {
-        Assert.notNull(name, "Name must not be null");
-        return String.format(
-                """
-                Hi %s,
-                
-                Your value have been updated successfully.
-                
-                You can now login with user email and value.
+data class PasswordUpdatedEmailStrategy(private val name: String) : EmailStrategy {
+    init {
+        require(name.isNotBlank()) { "Name must not be blank" }
+    }
+    override fun message(): String {
+        Assert.notNull(name, "Name must not be null")
+        return """
+            Hi $name,
             
-                The support Team.
-                """.formatted(name)
-        );
+            Your password has been updated successfully.
+            
+            You can now log in with your email and password.
+            
+            The support team.
+        """.trimIndent()
     }
 
-    @Override
-    public String getSubject() {
-        return "Password updated successfully.";
-    }
+    override fun subject(): String = "Password updated successfully."
+    
 }

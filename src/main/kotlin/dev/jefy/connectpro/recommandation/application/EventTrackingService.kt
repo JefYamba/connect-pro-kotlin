@@ -1,14 +1,10 @@
-package dev.jefy.connectpro.recommandation.application;
+package dev.jefy.connectpro.recommandation.application
 
-import java.util.UUID;
+import dev.jefy.connectpro.recommandation.domain.vo.EventType
+import dev.jefy.connectpro.recommandation.domain.vo.TargetType
+import java.util.UUID
 
-import dev.jefy.connectpro.recommandation.domain.vo.EventType;
-import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
-
-/**
- * @author Jôph Yamba
- */
-public interface EventTrackingService {
-    void trackEvent(EventType eventType, UUID targetId, TargetType targetType);
-    void untrackEvent(EventType eventType, UUID targetId, TargetType targetType);
+interface EventTrackingService {
+    fun trackEvent(eventType: EventType, targetId: UUID, targetType: TargetType)
+    fun untrackEvent(eventType: EventType, targetId: UUID, targetType: TargetType)
 }

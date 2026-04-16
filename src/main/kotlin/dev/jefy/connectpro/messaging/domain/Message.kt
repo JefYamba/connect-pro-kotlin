@@ -1,61 +1,45 @@
-package dev.jefy.connectpro.messaging.domain;
+package dev.jefy.connectpro.messaging.domain
 
-
-import org.springframework.util.Assert;
-
-import java.time.Instant;
-
-import dev.jefy.connectpro.messaging.domain.vo.ConversationId;
-import dev.jefy.connectpro.messaging.domain.vo.MessageId;
-import dev.jefy.connectpro.messaging.domain.vo.ReceiverId;
-import dev.jefy.connectpro.messaging.domain.vo.SenderId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import dev.jefy.connectpro.messaging.domain.vo.ConversationId
+import dev.jefy.connectpro.messaging.domain.vo.MessageId
+import dev.jefy.connectpro.messaging.domain.vo.ReceiverId
+import dev.jefy.connectpro.messaging.domain.vo.SenderId
+import jakarta.persistence.*
+import java.time.Instant
 
 /**
  * @author Jôph Yamba
  */
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "messages")
-public class Message implements DAggregateRoot<MessageId> {
+open class Message(conversationId: ConversationId, senderId: SenderId, receiverId: ReceiverId, content: String) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "value"))
-    private MessageId id;
-
-
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "conversation_id"))
-    private ConversationId conversationId;
-
+    @AttributeOverride(name = "value", column = Column(name = "value"))
+    var id: MessageId = MessageId.generate()
+        protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "sender_id"))
-    private SenderId senderId;
-
+    @AttributeOverride(name = "value", column = Column(name = "conversation_id"))
+    var conversationId: ConversationId = conversationId
+        protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "receiver_id"))
-    private ReceiverId receiverId;
+    @AttributeOverride(name = "value", column = Column(name = "sender_id"))
+    var senderId: SenderId = senderId
+        protected set
+
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "receiver_id"))
+    var receiverId: ReceiverId = receiverId
+        protected set
+
+    var content: String = content
+        protected set
+
+    var sentAt: Instant = Instant.now()
+        protected set
     
-    private String content;
-    
-    private Instant sentAt;
-
-    public Message(ConversationId conversationId, SenderId senderId, ReceiverId receiverId, String content) {
-        Assert.notNull(conversationId, "conversationId is required");
-        Assert.notNull(senderId, "senderId is required");
-        Assert.notNull(receiverId, "receiverId is required");
-        Assert.notNull(content, "content is required");
-        this.id = MessageId.generate();
-        this.conversationId = conversationId;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.content = content;
-        this.sentAt = Instant.now();
+    init {
+        require(content.isNotBlank()) { "Message content must not be blank" }
     }
 }

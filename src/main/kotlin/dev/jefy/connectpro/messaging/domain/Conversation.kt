@@ -1,49 +1,37 @@
-package dev.jefy.connectpro.messaging.domain;
+package dev.jefy.connectpro.messaging.domain
 
-
-import org.springframework.util.Assert;
-
-import java.time.Instant;
-
-import dev.jefy.connectpro.messaging.domain.vo.ConversationId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DAggregateRoot;
-import dev.jefy.connectpro.user.domain.vo.UserId;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import dev.jefy.connectpro.messaging.domain.vo.ConversationId
+import dev.jefy.connectpro.user.domain.vo.UserId
+import jakarta.persistence.*
+import java.time.Instant
 
 /**
  * @author Jôph Yamba
  */
-
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "conversations")
-public class Conversation implements DAggregateRoot<ConversationId> {
+open class Conversation(participantA: UserId, participantB: UserId) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "value"))
-    private ConversationId id;
+    @AttributeOverride(name = "value", column = Column(name = "value"))
+    var id: ConversationId = ConversationId.generate()
+        protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "participiant_a"))
-    private UserId participantA;
-    
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "participiant_b"))
-    private UserId participantB;
-    
-    private Instant createdAt;
-    
-    private Instant lastModifiedAt;
+    @AttributeOverride(name = "value", column = Column(name = "participiant_a"))
+    var participantA: UserId = participantA
+        protected set
 
-    public Conversation(UserId participantA, UserId participantB) {
-        Assert.isTrue(participantA != null && participantB != null, "participantA and participantB cannot be null!");
-        this.id = ConversationId.generate();
-        this.participantA = participantA;
-        this.participantB = participantB;
-        this.createdAt = Instant.now();
-        this.lastModifiedAt = null;
-    }
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "participiant_b"))
+    var participantB: UserId = participantB
+        protected set
+
+    var createdAt: Instant = Instant.now()
+        protected set
+
+    var lastModifiedAt: Instant? = null
+        protected set
+    
+    
+    fun setUpdated() { this.lastModifiedAt = Instant.now() }
 }

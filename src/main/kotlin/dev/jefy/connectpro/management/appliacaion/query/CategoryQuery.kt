@@ -1,17 +1,14 @@
-package dev.jefy.connectpro.management.appliacaion.query;
+package dev.jefy.connectpro.management.appliacaion.query
 
-import org.jspecify.annotations.NullMarked;
-
-import java.util.List;
-
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import org.jspecify.annotations.NullMarked
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
-public interface CategoryQuery {
-    CategoryResponse get(CategoryId categoryId);
-    List<CategoryResponse> getAll();
+
+interface CategoryQuery {
+    fun get(categoryId: CategoryId): CategoryResponse
+    fun getAll(): List<CategoryResponse>
 }

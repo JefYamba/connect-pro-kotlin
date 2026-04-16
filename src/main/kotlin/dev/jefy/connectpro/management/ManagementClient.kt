@@ -1,23 +1,21 @@
-package dev.jefy.connectpro.management;
+package dev.jefy.connectpro.management
 
-import org.jspecify.annotations.NullMarked;
-
-import java.util.Optional;
-
-import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse;
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse;
-import dev.jefy.connectpro.management.domain.vo.AwardId;
-import dev.jefy.connectpro.management.domain.vo.BadgeId;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
+import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
+import dev.jefy.connectpro.management.domain.vo.AwardId
+import dev.jefy.connectpro.management.domain.vo.BadgeId
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import org.jspecify.annotations.NullMarked
+import java.util.*
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
-public interface ManagementClient {
-    boolean notExistsCategory(CategoryId categoryId);
-    boolean notExistsAward(AwardId awardId);
-    boolean notExistsBadge(BadgeId badgeId);
-    CategoryResponse getCategory(CategoryId categoryId);
-    Optional<AwardResponse> getAward(AwardId awardId);
+
+interface ManagementClient {
+    fun notExistsCategory(categoryId: CategoryId): Boolean
+    fun notExistsAward(awardId: AwardId): Boolean
+    fun notExistsBadge(badgeId: BadgeId): Boolean
+    fun getCategory(categoryId: CategoryId): CategoryResponse
+    fun getAward(awardId: AwardId): Optional<AwardResponse>
 }

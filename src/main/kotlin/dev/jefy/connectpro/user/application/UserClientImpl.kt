@@ -1,10 +1,10 @@
 package dev.jefy.connectpro.user.application
 
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.application.dtos.UserData
 import dev.jefy.connectpro.user.application.dtos.toUserData
 import dev.jefy.connectpro.user.application.exceptions.UnauthorizedException
+import dev.jefy.connectpro.user.application.exceptions.UserNotFoundException
 import dev.jefy.connectpro.user.domain.model.AuthUser
 import dev.jefy.connectpro.user.domain.repository.UserRepository
 import dev.jefy.connectpro.user.domain.vo.UserId
@@ -20,7 +20,7 @@ class UserClientImpl(
     override fun getData(userId: UserId): UserData {
         return userRepo.findById(userId)
             .map { it.toUserData() }
-            .orElseThrow { ResourceNotFound("user with value: ${userId.value} not found") }
+            .orElseThrow { UserNotFoundException() }
     }
 
     override fun getCurrentUser(): UserData {

@@ -1,37 +1,26 @@
-package dev.jefy.connectpro.shared.infrastructure.converter;
+package dev.jefy.connectpro.shared.infrastructure.converter
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.jefy.connectpro.portfolio.domain.vo.Pricing;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter; 
+import dev.jefy.connectpro.portfolio.domain.vo.Pricing
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
-/**
- * @author Jôph Yamba
- */
 @Converter
-public class PricingConverter implements AttributeConverter<Pricing, String> {
+class PricingConverter : AttributeConverter<Pricing, String> {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Override
-    public String convertToDatabaseColumn(Pricing pricing) {
-        if (pricing == null) return null;
-        try {
-            return objectMapper.writeValueAsString(pricing);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting Pricing to JSON", e);
-        }
+    companion object {
+        private val objectMapper: ObjectMapper = jacksonObjectMapper()
     }
 
-    @Override
-    public Pricing convertToEntityAttribute(String value) {
-        if (value == null) return null;
-        try {
-            return objectMapper.readValue(value, Pricing.class);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting JSON to Pricing", e);
+    override fun convertToDatabaseColumn(pricing: Pricing?): String? = pricing?.let { it ->
+        runCatching { objectMapper.writeValueAsString(it) }
+            .getOrElse { throw IllegalArgumentException("Error converting Pricing to JSON", it) }
         }
-    }
+
+    override fun convertToEntityAttribute(value: String?): Pricing? = value?.takeIf { it.isNotBlank() }?.let { it ->
+        runCatching { objectMapper.readValue(it, Pricing::class.java) }
+            .getOrElse { throw IllegalArgumentException("Error converting JSON to Pricing", it) }
+        }
 }

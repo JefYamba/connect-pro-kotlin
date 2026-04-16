@@ -1,43 +1,30 @@
-package dev.jefy.connectpro.management.appliacaion.query;
+package dev.jefy.connectpro.management.appliacaion.query
 
-
-import org.jspecify.annotations.NullMarked;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import dev.jefy.connectpro.management.appliacaion.dtos.BadgeResponse;
-import dev.jefy.connectpro.management.domain.repositoty.BadgeRepository;
-import dev.jefy.connectpro.management.domain.vo.BadgeId;
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound;
-import lombok.RequiredArgsConstructor;
+import dev.jefy.connectpro.management.appliacaion.dtos.BadgeResponse
+import dev.jefy.connectpro.management.appliacaion.dtos.toResponse
+import dev.jefy.connectpro.management.domain.repository.BadgeRepository
+import dev.jefy.connectpro.management.domain.vo.BadgeId
+import dev.jefy.connectpro.portfolio.application.exceptions.BadgeNotFoundException
+import org.jspecify.annotations.NullMarked
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.function.Supplier
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class BadgeQueryImpl implements BadgeQuery {
-    private final BadgeRepository badgeRepo;
-    @Override
-    public BadgeResponse get(BadgeId badgeId) {
-        return badgeRepo
-                .findById(badgeId)
-                .map(BadgeResponse::from)
-                .orElseThrow(()-> new ResourceNotFound(
-                        "badge with id: %s not found".formatted(badgeId.value())
-                ));
-    }
+class BadgeQueryImpl(private val badgeRepo: BadgeRepository) : BadgeQuery {
 
-    @Override
-    public List<BadgeResponse> getAll() {
-        return badgeRepo
-                .findAll()
-                .stream()
-                .map(BadgeResponse::from)
-                .toList();
-    }
+    override fun get(badgeId: BadgeId): BadgeResponse = badgeRepo
+        .findById(badgeId)
+        .map{ it.toResponse() }
+        .orElseThrow { BadgeNotFoundException() }
+    
+    override fun gatAll(): MutableList<BadgeResponse> = badgeRepo
+        .findAll()
+        .stream()
+        .map{ it.toResponse() }
+        .toList()
 }

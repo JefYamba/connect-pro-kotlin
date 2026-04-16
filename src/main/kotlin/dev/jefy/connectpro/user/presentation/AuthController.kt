@@ -2,7 +2,6 @@ package dev.jefy.connectpro.user.presentation
 
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl
-import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder
 import dev.jefy.connectpro.user.application.command.UserCommand
 import dev.jefy.connectpro.user.application.dtos.*
 import dev.jefy.connectpro.user.application.query.UserQuery
@@ -16,9 +15,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.bind.annotation.RestController
 import java.io.IOException
 import java.util.*
+
 /**
  * @author  Jôph Yamba
  */
@@ -33,70 +32,93 @@ class AuthController(
     @GetMapping("/user")
     fun getAuthenticatedUser(): ResponseEntity<AppResponse<UserResponse>> {
         val user = query.getAuthenticatedUser()
-        return AppResponseBuilder.builder<UserResponse>()
-            .message("User retrieved successfully")
-            .data(user)
-            .build()
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "User retrieved successfully",
+                data = user,
+            )
+        )
     }
 
     @PostMapping("/login")
     fun login(@RequestBody @Valid @NotNull request: LoginRequest): ResponseEntity<AppResponse<LoginResponse>> {
         val response = command.login(request)
-        return AppResponseBuilder.builder<LoginResponse>()
-            .message("logged in successfully")
-            .data(response)
-            .build()
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "logged in successfully",
+                data = response,
+            )
+        )
     }
 
     @PostMapping("/logout")
-    fun logout(): ResponseEntity<AppResponse<Void>> {
+    fun logout(): ResponseEntity<AppResponse<Unit>> {
         command.logout()
-        return AppResponseBuilder.builder<Void>()
-            .message("logged out successfully")
-            .build()
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "logged in successfully",
+                data = null,
+            )
+        )
     }
 
     @PostMapping("/create")
     fun createAccount(@RequestBody @Valid @NotNull request: CreateAccountRequest): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.createAccount(request)
-        return AppResponseBuilder.builder<TokenId>()
-            .message("Account created successfully")
-            .data(tokenId)
-            .build()
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Account created successfully",
+                data = tokenId,
+            )
+        )
     }
 
     @PatchMapping("/activate")
-    fun validateAccountCreation(@RequestBody @NotNull request: ActivateAccountRequest): ResponseEntity<AppResponse<Void>> {
+    fun validateAccountCreation(@RequestBody request: ActivateAccountRequest): ResponseEntity<AppResponse<Unit>> {
         command.validateAccountCreation(request)
-        return AppResponseBuilder.builder<Void>()
-            .message("Account activated successfully")
-            .build()
+        
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Account activated successfully",
+                data = null,
+            )
+        )
     }
 
     @PatchMapping("/reset-password/request")
     fun requestForPasswordReset(@RequestBody @NotNull email: Email): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.requestForPasswordReset(email)
-        return AppResponseBuilder.builder<TokenId>()
-            .message("value sent successfully")
-            .data(tokenId)
-            .build()
+
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "otp code sent successfully",
+                data = tokenId,
+            )
+        )
     }
 
     @PostMapping("/reset-password/validate-otp")
     fun validateResetPasswordOtp(@RequestBody @Valid @NotNull request: ValidateResetPasswordOtpRequest): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.validateResetPasswordOtp(request)
-        return AppResponseBuilder.builder<TokenId>()
-            .message("value validated successfully")
-            .data(tokenId)
-            .build()
+
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "otp code validated successfully",
+                data = tokenId,
+            )
+        )
     }
 
     @PostMapping("/reset-password")
-    fun resetPassword(@RequestBody @Valid @NotNull request: ResetPasswordRequest): ResponseEntity<AppResponse<Void>> {
+    fun resetPassword(@RequestBody @Valid request: ResetPasswordRequest): ResponseEntity<AppResponse<Unit>> {
         command.resetPassword(request)
-        return AppResponseBuilder.builder<Void>()
-            .message("value reset successfully")
-            .build()
+
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "password reset successfully",
+                data = null,
+            )
+        )
     }
 
     @PutMapping("/{id}/profile-image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -106,9 +128,12 @@ class AuthController(
         @RequestPart("image") @NotNull image: MultipartFile
     ): ResponseEntity<AppResponse<ImageUrl>> {
         val url = command.setProfileImage(UserId.of(id), image)
-        return AppResponseBuilder.builder<ImageUrl>()
-            .message("Profile image updated successfully")
-            .data(url)
-            .build()
+
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Profile image updated successfully",
+                data = url,
+            )
+        )
     }
 }

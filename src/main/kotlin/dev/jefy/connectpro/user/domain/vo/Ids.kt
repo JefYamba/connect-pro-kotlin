@@ -1,12 +1,13 @@
 package dev.jefy.connectpro.user.domain.vo
 
 import jakarta.persistence.Embeddable
-import java.util.UUID
+import java.util.*
 
 /**
  * @author  Jôph Yamba
  */
-data class UserId(val value: UUID) {
+@Embeddable
+data class UserId(var value: UUID) {
     companion object {
         fun generate(): UserId = UserId(UUID.randomUUID())
         fun of(id: UUID): UserId = UserId(id)

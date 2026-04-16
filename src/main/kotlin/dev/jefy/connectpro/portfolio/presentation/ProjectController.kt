@@ -1,102 +1,99 @@
-package dev.jefy.connectpro.portfolio.presentation;
+package dev.jefy.connectpro.portfolio.presentation
 
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-
-import dev.jefy.connectpro.portfolio.applicaion.command.ProjectCommand;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectRequest;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.ProjectResponse;
-import dev.jefy.connectpro.portfolio.applicaion.query.ProjectQuery;
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.shared.application.dtos.AppResponse;
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl;
-import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
+import dev.jefy.connectpro.portfolio.application.command.ProjectCommand
+import dev.jefy.connectpro.portfolio.application.dtos.ProjectRequest
+import dev.jefy.connectpro.portfolio.application.dtos.ProjectResponse
+import dev.jefy.connectpro.portfolio.application.query.ProjectQuery
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
+import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
+import dev.jefy.connectpro.shared.application.dtos.AppResponse
+import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.io.IOException
+import java.time.Instant
+import java.util.*
 
 @RestController
 @RequestMapping("/project")
 @Tag(name = "Projects Api")
-@RequiredArgsConstructor
-public class ProjectController {
-    private final ProjectCommand command;
-    private final ProjectQuery query;
+class ProjectController(
+    private val command: ProjectCommand,
+    private val query: ProjectQuery
+) {
 
     @GetMapping("/{projectId}")
     @Operation(summary = "Get project by ID")
-    public ResponseEntity<AppResponse<ProjectResponse>> get(
-            @PathVariable UUID projectId
-    ) {
-        return buildResponse("Project retrieved successfully", query.get(new ProjectId(projectId)));
+    fun get(@PathVariable projectId: UUID): ResponseEntity<AppResponse<ProjectResponse>> {
+        return buildResponse("Project retrieved successfully", query.get(ProjectId.of(projectId)))
     }
 
     @GetMapping("/portfolio/{portfolioId}")
     @Operation(summary = "Get all projects for a portfolio")
-    public ResponseEntity<AppResponse<List<ProjectResponse>>> getAllForPortfolio(
-            @PathVariable UUID portfolioId
-    ) {
-        return AppResponseBuilder.<List<ProjectResponse>>builder()
-                .message("Projects retrieved successfully")
-                .data(query.getAllForPortfolio(new PortfolioId(portfolioId)))
-                .build();
+    fun getAllForPortfolio(@PathVariable portfolioId: UUID): ResponseEntity<AppResponse<List<ProjectResponse>>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Projects retrieved successfully",
+                data = query.getAllForPortfolio(PortfolioId(portfolioId)),
+                status = HttpStatus.OK.value(),
+                timestamp = Instant.now()
+            )
+        )
     }
-    
-    @PostMapping()
+
+    @PostMapping
     @Operation(summary = "Create a portfolio project")
-    public ResponseEntity<AppResponse<ProjectResponse>> create(
-            @RequestBody @Valid @NotNull ProjectRequest request
-    ) {
-        ProjectId projectId  = command.create(request);
-        return buildResponse("Project created successfully", query.get(projectId));
+    fun create(@RequestBody @Valid @NotNull request: ProjectRequest): ResponseEntity<AppResponse<ProjectResponse>> {
+        val projectId = command.create(request)
+        return buildResponse("Project created successfully", query.get(projectId))
     }
 
     @PutMapping("/{projectId}")
     @Operation(summary = "Update a project")
-    public ResponseEntity<AppResponse<ProjectResponse>> update(
-            @PathVariable @NotNull UUID projectId,
-            @RequestBody @NotNull @Valid ProjectRequest request
-    ) {
-        ProjectId id = command.update(ProjectId.of(projectId), request);
-        return buildResponse("Project updated successfully", query.get(id));
+    fun update(
+        @PathVariable @NotNull projectId: UUID,
+        @RequestBody @NotNull @Valid request: ProjectRequest
+    ): ResponseEntity<AppResponse<ProjectResponse>> {
+        val id = command.update(ProjectId.of(projectId), request)
+        return buildResponse("Project updated successfully", query.get(id))
     }
 
     @PostMapping("/{projectId}/images")
     @Operation(summary = "Add image")
-    public ResponseEntity<AppResponse<ProjectResponse>> addImage(
-            @PathVariable @NotNull UUID projectId,
-            @RequestParam @NotNull MultipartFile image
-    ) throws IOException {
-        ProjectId id = command.addImage(ProjectId.of(projectId), image);
-        return buildResponse("Image added", query.get(id));
+    @Throws(IOException::class)
+    fun addImage(
+        @PathVariable @NotNull projectId: UUID,
+        @RequestParam @NotNull image: MultipartFile
+    ): ResponseEntity<AppResponse<ProjectResponse>> {
+        val id = command.addImage(ProjectId.of(projectId), image)
+        return buildResponse("Image added", query.get(id))
     }
 
     @DeleteMapping("/{projectId}/images")
     @Operation(summary = "Remove image")
-    public ResponseEntity<AppResponse<ProjectResponse>> removeImage(
-            @PathVariable @NotNull UUID projectId,
-            @RequestParam @NotNull ImageUrl imageUrl
-    ) throws IOException {
-        ProjectId id = command.removeImage(ProjectId.of(projectId), imageUrl);
-        return buildResponse("Image removed", query.get(id));
+    @Throws(IOException::class)
+    fun removeImage(
+        @PathVariable @NotNull projectId: UUID,
+        @RequestParam @NotNull imageUrl: ImageUrl
+    ): ResponseEntity<AppResponse<ProjectResponse>> {
+        val id = command.removeImage(ProjectId.of(projectId), imageUrl)
+        return buildResponse("Image removed", query.get(id))
     }
 
-    private ResponseEntity<AppResponse<ProjectResponse>> buildResponse(String message, ProjectResponse data) {
-        return AppResponseBuilder.<ProjectResponse>builder()
-                .message(message)
-                .data(data)
-                .build();
+    private fun buildResponse(message: String, data: ProjectResponse): ResponseEntity<AppResponse<ProjectResponse>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = message,
+                data = data,
+                status = HttpStatus.OK.value(),
+                timestamp = Instant.now()
+            )
+        )
     }
 }

@@ -1,31 +1,25 @@
-package dev.jefy.connectpro.engagement.domain.repository;
+package dev.jefy.connectpro.engagement.domain.repository
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import dev.jefy.connectpro.engagement.domain.Review
+import dev.jefy.connectpro.engagement.domain.vo.ReviewId
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.stereotype.Repository
+import java.util.*
 
-import java.util.List;
-import java.util.UUID;
-
-import dev.jefy.connectpro.engagement.domain.Review;
-import dev.jefy.connectpro.engagement.domain.vo.ReviewId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
-
-/**
- * @author Jôph Yamba
- */
 @Repository
-public interface ReviewRepository extends AggregateRepository<Review, ReviewId> {
+interface ReviewRepository : JpaRepository<Review, ReviewId> {
 
-    List<Review> findByIdServiceId(UUID serviceId);
+    fun findByIdServiceId(serviceId: UUID): List<Review>
     
-    long countByIdServiceId(UUID serviceId);
+    fun countByIdServiceId(serviceId: UUID): Long
 
     @Query("""
         SELECT AVG(review.rating.value)
         FROM Review review
         WHERE review.id.serviceId = :serviceId
     """)
-    Double averageRating(UUID serviceId);
+    fun averageRating(serviceId: UUID): Double?
 
-    List<Review> findTop10ByIdServiceIdOrderByCreatedAtDesc(UUID serviceId);
+    fun findTop10ByIdServiceIdOrderByCreatedAtDesc(serviceId: UUID): List<Review>
 }

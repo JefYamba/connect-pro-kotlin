@@ -45,7 +45,7 @@ public class CategoryController {
     public ResponseEntity<AppResponse<List<CategoryResponse>>> getAll() {
         return AppResponseBuilder.<List<CategoryResponse>>builder()
                 .message("Categories retrieved successfully")
-                .data(query.getAll())
+                .data(query.all)
                 .build();
     }
 

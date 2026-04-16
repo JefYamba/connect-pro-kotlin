@@ -1,6 +1,5 @@
 package dev.jefy.connectpro.user.application.command
 
-import dev.jefy.connectpro.shared.application.exceptions.ResourceNotFound
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
 import dev.jefy.connectpro.shared.infrastructure.messaging.EmailService
@@ -9,6 +8,7 @@ import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.AccountCreat
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.PasswordUpdatedEmailStrategy
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.ResetPasswordEmailStrategy
 import dev.jefy.connectpro.user.application.dtos.*
+import dev.jefy.connectpro.user.application.exceptions.UserNotFoundException
 import dev.jefy.connectpro.user.domain.model.AuthUser
 import dev.jefy.connectpro.user.domain.model.User
 import dev.jefy.connectpro.user.domain.repository.UserRepository
@@ -83,7 +83,7 @@ class UserCommandImpl(
 
     override fun requestForPasswordReset(email: Email): TokenId {
         val user = userRepository.findByEmail(email)
-            .orElseThrow { ResourceNotFound("User with value $email not found") }
+            .orElseThrow { UserNotFoundException() }
         if (!user.isVerified) {
             throw IllegalStateException("User is not verified")
         }
@@ -106,7 +106,7 @@ class UserCommandImpl(
         val userId = tokenManager.checkValidity(TokenId.of(request.tokenId))
 
         val user = userRepository.findById(userId)
-            .orElseThrow { ResourceNotFound("User with value $userId not found") }
+            .orElseThrow { UserNotFoundException() }
 
         val password = passwordGenerator.generate(request.newPassword)
         user.updatePassword(password)
@@ -133,6 +133,6 @@ class UserCommandImpl(
 
     private fun getUser(userId: UserId): User {
         return userRepository.findById(userId)
-            .orElseThrow { ResourceNotFound("User with value ${userId.value} not found") }
+            .orElseThrow { UserNotFoundException() }
     }
 }

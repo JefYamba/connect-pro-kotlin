@@ -1,7 +1,7 @@
 package dev.jefy.connectpro.shared.application.dtos
 
 import dev.jefy.connectpro.portfolio.domain.model.Portfolio
-import java.util.UUID
+import java.util.*
 
 data class PortfolioSummaryData(
     val id: UUID,
@@ -18,6 +18,6 @@ fun Portfolio.toSummaryData(): PortfolioSummaryData {
         name = this.generalInfo.name,
         coverImageUrl = imageUrl,
         shortDescription = this.generalInfo.shortDescription,
-        active = this.isActive
+        active = this.isActive()
     )
 }

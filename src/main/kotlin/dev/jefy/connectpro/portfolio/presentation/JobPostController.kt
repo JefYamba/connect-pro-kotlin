@@ -1,92 +1,80 @@
-package dev.jefy.connectpro.portfolio.presentation;
+package dev.jefy.connectpro.portfolio.presentation
 
+import dev.jefy.connectpro.portfolio.application.command.JobPostCommand
+import dev.jefy.connectpro.portfolio.application.dtos.JobPostRequest
+import dev.jefy.connectpro.portfolio.application.dtos.JobPostResponse
+import dev.jefy.connectpro.portfolio.application.query.PortfolioQuery
+import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
+import dev.jefy.connectpro.recommandation.RecommandationClient
+import dev.jefy.connectpro.recommandation.domain.vo.EventType
+import dev.jefy.connectpro.recommandation.domain.vo.TargetType
+import dev.jefy.connectpro.shared.application.dtos.AppResponse
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.time.Instant
+import java.util.UUID
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
-
-import dev.jefy.connectpro.portfolio.applicaion.command.JobPostCommand;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.JobPostRequest;
-import dev.jefy.connectpro.portfolio.applicaion.dtos.JobPostResponse;
-import dev.jefy.connectpro.portfolio.applicaion.query.PortfolioQuery;
-import dev.jefy.connectpro.portfolio.domain.vo.JobPostId;
-import dev.jefy.connectpro.recommandation.RecommandationClient;
-import dev.jefy.connectpro.recommandation.domain.vo.EventType;
-import dev.jefy.connectpro.recommandation.domain.vo.TargetType;
-import dev.jefy.connectpro.shared.application.dtos.AppResponse;
-import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
 @RestController
 @RequestMapping("/job-post")
 @Tag(name = "Job Post Api")
-@RequiredArgsConstructor
-public class JobPostController {
+class JobPostController(
+    private val command: JobPostCommand,
+    private val query: PortfolioQuery,
+    private val recommandationClient: RecommandationClient
+) {
 
-    private final JobPostCommand command;
-    private final PortfolioQuery query;
-    private final RecommandationClient recommandationClient;
-
-    @PostMapping()
+    @PostMapping
     @Operation(summary = "Create a job post for a user")
-    public ResponseEntity<AppResponse<JobPostResponse>> create(
-            @RequestBody @Valid @NotNull JobPostRequest request
-    ) {
-        JobPostId jobPostId  = command.create(request);
-        return buildResponse("Account created successfully", query.getJopPost(jobPostId));
+    fun create(@RequestBody @Valid @NotNull request: JobPostRequest): ResponseEntity<AppResponse<JobPostResponse>> {
+        val jobPostId = command.create(request)
+        return buildResponse("Account created successfully", query.getJobPost(jobPostId))
     }
 
     @PutMapping("/{jobPostId}")
     @Operation(summary = "Update a job post")
-    public ResponseEntity<AppResponse<JobPostResponse>> update(
-            @PathVariable @NotNull UUID jobPostId,
-            @RequestBody @Valid JobPostRequest request
-    ) {
-        JobPostId id = command.update(JobPostId.of(jobPostId), request);
-        return buildResponse("job post updated successfully", query.getJopPost(id));
+    fun update(
+        @PathVariable @NotNull jobPostId: UUID,
+        @RequestBody @Valid request: JobPostRequest
+    ): ResponseEntity<AppResponse<JobPostResponse>> {
+        val id = command.update(JobPostId.of(jobPostId), request)
+        return buildResponse("job post updated successfully", query.getJobPost(id))
     }
-    
+
     @PatchMapping("/{jobPostId}/open")
     @Operation(summary = "Update a job post")
-    public ResponseEntity<AppResponse<JobPostResponse>> openJobPost(
-            @PathVariable @NotNull UUID jobPostId
-    ) {
-        JobPostId id = command.open(JobPostId.of(jobPostId));
-        return buildResponse("Job post opened successfully", query.getJopPost(id));
+    fun openJobPost(@PathVariable @NotNull jobPostId: UUID): ResponseEntity<AppResponse<JobPostResponse>> {
+        val id = command.open(JobPostId.of(jobPostId))
+        return buildResponse("Job post opened successfully", query.getJobPost(id))
     }
 
     @PatchMapping("/{jobPostId}/close")
     @Operation(summary = "Update a job post")
-    public ResponseEntity<AppResponse<JobPostResponse>> closeJobPost(
-            @PathVariable @NotNull UUID jobPostId
-    ) {
-        JobPostId id = command.close(JobPostId.of(jobPostId));
-        return buildResponse("Job post closed successfully", query.getJopPost(id));
+    fun closeJobPost(@PathVariable @NotNull jobPostId: UUID): ResponseEntity<AppResponse<JobPostResponse>> {
+        val id = command.close(JobPostId.of(jobPostId))
+        return buildResponse("Job post closed successfully", query.getJobPost(id))
     }
 
     @GetMapping("/{jobPostId}")
     @Operation(summary = "Get job post details")
-    public ResponseEntity<AppResponse<JobPostResponse>> getJobPost(
-            @PathVariable @NotNull UUID jobPostId
-    ) {
-        JobPostResponse jobPost = query.getJopPost(JobPostId.of(jobPostId));
-        recommandationClient.trackEvent(EventType.VIEW, jobPostId, TargetType.JOB_POST);
-        return buildResponse("Job post retrieved successfully", jobPost);
+    fun getJobPost(@PathVariable @NotNull jobPostId: UUID): ResponseEntity<AppResponse<JobPostResponse>> {
+        val jobPost = query.getJobPost(JobPostId.of(jobPostId))
+        recommandationClient.trackEvent(EventType.VIEW, jobPostId, TargetType.JOB_POST)
+        return buildResponse("Job post retrieved successfully", jobPost)
     }
 
-    private ResponseEntity<AppResponse<JobPostResponse>> buildResponse(String message, JobPostResponse data) {
-        return AppResponseBuilder
-                .<JobPostResponse>builder()
-                .message(message)
-                .data(data)
-                .build();
+    private fun buildResponse(message: String, data: JobPostResponse): ResponseEntity<AppResponse<JobPostResponse>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = message,
+                data = data,
+                status = HttpStatus.OK.value(), 
+                timestamp = Instant.now()
+            )
+        )
     }
 }

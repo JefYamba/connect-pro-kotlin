@@ -1,26 +1,27 @@
-package dev.jefy.connectpro.portfolio.domain.repository;
+package dev.jefy.connectpro.portfolio.domain.repository
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import dev.jefy.connectpro.portfolio.domain.model.Project
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
+import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
 
-import java.util.List;
-
-import dev.jefy.connectpro.portfolio.domain.model.Project;
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId;
-import dev.jefy.connectpro.shared.infrastructure.ddd.AggregateRepository;
-
-/**
- * @author Jôph Yamba
- */
 @Repository
-public interface ProjectRepository extends AggregateRepository<Project, ProjectId> {
-    @Query("""
+interface ProjectRepository : JpaRepository<Project, ProjectId> {
+
+    @Query(
+        """
         select count(project) > 0 from Project project
         where project.portfolioId = :portfolioId
         and project.title = :title
-    """)
-    boolean isTitleConflict(@Param("id") PortfolioId portfolioId, @Param("title") String title);
+        """
+    )
+    fun isTitleConflict(
+        @Param("portfolioId") portfolioId: PortfolioId,
+        @Param("title") title: String
+    ): Boolean
 
-    List<Project> findAllByPortfolioId(PortfolioId portfolioId);
+    fun findAllByPortfolioId(portfolioId: PortfolioId): List<Project>
 }

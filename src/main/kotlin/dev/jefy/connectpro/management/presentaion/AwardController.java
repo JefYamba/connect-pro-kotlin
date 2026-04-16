@@ -45,7 +45,7 @@ public class AwardController {
     public ResponseEntity<AppResponse<List<AwardResponse>>> getAll() {
         return AppResponseBuilder.<List<AwardResponse>>builder()
                 .message("Awards retrieved successfully")
-                .data(query.getAll())
+                .data(query.all)
                 .build();
     }
 

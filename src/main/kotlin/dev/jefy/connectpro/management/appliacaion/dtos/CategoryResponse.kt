@@ -1,24 +1,18 @@
-package dev.jefy.connectpro.management.appliacaion.dtos;
+package dev.jefy.connectpro.management.appliacaion.dtos
 
+import dev.jefy.connectpro.management.domain.Category
+import java.util.*
 
-import java.util.UUID;
-
-import dev.jefy.connectpro.management.domain.Category;
 
 /**
  * @author Jôph Yamba
  */
-public record CategoryResponse (
-        UUID id,
-        String name,
-        String description
-) {
-    public static CategoryResponse fromDomain(Category category) {
-        return new CategoryResponse(
-                category.getId().value(),
-                category.getName(),
-                category.getDescription()
-        );
-    }
-}
+
+data class CategoryResponse(val id: UUID, val name: String, val description: String)
+
+fun Category.toResponse() = CategoryResponse(
+    id = this.id.value,
+    name = this.name,
+    description = this.description
+)
 

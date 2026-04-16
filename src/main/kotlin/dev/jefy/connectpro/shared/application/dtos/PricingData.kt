@@ -21,7 +21,7 @@ data class PricingData(
     }
 }
 
-fun Pricing.toPricingData(): PricingData = PricingData(
+fun Pricing.toData(): PricingData = PricingData(
     basePrice = this.basePrice.toDouble(),
     deliveryDays = this.deliveryDays,
     isNegotiable = this.isNegotiable,

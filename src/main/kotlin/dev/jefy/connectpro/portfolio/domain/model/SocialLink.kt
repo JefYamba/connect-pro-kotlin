@@ -1,82 +1,46 @@
-package dev.jefy.connectpro.portfolio.domain.model;
+package dev.jefy.connectpro.portfolio.domain.model
 
+import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
+import dev.jefy.connectpro.portfolio.domain.vo.SocialLinkId
+import dev.jefy.connectpro.portfolio.domain.vo.SocialPlatform
+import jakarta.persistence.*
+import org.springframework.util.Assert
 
-import org.springframework.util.Assert;
-
-import java.util.function.Predicate;
-
-import dev.jefy.connectpro.portfolio.applicaion.dtos.SocialLinkData;
-import dev.jefy.connectpro.portfolio.domain.vo.SocialLinkId;
-import dev.jefy.connectpro.portfolio.domain.vo.SocialPlatform;
-import dev.jefy.connectpro.shared.infrastructure.ddd.DEntity;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-/**
- * @author Jôph Yamba
- */
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(
-        name = "social_links", 
-        uniqueConstraints = @UniqueConstraint(columnNames = {"portfolio_id", "platform"})
+    name = "social_links",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["portfolio_id", "platform"])]
 )
-public class SocialLink implements DEntity<SocialLinkId, Portfolio> {
+open class SocialLink(portfolio: Portfolio, data: SocialLinkData){
+
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "id"))
-    private SocialLinkId id;
-    
+    @AttributeOverride(name = "value", column = Column(name = "id"))
+    var id: SocialLinkId = SocialLinkId.generate()
+        protected set
+
     @ManyToOne(optional = false)
-    private Portfolio portfolio;
-    
+    var portfolio: Portfolio = portfolio
+     protected set
+
     @Enumerated(EnumType.STRING)
-    private SocialPlatform platform;
-    
+    var platform: SocialPlatform = data.platform
+        protected set
+
     @Column(nullable = false)
-    private String name;
-    
+    var name: String = data.name
+        protected set
+
     @Column(nullable = false, unique = true)
-    private String url;
+    var url: String? = data.url
+        protected set
 
-    public SocialLink(Portfolio portfolio, SocialLinkData  data) {
-        validateFields(portfolio, data);
-        this.id = SocialLinkId.generate();
-        this.portfolio = portfolio;
-        this.platform = data.platform();
-        this.name = data.name();
-        this.url = data.url();
-    }
-    
-    void update(SocialLinkData  data) {
-        validateFields(this.portfolio, data);
-        this.platform = data.platform();
-        this.name = data.name();
-        this.url = data.url();
-    }
-    
-    private boolean socialLinkFieldExists(Portfolio portfolio,Predicate<SocialLink> predicate){
-        return portfolio.getSocialLinks().stream().anyMatch(predicate);
-    }
-    
-    private void validateFields(Portfolio portfolio, SocialLinkData data) {
-        Assert.notNull(portfolio, "Portfolio must not be null");
-        Assert.notNull(data.platform(), "Platform must not be null");
-        Assert.hasText(data.name(), "Name must not be null or empty");
-        Assert.hasText(data.url(), "Url must not be null or empty");
-        if (socialLinkFieldExists(portfolio,x -> x.getPlatform().equals(data.platform()))) {
-            throw  new IllegalStateException("Social Link with platform already exists");
-        }
-        if (socialLinkFieldExists(portfolio,x -> x.getUrl().equals(data.url()))) {
-            throw  new IllegalStateException("Social Link with url already exists");
-        }
-        
+    init {
+        check(portfolio.socialLinks.none { it.platform == data.platform }){ "Social Link with platform already exists"}
     }
 
-    @Override
-    public Portfolio getRoot() {
-        return this.portfolio;
+    fun update(data: SocialLinkData) {
+        check(portfolio.socialLinks.none { it.platform == data.platform }){ "Social Link with platform already exists"}
+        name = data.name
+        url = data.url
     }
 }
