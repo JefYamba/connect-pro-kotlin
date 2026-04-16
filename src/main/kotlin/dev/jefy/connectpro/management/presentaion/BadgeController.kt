@@ -1,23 +1,17 @@
-package dev.jefy.connectpro.management.presentaion;
+package dev.jefy.connectpro.management.presentaion
 
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-
-import dev.jefy.connectpro.management.appliacaion.command.BadgeCommand;
-import dev.jefy.connectpro.management.appliacaion.dtos.BadgeRequest;
-import dev.jefy.connectpro.management.appliacaion.dtos.BadgeResponse;
-import dev.jefy.connectpro.management.appliacaion.query.BadgeQuery;
-import dev.jefy.connectpro.management.domain.vo.BadgeId;
-import dev.jefy.connectpro.shared.application.dtos.AppResponse;
-import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import dev.jefy.connectpro.management.appliacaion.command.BadgeCommand
+import dev.jefy.connectpro.management.appliacaion.dtos.BadgeRequest
+import dev.jefy.connectpro.management.appliacaion.dtos.BadgeResponse
+import dev.jefy.connectpro.management.appliacaion.query.BadgeQuery
+import dev.jefy.connectpro.management.domain.vo.BadgeId
+import dev.jefy.connectpro.shared.application.dtos.AppResponse
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 /**
  * @author Jôph Yamba
@@ -25,67 +19,72 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/badge")
 @Tag(name = "Badge Api")
-@RequiredArgsConstructor
-public class BadgeController {
-    private final BadgeCommand command;
-    private final BadgeQuery query;
-
+class BadgeController(
+    private val command: BadgeCommand,
+    private val query: BadgeQuery
+) {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get badge by ID")
-    public ResponseEntity<AppResponse<BadgeResponse>> get(@PathVariable UUID id) {
+    fun get(@PathVariable id: UUID): ResponseEntity<AppResponse<BadgeResponse>> {
         return buildResponse(
-                "Badge retrieved successfully", 
-                query.get(BadgeId.of(id))
-        );
+            message = "Badge retrieved successfully",
+            data = query.get(BadgeId.of(id))
+        )
     }
 
     @GetMapping
     @Operation(summary = "Get all badges")
-    public ResponseEntity<AppResponse<List<BadgeResponse>>> getAll() {
-        return AppResponseBuilder.<List<BadgeResponse>>builder()
-                .message("Badges retrieved successfully")
-                .data(query.all)
-                .build();
+    fun getAll(): ResponseEntity<AppResponse<List<BadgeResponse>>> {
+
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Badges retrieved successfully",
+                data = query.gatAll()
+            )
+        )
     }
-    
+
     @PostMapping
     @Operation(summary = "Create badge")
-    public ResponseEntity<AppResponse<BadgeResponse>> create(
-            @RequestBody @Valid BadgeRequest request
-    ) {
-        BadgeId id = command.create(request);
-        return buildResponse("Badge created successfully", query.get(id));
+    fun create(
+        @RequestBody @Valid request: BadgeRequest
+    ): ResponseEntity<AppResponse<BadgeResponse>> {
+        val id = command.create(request)
+        return buildResponse("Badge created successfully", query.get(id))
     }
 
     @PutMapping("/{badgeId}")
     @Operation(summary = "Update badge")
-    public ResponseEntity<AppResponse<BadgeResponse>> update(
-            @PathVariable UUID badgeId,
-            @RequestBody @Valid BadgeRequest request
-    ) {
-        BadgeId id = command.update(BadgeId.of(badgeId), request);
-        return buildResponse("Badge updated successfully", query.get(id));
+    fun update(
+        @PathVariable badgeId: UUID,
+        @RequestBody @Valid request: BadgeRequest
+    ): ResponseEntity<AppResponse<BadgeResponse>> {
+        val id = command.update(BadgeId.of(badgeId), request)
+        return buildResponse("Badge updated successfully", query.get(id))
     }
 
     @DeleteMapping("/{badgeId}")
     @Operation(summary = "Delete badge")
-    public ResponseEntity<AppResponse<Void>> delete(
-            @PathVariable UUID badgeId
-    ) {
-        command.delete(BadgeId.of(badgeId));
-        return AppResponseBuilder.<Void>builder()
-                .message("Badge deleted successfully")
-                .build();
+    fun delete(@PathVariable badgeId: UUID): ResponseEntity<AppResponse<Unit>> {
+        command.delete(BadgeId.of(badgeId))
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Badge deleted successfully",
+                data = null
+            )
+        )
     }
 
-    private ResponseEntity<AppResponse<BadgeResponse>> buildResponse(
-            String message,
-            BadgeResponse data
-    ) {
-        return AppResponseBuilder.<BadgeResponse>builder()
-                .message(message)
-                .data(data)
-                .build();
+    private fun buildResponse(
+        message: String,
+        data: BadgeResponse
+    ): ResponseEntity<AppResponse<BadgeResponse>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = message,
+                data = data
+            )
+        )
     }
 }

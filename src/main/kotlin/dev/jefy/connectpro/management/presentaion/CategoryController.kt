@@ -1,91 +1,89 @@
-package dev.jefy.connectpro.management.presentaion;
+package dev.jefy.connectpro.management.presentaion
 
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-
-import dev.jefy.connectpro.management.appliacaion.command.CategoryCommand;
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryRequest;
-import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse;
-import dev.jefy.connectpro.management.appliacaion.query.CategoryQuery;
-import dev.jefy.connectpro.management.domain.vo.CategoryId;
-import dev.jefy.connectpro.shared.application.dtos.AppResponse;
-import dev.jefy.connectpro.shared.infrastructure.AppResponseBuilder;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
+import dev.jefy.connectpro.management.appliacaion.command.CategoryCommand
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryRequest
+import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
+import dev.jefy.connectpro.management.appliacaion.query.CategoryQuery
+import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.shared.application.dtos.AppResponse
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 /**
  * @author Jôph Yamba
  */
 @RestController
-@RequestMapping("/cateory")
+@RequestMapping("/cateory")   // Note : il y a une faute ici ("cateory" au lieu de "category")
 @Tag(name = "Category Api")
-@RequiredArgsConstructor
-public class CategoryController {
-    private final CategoryCommand command;
-    private final CategoryQuery query;
+class CategoryController(
+    private val command: CategoryCommand,
+    private val query: CategoryQuery
+) {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID")
-    public ResponseEntity<AppResponse<CategoryResponse>> get(@PathVariable UUID id) {
+    fun get(@PathVariable id: UUID): ResponseEntity<AppResponse<CategoryResponse>> {
         return buildResponse(
-                "Category retrieved successfully", 
-                query.get(CategoryId.of(id))
-        );
+            message = "Category retrieved successfully",
+            data = query.get(CategoryId.of(id))
+        )
     }
 
     @GetMapping
     @Operation(summary = "Get all categories")
-    public ResponseEntity<AppResponse<List<CategoryResponse>>> getAll() {
-        return AppResponseBuilder.<List<CategoryResponse>>builder()
-                .message("Categories retrieved successfully")
-                .data(query.all)
-                .build();
+    fun getAll(): ResponseEntity<AppResponse<List<CategoryResponse>>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Categories retrieved successfully",
+                data = query.getAll()
+            )
+        )
     }
 
     @PostMapping
     @Operation(summary = "Create category")
-    public ResponseEntity<AppResponse<CategoryResponse>> create(
-            @RequestBody @Valid CategoryRequest request
-    ) {
-        CategoryId id = command.create(request);
-        return buildResponse("Category created successfully", query.get(id));
+    fun create(
+        @RequestBody @Valid request: CategoryRequest
+    ): ResponseEntity<AppResponse<CategoryResponse>> {
+        val id = command.create(request)
+        return buildResponse("Category created successfully", query.get(id))
     }
 
     @PutMapping("/{categoryId}")
     @Operation(summary = "Update category")
-    public ResponseEntity<AppResponse<CategoryResponse>> update(
-            @PathVariable UUID categoryId,
-            @RequestBody @Valid CategoryRequest request
-    ) {
-        CategoryId id = command.update(CategoryId.of(categoryId), request);
-        return buildResponse("Category updated successfully", query.get(id));
+    fun update(
+        @PathVariable categoryId: UUID,
+        @RequestBody @Valid request: CategoryRequest
+    ): ResponseEntity<AppResponse<CategoryResponse>> {
+        val id = command.update(CategoryId.of(categoryId), request)
+        return buildResponse("Category updated successfully", query.get(id))
     }
 
     @DeleteMapping("/{categoryId}")
     @Operation(summary = "Delete category")
-    public ResponseEntity<AppResponse<Void>> delete(
-            @PathVariable UUID categoryId
-    ) {
-        command.delete(CategoryId.of(categoryId));
-        return AppResponseBuilder.<Void>builder()
-                .message("Category deleted successfully")
-                .build();
+    fun delete(@PathVariable categoryId: UUID): ResponseEntity<AppResponse<Unit>> {
+        command.delete(CategoryId.of(categoryId))
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Category deleted successfully",
+                data = null
+            )
+        )
     }
 
-    private ResponseEntity<AppResponse<CategoryResponse>> buildResponse(
-            String message,
-            CategoryResponse data
-    ) {
-        return AppResponseBuilder.<CategoryResponse>builder()
-                .message(message)
-                .data(data)
-                .build();
+    private fun buildResponse(
+        message: String,
+        data: CategoryResponse
+    ): ResponseEntity<AppResponse<CategoryResponse>> {
+        return ResponseEntity.ok(
+            AppResponse(
+                message = message,
+                data = data
+            )
+        )
     }
 }
