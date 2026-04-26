@@ -23,7 +23,7 @@ interface ServiceRepository : JpaRepository<PService, ServiceId> {
         """
     )
     fun isTitleConflict(
-        @Param("id") portfolioId: PortfolioId,
+        @Param("portfolioId") portfolioId: PortfolioId,
         @Param("title") title: String
     ): Boolean
 

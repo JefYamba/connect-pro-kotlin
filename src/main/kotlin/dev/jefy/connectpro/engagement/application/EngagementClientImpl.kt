@@ -8,6 +8,7 @@ import dev.jefy.connectpro.engagement.domain.repository.ReviewRepository
 import dev.jefy.connectpro.engagement.domain.vo.LikeId
 import dev.jefy.connectpro.marketplace.application.dtos.ServiceReviewData
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
+import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.UserId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EngagementClientImpl(
     private val likeRepo: LikeRepository,
-    private val reviewRepo: ReviewRepository
+    private val reviewRepo: ReviewRepository,
+    private val userClient: UserClient
 ) : EngagementClient {
 
     override fun countLike(serviceId: ServiceId): Long {
@@ -29,7 +31,7 @@ class EngagementClientImpl(
 
     override fun recentReviews(serviceId: ServiceId): List<ReviewResponse> {
         return reviewRepo.findTop10ByIdServiceIdOrderByCreatedAtDesc(serviceId.value)
-            .map { it.toResponse() }
+            .map { it.toResponse(userClient.getData(UserId(it.id.reviewerId))) }
     }
 
     override fun getReviewData(id: ServiceId): ServiceReviewData {
