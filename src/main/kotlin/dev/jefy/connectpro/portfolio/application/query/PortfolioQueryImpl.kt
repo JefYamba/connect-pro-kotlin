@@ -45,8 +45,8 @@ class PortfolioQueryImpl(
         Assert.notNull(portfolioId, "id cannot be null")
         val portfolio = getPortfolio(portfolioId)
 
-        val badge = portfolio.badgeId?.let {
-            badgeRepo.findById(it).map { it.toResponse() }.orElse(null)
+        val badge = portfolio.badgeId?.let { badgeId ->
+            badgeRepo.findById(badgeId).map { it.toResponse() }.orElse(null)
         }
 
         val services = serviceRepo.findAllByPortfolioId(portfolio.id)
@@ -66,12 +66,23 @@ class PortfolioQueryImpl(
             .map{ mapToJobPostResponse(it)}
             .orElseThrow { JobPostNotFoundException() }
     }
-    
+
+    override fun getAllJobPost(portfolioId: PortfolioId): List<JobPostListingResponse> {
+        return jobPostRepo.findAllByPortfolioId(portfolioId)
+            .map{ mapToJobPostListingResponse(it, getPortfolio(portfolioId)) }
+    }
+
     override fun getService(serviceId: ServiceId): ServiceResponse {
         return serviceRepo.findById(serviceId)
             .map(mapToServiceResponse())
             .orElseThrow { ServiceNotFoundException() }
     }
+
+    override fun getAllService(portfolioId: PortfolioId): List<ServiceListingResponse> {
+        return serviceRepo.findAllByPortfolioId(portfolioId)
+            .map{ mapToServiceListingResponse(it, getPortfolio(portfolioId)) }
+    }
+
     private fun mapToServiceResponse(): (PService) -> ServiceResponse = { service ->
         val portfolio = getPortfolio(service.portfolioId)
         val category = managementClient.getCategory(service.categoryId)

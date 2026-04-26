@@ -8,7 +8,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "tokens")
-open class Token constructor(userId: UserId, code: OtpCode, otpTokenExpiration: Long) {
+open class Token(userId: UserId, code: OtpCode, otpTokenExpiration: Long) {
 
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))

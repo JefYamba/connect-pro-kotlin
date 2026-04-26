@@ -1,12 +1,14 @@
 package dev.jefy.connectpro.portfolio.presentation
 
 import dev.jefy.connectpro.management.domain.vo.AwardId
+import dev.jefy.connectpro.marketplace.application.dtos.ServiceListingResponse
 import dev.jefy.connectpro.portfolio.application.command.ServiceCommand
 import dev.jefy.connectpro.portfolio.application.dtos.FAQRequest
 import dev.jefy.connectpro.portfolio.application.dtos.ServiceRequest
 import dev.jefy.connectpro.portfolio.application.dtos.ServiceResponse
 import dev.jefy.connectpro.portfolio.application.query.PortfolioQuery
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
@@ -151,6 +153,36 @@ class ServiceController(
         val service = query.getService(ServiceId.of(serviceId))
         recommandationClient.trackEvent(EventType.VIEW, serviceId, TargetType.SERVICE)
         return buildResponse("Service retrieved successfully", service)
+    }
+
+
+    @GetMapping("/all/{portfolioId}")
+    @Operation(summary = "Get All Services for a portfolio ")
+    fun getAll(@PathVariable @NotNull portfolioId: UUID): ResponseEntity<AppResponse<List<ServiceListingResponse>>> {
+        val jobPosts = query.getAllService(PortfolioId.of(portfolioId))
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "Job posts retrieved successfully",
+                data = jobPosts,
+                status = HttpStatus.OK.value(),
+                timestamp = Instant.now()
+            )
+        );
+    }
+
+
+    @DeleteMapping("/{serviceId}")
+    @Operation(summary = "Delete service")
+    fun delete(@PathVariable @NotNull serviceId: UUID): ResponseEntity<AppResponse<Unit>> {
+        command.delete(ServiceId.of(serviceId))
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "service deleted successfully",
+                data = null,
+                status = HttpStatus.OK.value(),
+                timestamp = Instant.now()
+            )
+        );
     }
 
     private fun buildResponse(message: String, data: ServiceResponse): ResponseEntity<AppResponse<ServiceResponse>> {

@@ -29,13 +29,9 @@ open class SocialLink(portfolio: Portfolio, data: SocialLinkData){
     var name: String = data.name
         protected set
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     var url: String? = data.url
         protected set
-
-    init {
-        check(portfolio.socialLinks.none { it.platform == data.platform }){ "Social Link with platform already exists"}
-    }
 
     fun update(data: SocialLinkData) {
         check(portfolio.socialLinks.none { it.platform == data.platform }){ "Social Link with platform already exists"}

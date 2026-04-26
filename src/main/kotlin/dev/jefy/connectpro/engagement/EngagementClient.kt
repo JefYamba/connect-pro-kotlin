@@ -10,4 +10,5 @@ interface EngagementClient {
     fun hasLiked(serviceId: ServiceId, userId: UserId): Boolean
     fun recentReviews(serviceId: ServiceId): List<ReviewResponse>
     fun getReviewData(id: ServiceId): ServiceReviewData
+    fun deleteLikesAndReviewsForService(serviceId: ServiceId)
 }

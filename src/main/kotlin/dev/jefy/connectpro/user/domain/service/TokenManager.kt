@@ -37,9 +37,7 @@ class TokenManager(
         return token
     }
 
-    fun save(token: Token) {
-        tokenRepository.save(token)
-    }
+    fun save(token: Token) { tokenRepository.save(token) }
 
     fun checkValidity(tokenId: TokenId): UserId {
         val token = tokenRepository.findById(tokenId)

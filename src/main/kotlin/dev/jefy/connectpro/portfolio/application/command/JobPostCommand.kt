@@ -13,4 +13,5 @@ interface JobPostCommand {
     fun update(jobPostId: JobPostId, request: JobPostRequest): JobPostId
     fun open(jobPostId: JobPostId): JobPostId
     fun close(jobPostId: JobPostId): JobPostId
+    fun delete(jobPostId: JobPostId)
 }

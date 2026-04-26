@@ -2,6 +2,7 @@ package dev.jefy.connectpro.portfolio.application.command
 
 import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.marketplace.MarketplaceClient
 import dev.jefy.connectpro.portfolio.application.dtos.JobPostRequest
 import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
 import dev.jefy.connectpro.portfolio.application.exceptions.JobPostAlreadyExistsException
@@ -20,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional
 class JobPostCommandImpl(
     private val jobPostRepo: JobPostRepository,
     private val portfolioRepo: PortfolioRepository,
-    private val managementClient: ManagementClient
+    private val managementClient: ManagementClient,
+    private val marketplaceClient: MarketplaceClient
 ) : JobPostCommand {
 
     override fun create(request: JobPostRequest): JobPostId {
@@ -73,6 +75,14 @@ class JobPostCommandImpl(
         jobPostRepo.save(jobPost)
 
         return jobPost.id
+    }
+
+    override fun delete(jobPostId: JobPostId) {
+        val jobPost = getJobPost(jobPostId)
+        if (marketplaceClient.jobPostHasApplications(jobPostId)) {
+            throw IllegalStateException("Cannot delete job post with applications")
+        } 
+        jobPostRepo.deleteById(jobPost.id)
     }
 
     private fun getJobPost(id: JobPostId): JobPost = jobPostRepo

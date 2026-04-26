@@ -64,7 +64,13 @@ open class Portfolio(
         protected set
 
     @OneToMany(mappedBy = "portfolio", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    var socialLinks: MutableList<SocialLink> = socialLinks.map { SocialLink(this, it) }.toMutableList()
+    var socialLinks: MutableList<SocialLink> =  run {
+        val platforms = mutableSetOf<SocialPlatform>()
+        socialLinks.map { data ->
+            check(platforms.add(data.platform)) { "Duplicate social link platform: ${data.platform}" }
+            SocialLink(this, data)
+        }.toMutableList()
+    }
         protected set
 
     fun changeType(newType: PortfolioType) { this.type = newType }

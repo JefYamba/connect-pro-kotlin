@@ -1,5 +1,6 @@
 package dev.jefy.connectpro.portfolio.application.command
 
+import dev.jefy.connectpro.engagement.EngagementClient
 import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.domain.vo.AwardId
 import dev.jefy.connectpro.management.domain.vo.CategoryId
@@ -28,7 +29,8 @@ class ServiceCommandImpl(
     private val portfolioRepo: PortfolioRepository,
     private val serviceRepo: ServiceRepository,
     private val imageService: ImageService,
-    private val managementClient: ManagementClient
+    private val managementClient: ManagementClient,
+    private val engagementClient: EngagementClient
 ) : ServiceCommand {
 
     override fun create(request: ServiceRequest): ServiceId {
@@ -140,6 +142,12 @@ class ServiceCommandImpl(
             .apply { deactivate() }
             .also { serviceRepo.save(it) }
             .id
+
+    override fun delete(serviceId: ServiceId) {
+        val service = getService(serviceId)
+        engagementClient.deleteLikesAndReviewsForService(serviceId)
+        serviceRepo.deleteById(service.id)
+    }
 
     private fun getService(serviceId: ServiceId): PService = serviceRepo
         .findById(serviceId).orElseThrow { ServiceNotFoundException() }

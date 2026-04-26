@@ -36,8 +36,10 @@ open class JobPost(portfolioId: PortfolioId, request: JobPostRequest) {
 
     @Convert(converter = TagListConverter::class)
     @Column(name = "tags")
-    var tags: MutableList<Tag> = request.tags.map { Tag(it) }.toMutableList()
+    var tags: MutableSet<Tag> = request.tags.map { Tag(it) }.toMutableSet()
     protected set
+    
+    
 
     @Embedded
     var budget: Budget? = request.budget?.toBudget()
@@ -66,7 +68,7 @@ open class JobPost(portfolioId: PortfolioId, request: JobPostRequest) {
         this.title = request.title
         this.description = request.description
         this.categoryId = CategoryId.of(request.categoryId)
-        this.tags = request.tags.map { Tag(it) }.toMutableList()
+        this.tags = request.tags.map { Tag(it) }.toMutableSet()
         this.budget = request.budget?.toBudget()
         this.jobType = request.jobType
         this.workMode = request.workMode

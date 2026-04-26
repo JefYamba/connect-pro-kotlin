@@ -37,4 +37,9 @@ class EngagementClientImpl(
         val nbrReviews = reviewRepo.countByIdServiceId(id.value)
         return ServiceReviewData(avg, nbrReviews.toInt())
     }
+
+    override fun deleteLikesAndReviewsForService(serviceId: ServiceId) {
+        likeRepo.deleteAllByServiceId(serviceId.value)
+        reviewRepo.deleteAllByServiceId(serviceId.value)
+    }
 }

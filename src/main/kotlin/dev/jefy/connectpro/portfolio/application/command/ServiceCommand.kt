@@ -26,4 +26,5 @@ interface ServiceCommand {
     fun removeAward(serviceId: ServiceId): ServiceId
     fun activateService(serviceId: ServiceId): ServiceId
     fun deactivateService(serviceId: ServiceId): ServiceId
+    fun delete(serviceId: ServiceId)
 }

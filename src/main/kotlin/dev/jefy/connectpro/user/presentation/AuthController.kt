@@ -22,12 +22,9 @@ import java.util.*
  * @author  Jôph Yamba
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping
 @Tag(name = "Auth Api")
-class AuthController(
-    private val command: UserCommand,
-    private val query: UserQuery
-) {
+class AuthController(private val command: UserCommand, private val query: UserQuery) {
 
     @GetMapping("/user")
     fun getAuthenticatedUser(): ResponseEntity<AppResponse<UserResponse>> {
@@ -40,7 +37,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     fun login(@RequestBody @Valid @NotNull request: LoginRequest): ResponseEntity<AppResponse<LoginResponse>> {
         val response = command.login(request)
         return ResponseEntity.ok(
@@ -51,7 +48,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     fun logout(): ResponseEntity<AppResponse<Unit>> {
         command.logout()
         return ResponseEntity.ok(
@@ -62,7 +59,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/create")
+    @PostMapping("/auth/create")
     fun createAccount(@RequestBody @Valid @NotNull request: CreateAccountRequest): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.createAccount(request)
         return ResponseEntity.ok(
@@ -73,7 +70,7 @@ class AuthController(
         )
     }
 
-    @PatchMapping("/activate")
+    @PatchMapping("/auth/activate")
     fun validateAccountCreation(@RequestBody request: ActivateAccountRequest): ResponseEntity<AppResponse<Unit>> {
         command.validateAccountCreation(request)
         
@@ -85,7 +82,7 @@ class AuthController(
         )
     }
 
-    @PatchMapping("/reset-password/request")
+    @PatchMapping("/auth/reset-password/request")
     fun requestForPasswordReset(@RequestBody @NotNull email: Email): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.requestForPasswordReset(email)
 
@@ -97,7 +94,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/reset-password/validate-otp")
+    @PostMapping("/auth/reset-password/validate-otp")
     fun validateResetPasswordOtp(@RequestBody @Valid @NotNull request: ValidateResetPasswordOtpRequest): ResponseEntity<AppResponse<TokenId>> {
         val tokenId = command.validateResetPasswordOtp(request)
 
@@ -109,7 +106,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/auth/reset-password")
     fun resetPassword(@RequestBody @Valid request: ResetPasswordRequest): ResponseEntity<AppResponse<Unit>> {
         command.resetPassword(request)
 
@@ -121,11 +118,10 @@ class AuthController(
         )
     }
 
-    @PutMapping("/{id}/profile-image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PutMapping("/auth/{id}/profile-image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Throws(IOException::class)
     fun setProfileImage(
-        @PathVariable @NotNull id: UUID,
-        @RequestPart("image") @NotNull image: MultipartFile
+        @PathVariable @NotNull id: UUID, @RequestPart("image") @NotNull image: MultipartFile
     ): ResponseEntity<AppResponse<ImageUrl>> {
         val url = command.setProfileImage(UserId.of(id), image)
 
