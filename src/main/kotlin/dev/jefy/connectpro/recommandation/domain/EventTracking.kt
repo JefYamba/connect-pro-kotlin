@@ -12,7 +12,7 @@ import java.util.*
 @Table(name = "events_tracking")
 open class EventTracking(userId: UserId, eventType: EventType, targetId: UUID, targetType: TargetType) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "value"))
+    @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: EventTrackingId = EventTrackingId.generate()
         protected set
 

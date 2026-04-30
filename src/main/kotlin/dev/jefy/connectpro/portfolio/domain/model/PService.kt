@@ -16,7 +16,7 @@ import jakarta.persistence.*
 @Table(name = "portfolio_services")
 open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "value"))
+    @AttributeOverride(name = "value", column = Column(name = "id"))
      var id: ServiceId = ServiceId.generate()
         protected set
 

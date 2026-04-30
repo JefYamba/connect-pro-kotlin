@@ -8,11 +8,10 @@ import java.util.*
  * @author Jôph Yamba
  */
 
-data class CategoryResponse(val id: UUID, val name: String, val description: String)
+data class CategoryResponse(val id: UUID, val name: String)
 
 fun Category.toResponse() = CategoryResponse(
     id = this.id.value,
     name = this.name,
-    description = this.description
 )
 

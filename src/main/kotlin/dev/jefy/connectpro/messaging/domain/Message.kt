@@ -14,7 +14,7 @@ import java.time.Instant
 @Table(name = "messages")
 open class Message(conversationId: ConversationId, senderId: SenderId, receiverId: ReceiverId, content: String) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "value"))
+    @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: MessageId = MessageId.generate()
         protected set
 

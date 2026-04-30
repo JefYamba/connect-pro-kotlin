@@ -9,7 +9,7 @@ import jakarta.persistence.*
 open class Award(name: String, color: HexColor, description: String) {
 
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "value"))
+    @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: AwardId = AwardId.generate()
         protected set
 

@@ -1,10 +1,16 @@
-package dev.jefy.connectpro.marketplace.domain.model
+package dev.jefy.connectpro.marketplace.domain
 
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.shared.domain.vo.JobApplicationStatus
 import dev.jefy.connectpro.user.domain.vo.UserId
-import jakarta.persistence.*
+import jakarta.persistence.AttributeOverride
+import jakarta.persistence.Column
+import jakarta.persistence.EmbeddedId
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Table
 import java.time.Instant
 
 /**

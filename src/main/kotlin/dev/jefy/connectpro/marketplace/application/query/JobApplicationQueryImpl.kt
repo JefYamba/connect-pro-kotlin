@@ -5,7 +5,7 @@ import dev.jefy.connectpro.marketplace.application.dtos.JobApplicationResponseFo
 import dev.jefy.connectpro.marketplace.application.dtos.toEmployerResponse
 import dev.jefy.connectpro.marketplace.application.dtos.toUserResponse
 import dev.jefy.connectpro.marketplace.application.exception.JobApplicationNotFound
-import dev.jefy.connectpro.marketplace.domain.model.JobApplication
+import dev.jefy.connectpro.marketplace.domain.JobApplication
 import dev.jefy.connectpro.marketplace.domain.repository.JobApplicationRepository
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import dev.jefy.connectpro.portfolio.PortfolioClient

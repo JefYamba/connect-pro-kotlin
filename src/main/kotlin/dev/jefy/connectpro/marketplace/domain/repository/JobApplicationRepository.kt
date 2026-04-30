@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.marketplace.domain.repository
 
-import dev.jefy.connectpro.marketplace.domain.model.JobApplication
+import dev.jefy.connectpro.marketplace.domain.JobApplication
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

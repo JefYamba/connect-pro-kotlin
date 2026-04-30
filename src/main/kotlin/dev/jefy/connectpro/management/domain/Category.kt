@@ -6,7 +6,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "categories")
-open class Category(name: String, description: String) {
+open class Category(name: String) {
     @AttributeOverride(name = "value", column = Column(name = "id"))
     @EmbeddedId
     var id: CategoryId = CategoryId.generate()
@@ -15,19 +15,10 @@ open class Category(name: String, description: String) {
     var name: String = name
         protected set
 
-    var description: String = description
-        protected set
-
     var createdAt: Instant = Instant.now()
         protected set
-    
-    init {
-       require(name.isNotBlank()) { "Category name must not be blank" }
-    }
 
-    fun update(name: String, description: String) {
-        require(name.isNotBlank()) { "Category name must not be blank" }
+    fun update(name: String) {
         this.name = name
-        this.description = description
     }
 }

@@ -28,7 +28,7 @@ class CategoryCommandImpl(
 
         if (categoryRepo.existsByName(request.name)) throw CategoryAlreadyExistsException()
 
-        val category = Category(request.name, request.description)
+        val category = Category(request.name)
         categoryRepo.save(category)
         return category.id
     }
@@ -36,7 +36,7 @@ class CategoryCommandImpl(
     override fun update(categoryId: CategoryId, request: CategoryRequest): CategoryId {
 
         val category = getCategory(categoryId)
-        category.update(request.name, request.description)
+        category.update(request.name)
         categoryRepo.save(category)
         return category.id
     }

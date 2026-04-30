@@ -12,7 +12,7 @@ import java.time.Instant
 @Table(name = "conversations")
 open class Conversation(participantA: UserId, participantB: UserId) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "value"))
+    @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: ConversationId = ConversationId.generate()
         protected set
 
