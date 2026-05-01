@@ -36,7 +36,7 @@ open class Token(userId: UserId, code: OtpCode, otpTokenExpiration: Long) {
     
     fun isExpired(): Boolean = Instant.now().isAfter(expireAt)
 
-    fun validate(): Boolean  = validatedAt == Instant.now()
+    fun validate() { validatedAt = Instant.now() }
 
     fun isNotValidated(): Boolean = validatedAt == null
 }
