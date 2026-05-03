@@ -124,7 +124,6 @@ class AuthController(private val command: UserCommand, private val query: UserQu
         @PathVariable @NotNull id: UUID, @RequestPart("image") @NotNull image: MultipartFile
     ): ResponseEntity<AppResponse<ImageUrl>> {
         val url = command.setProfileImage(UserId.of(id), image)
-
         return ResponseEntity.ok(
             AppResponse(
                 message = "Profile image updated successfully",

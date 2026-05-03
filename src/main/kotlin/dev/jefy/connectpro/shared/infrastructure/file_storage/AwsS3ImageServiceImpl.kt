@@ -16,8 +16,7 @@ class AwsS3ImageServiceImpl(
     private val s3Client: S3Client,
     private val awsProperties: AwsProperties
 ) : ImageService {
-
-
+    
     @Throws(IOException::class)
     override fun save(imageFile: MultipartFile): ImageUrl {
         val extension = imageUtils.getExtension(imageFile)
@@ -27,7 +26,7 @@ class AwsS3ImageServiceImpl(
             .key(imageName)
             .contentType(imageFile.contentType)
             .build()
-
+        
         s3Client.putObject(objectRequest, RequestBody.fromBytes(imageFile.bytes))
         return ImageUrl(imageUtils.fileUrl(imageName))
     }

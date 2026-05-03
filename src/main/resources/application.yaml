@@ -80,6 +80,7 @@ aws:
   s3:
     endpoint: http://localhost:4566
     bucket-name: connect-pro-images
+    public-url: http://192.168.1.100:4566
 
 server:
   port: 8080

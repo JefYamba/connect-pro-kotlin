@@ -12,17 +12,18 @@ data class AwsProperties(
     val credentials: CredentialsProperties,
     val s3: S3Properties
 )
-
+@ConfigurationProperties(prefix = "aws.region")
 data class RegionProperties(
     val static: String
 )
-
+@ConfigurationProperties(prefix = "aws.credentials")
 data class CredentialsProperties(
     val accessKey: String,
     val secretKey: String
 )
-
+@ConfigurationProperties(prefix = "aws.s3")
 data class S3Properties(
     val endpoint: String,
-    val bucketName: String
+    val bucketName: String,
+    val publicUrl: String
 )

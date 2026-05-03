@@ -12,11 +12,15 @@ class TagListConverter : AttributeConverter<MutableSet<Tag>, String> {
             ?.joinToString(",") { it.value } ?: ""
     }
 
-    override fun convertToEntityAttribute(value: String?): MutableSet<Tag> {
-        return  value?.takeIf { it.isNotBlank() }
+    override fun convertToEntityAttribute(value: String?): MutableSet<Tag> =
+        value
+            ?.takeIf { it.isNotBlank() }
             ?.split(",")
-            ?.map { Tag(it) }
+            ?.mapNotNull { img -> img.trim().takeIf { it.isNotEmpty() } }
+            ?.map { it ->
+                runCatching { Tag(it) }
+                    .getOrElse { throw IllegalArgumentException("Invalid Tag: $it") }
+            }
             ?.toMutableSet()
             ?: mutableSetOf()
-    }
 }

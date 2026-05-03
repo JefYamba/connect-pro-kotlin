@@ -19,7 +19,7 @@ class ImageUtils(private val awsProperties: AwsProperties) {
         val activeProfile = System.getProperty("spring.profiles.active")
         val isDev = activeProfile == null || activeProfile != "prod"
 
-        return if (isDev) "${awsProperties.s3.endpoint}/${awsProperties.s3.bucketName}/"
+        return if (isDev) "${awsProperties.s3.publicUrl}/${awsProperties.s3.bucketName}/"
         else "https://${awsProperties.s3.bucketName}.s3.${awsProperties.region.static}.amazonaws.com/"
         
     }

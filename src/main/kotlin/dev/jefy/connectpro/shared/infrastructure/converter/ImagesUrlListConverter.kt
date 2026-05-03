@@ -3,7 +3,6 @@ package dev.jefy.connectpro.shared.infrastructure.converter
 import dev.jefy.connectpro.shared.domain.vo.ImageUrl
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
-import java.util.Collections.emptyList
 
 @Converter
 class ImagesUrlListConverter : AttributeConverter<MutableList<ImageUrl>, String> {
@@ -15,13 +14,14 @@ class ImagesUrlListConverter : AttributeConverter<MutableList<ImageUrl>, String>
             ?: ""
 
     override fun convertToEntityAttribute(value: String?): MutableList<ImageUrl> =
-        (value
+        value
             ?.takeIf { it.isNotBlank() }
             ?.split(",")
-            ?.mapNotNull { stringTag -> stringTag.trim().takeIf { it.isNotEmpty() } }
+            ?.mapNotNull { img -> img.trim().takeIf { it.isNotEmpty() } }
             ?.map { text ->
                 runCatching { ImageUrl(text) }
                     .getOrElse { throw IllegalArgumentException("Invalid image URL: $it") }
             }
-            ?: emptyList()) as MutableList<ImageUrl>
+            ?.toMutableList()
+            ?: mutableListOf()
 }

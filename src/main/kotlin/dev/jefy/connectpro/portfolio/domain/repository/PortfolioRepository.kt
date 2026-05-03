@@ -40,7 +40,7 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
         and portfolio.generalInfo.name = :name
     """)
     fun existsNameConflict(
-        @Param("id") portfolioId: PortfolioId,
+        @Param("portfolioId") portfolioId: PortfolioId,
         @Param("name") name: String
     ): Boolean
 
