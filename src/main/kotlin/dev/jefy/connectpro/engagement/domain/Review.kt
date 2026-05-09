@@ -14,7 +14,6 @@ import java.time.Instant
 @Table(name = "reviews")
 open class Review(reviewerId: UserId, serviceId: ServiceId, rating: Rating, comment: String) {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: ReviewId = ReviewId.of(reviewerId, serviceId)
     protected set
 
@@ -23,7 +22,7 @@ open class Review(reviewerId: UserId, serviceId: ServiceId, rating: Rating, comm
     var rating: Rating = rating
     protected set
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "TEXT")
     var comment: String = comment
     protected set
         

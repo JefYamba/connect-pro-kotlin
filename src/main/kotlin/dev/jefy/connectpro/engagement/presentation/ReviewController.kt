@@ -4,6 +4,7 @@ import dev.jefy.connectpro.engagement.application.command.ReviewCommand
 import dev.jefy.connectpro.engagement.application.dtos.ReviewRequest
 import dev.jefy.connectpro.engagement.application.dtos.ReviewResponse
 import dev.jefy.connectpro.engagement.application.query.ReviewQuery
+import dev.jefy.connectpro.engagement.presentation.ReviewOperationResult.CREATED
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -59,13 +60,36 @@ class ReviewController(private val command: ReviewCommand, private val query: Re
     @Operation(summary = "Create or update service review")
     fun createOrUpdate(
         @PathVariable serviceId: UUID, @RequestBody @Valid request: ReviewRequest
-    ) {
-        command.createOrUpdate(ServiceId(serviceId), request)
+    ): ResponseEntity<AppResponse<Unit>> {
+        val result = command.createOrUpdate(ServiceId(serviceId), request)
+        val status = if (result == CREATED) HttpStatus.CREATED else HttpStatus.OK
+        val message = if (result == CREATED) "Review created successfully" else "Review updated successfully"
+        return ResponseEntity.status(status).body(
+            AppResponse(
+                message = message,
+                data = null,
+                status = status.value(),
+                timestamp = Instant.now()
+            )
+        )
     }
 
     @DeleteMapping
     @Operation(summary = "Delete review")
-    fun delete(@PathVariable serviceId: UUID) {
+    fun delete(@PathVariable serviceId: UUID): ResponseEntity<AppResponse<Unit>> {
         command.delete(ServiceId(serviceId))
+        return ResponseEntity.ok(
+            AppResponse(
+                message = "reviews deleted successfully",
+                data = null,
+                status = HttpStatus.OK.value(),
+                timestamp = Instant.now()
+            )
+        )
     }
+}
+
+enum class ReviewOperationResult {
+    CREATED,
+    UPDATED
 }

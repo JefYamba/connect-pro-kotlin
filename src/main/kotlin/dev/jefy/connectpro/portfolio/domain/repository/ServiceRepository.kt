@@ -15,16 +15,28 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ServiceRepository : JpaRepository<PService, ServiceId> {
 
-    @Query(
-        """
-        select count(service) > 0 from PService service
-        where service.portfolioId = :portfolioId
-        and service.title = :title
-        """
-    )
-    fun isTitleConflict(
+    @Query("""
+        select case when count(s) > 0 then true else false end
+        from PService s
+        where s.portfolioId = :portfolioId
+        and s.title = :title
+    """)
+    fun existsByTitleConflict(
         @Param("portfolioId") portfolioId: PortfolioId,
-        @Param("title") title: String
+        @Param("title") title: String,
+    ): Boolean
+    
+    @Query("""
+        select case when count(s) > 0 then true else false end
+        from PService s
+        where s.portfolioId = :portfolioId
+        and s.title = :title
+        and s.id <> :serviceId
+    """)
+    fun existsByTitleConflictForId(
+        @Param("portfolioId") portfolioId: PortfolioId,
+        @Param("title") title: String,
+        @Param("serviceId") serviceId: ServiceId
     ): Boolean
 
     fun existsByCategoryId(categoryId: CategoryId): Boolean

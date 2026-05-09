@@ -22,14 +22,16 @@ open class Project (portfolioId: PortfolioId, request: ProjectRequest) {
     var portfolioId: PortfolioId = portfolioId
         protected set
 
+    @Column(name = "title", length = 500)
     var title: String = request.title
         protected set
-
+    
+    @Column(name = "description", columnDefinition = "TEXT")
     var description: String? = request.description
         protected set
 
     @Convert(converter = ImagesUrlListConverter::class)
-    @Column(name = "images")
+    @Column(name = "images", columnDefinition = "TEXT")
     var imageUrls: MutableList<ImageUrl> = mutableListOf()
 
     var startAt: LocalDate? = request.startAt

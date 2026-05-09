@@ -6,6 +6,7 @@ import dev.jefy.connectpro.engagement.domain.Review
 import dev.jefy.connectpro.engagement.domain.repository.ReviewRepository
 import dev.jefy.connectpro.engagement.domain.vo.Rating
 import dev.jefy.connectpro.engagement.domain.vo.ReviewId
+import dev.jefy.connectpro.engagement.presentation.ReviewOperationResult
 import dev.jefy.connectpro.portfolio.PortfolioClient
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.recommandation.RecommandationClient
@@ -30,7 +31,7 @@ class ReviewCommandImpl(
     private val recommandationClient: RecommandationClient
 ) : ReviewCommand {
     
-    override fun createOrUpdate(serviceId: ServiceId, request: ReviewRequest) {
+    override fun createOrUpdate(serviceId: ServiceId, request: ReviewRequest): ReviewOperationResult {
         if (portfolioClient.notExistsAndValidService(serviceId)) {
             throw ServiceNotExistOrValidException()
         }
@@ -39,17 +40,18 @@ class ReviewCommandImpl(
         val reviewId = ReviewId.of(UserId(user.id), serviceId)
 
         val existingReview = reviewRepo.findById(reviewId)
-
-        if (existingReview.isPresent) {
-            val review = existingReview.get()
-            review.update(Rating.of(request.rating), request.comment)
-            recommandationClient.trackEvent(EventType.REVIEW, serviceId.value, TargetType.SERVICE)
-        } else {
-            reviewRepo.save(
+        val result = if (existingReview.isPresent) ReviewOperationResult.UPDATED else ReviewOperationResult.CREATED
+        val review = existingReview
+            .map {
+                it.update(Rating.of(request.rating), request.comment)
+                it
+            }
+            .orElseGet {
                 Review(UserId(user.id), serviceId, Rating.of(request.rating), request.comment)
-            )
-            recommandationClient.trackEvent(EventType.REVIEW, serviceId.value, TargetType.SERVICE)
-        }
+            }
+        reviewRepo.save(review)
+        recommandationClient.trackEvent(EventType.REVIEW, serviceId.value, TargetType.SERVICE)
+        return result
     }
 
     override fun delete(serviceId: ServiceId) {

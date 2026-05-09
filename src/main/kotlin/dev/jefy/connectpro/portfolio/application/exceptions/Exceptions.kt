@@ -4,7 +4,7 @@ class PortfolioAlreadyExistsException() : RuntimeException("Portfolio already ex
 class ProjectAlreadyExistsException() : RuntimeException("Project already exists")
 class SocialLinkAlreadyExistsException() : RuntimeException("Social link already exists")
 class JobPostAlreadyExistsException() : RuntimeException("Job post already exists")
-class ServiceAlreadyExistsException() : RuntimeException("Job post already exists")
+class ServiceAlreadyExistsException() : RuntimeException("Service already exists")
 
 class ProjectNotFoundException() : RuntimeException("Project not found")
 class AwardNotFoundException() : RuntimeException("Award not found")

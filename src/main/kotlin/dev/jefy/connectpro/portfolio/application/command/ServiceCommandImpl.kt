@@ -41,7 +41,7 @@ class ServiceCommandImpl(
 
         require(portfolioRepo.existsById(portfolioId)) { "Portfolio with id $portfolioId not found" }
 
-        if (serviceRepo.isTitleConflict(portfolioId, request.title)) throw ServiceAlreadyExistsException()
+        if (serviceRepo.existsByTitleConflict(portfolioId, request.title)) throw ServiceAlreadyExistsException()
 
         val service = PService(portfolioId, request)
         serviceRepo.save(service)
@@ -57,7 +57,8 @@ class ServiceCommandImpl(
 
                 if (managementClient.notExistsCategory(categoryId)) throw CategoryNotFoundException()
 
-                if (serviceRepo.isTitleConflict(portfolioId, request.title)) throw ServiceAlreadyExistsException()
+                if (serviceRepo.existsByTitleConflictForId(portfolioId = portfolioId, title = request.title, serviceId = serviceId)) 
+                    throw ServiceAlreadyExistsException()
 
                 update(request)
             }
