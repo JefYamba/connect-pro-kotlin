@@ -44,7 +44,7 @@ class MarketPlaceController(
         @RequestBody @NotNull @Valid request: SearchRequest
     ): ResponseEntity<AppResponse<PageResponse<JobPostListingResponse>>> = ResponseEntity.ok(
         AppResponse(
-            message = "fata retrieved successfully",
+            message = "data retrieved successfully",
             data = query.filterJobPost(request),
             status = HttpStatus.OK.value(),
             timestamp = Instant.now()
