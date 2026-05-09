@@ -13,4 +13,6 @@ interface ProjectCommand {
     fun addImage(projectId: ProjectId, image: MultipartFile): ProjectId
     @Throws(IOException::class)
     fun removeImage(projectId: ProjectId, imageUrl: ImageUrl): ProjectId
+    @Throws(IOException::class)
+    fun delete(projectId: ProjectId)
 }

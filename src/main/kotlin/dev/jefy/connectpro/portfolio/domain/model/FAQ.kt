@@ -12,15 +12,12 @@ open class FAQ (service: PService, faq: FAQRequest) {
     @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: FAQId = FAQId.generate()
         protected set
-
     @Column(nullable = false)
     var question: String = faq.question
         protected set
-
     @Column(nullable = false)
     var answer: String = faq.answer
         protected set
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     var service: PService = service
         protected set

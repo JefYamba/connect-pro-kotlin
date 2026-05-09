@@ -21,15 +21,20 @@ spring:
     username: connect-pro
     password: connect-pro
     driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: false
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # in dev only | use validate in prod
 
-    show-sql: true
+    show-sql: true   # in dev only
+    open-in-view: false
+    
     properties:
-      hibernate:
-        format_sql: true
+      hibernate:  
+        format_sql: true  # in dev only
+        generate_statistics: true  # in dev only
 
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect

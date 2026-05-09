@@ -69,6 +69,13 @@ class ProjectCommandImpl(
             .also { projectRepo.save(it) }
             .id
 
+    @Throws(IOException::class)
+    override fun delete(projectId: ProjectId) {
+        val project = getProject(projectId)
+        project.imageUrls.forEach { imageService.delete(it) }
+        projectRepo.delete(project)
+    }
+
     private fun getProject(projectId: ProjectId): Project = projectRepo
         .findById(projectId).orElseThrow { ProjectNotFoundException() }
     
