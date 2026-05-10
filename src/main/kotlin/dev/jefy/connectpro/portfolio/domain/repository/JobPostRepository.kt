@@ -15,11 +15,28 @@ import org.springframework.stereotype.Repository
 interface JobPostRepository : JpaRepository<JobPost, JobPostId> {
 
     @Query("""
-        select count(jobPost) > 0 from JobPost jobPost
+        select case when count(jobPost) > 0 then true else false end
+        from JobPost jobPost
         where jobPost.portfolioId = :portfolioId
         and jobPost.title = :title
     """)
-    fun isTitleConflict(@Param("portfolioId") portfolioId: PortfolioId, @Param("title") title: String): Boolean
+    fun existsByTitleConflict
+        (@Param("portfolioId") portfolioId: PortfolioId, 
+         @Param("title") title: String
+    ): Boolean
+    
+    @Query("""
+        select case when count(jobPost) > 0 then true else false end
+        from JobPost jobPost
+        where jobPost.portfolioId = :portfolioId
+        and jobPost.title = :title
+        and jobPost.id <> :jobPostId
+    """)
+    fun existsByTitleConflictForId(
+        @Param("portfolioId") portfolioId: PortfolioId, 
+        @Param("title") title: String,
+        @Param("jobPostId") jobPostId: JobPostId
+    ): Boolean
 
     fun existsByCategoryId(categoryId: CategoryId): Boolean
 

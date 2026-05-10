@@ -24,7 +24,7 @@ data class JobPostResponse(
     val budget: BudgetData?,
     val jobType: JobType?,
     val workMode: WorkMode?,
-    val requiredSpokenLanguages: List<String>,
+    val spokenLanguages: List<String>,
     val deadline: LocalDate?
 )
 
@@ -38,6 +38,6 @@ fun JobPost.toResponse(portfolioData: PortfolioSummaryData, category: CategoryRe
     budget = this.budget?.toData(),
     jobType = this.jobType,
     workMode = this.workMode,
-    requiredSpokenLanguages = this.spokenLanguages.map{ it.value }.toList(),
+    spokenLanguages = this.spokenLanguages.map{ it.value }.toList(),
     deadline = this.deadline
 )

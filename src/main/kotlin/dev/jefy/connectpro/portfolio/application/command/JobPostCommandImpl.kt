@@ -34,7 +34,7 @@ class JobPostCommandImpl(
 
         if (!portfolioRepo.existsById(portfolioId)) throw  PortfolioNotFoundException()
         
-        val isConflict = jobPostRepo.isTitleConflict(portfolioId, request.title)
+        val isConflict = jobPostRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.title)
         if (isConflict) throw JobPostAlreadyExistsException()
 
         val jobPost = JobPost(portfolioId, request)
@@ -50,8 +50,11 @@ class JobPostCommandImpl(
             throw CategoryNotFoundException()
         }
 
-        val isConflict = jobPostRepo.isTitleConflict(jobPost.portfolioId, request.title)
-        if (isConflict) throw JobPostAlreadyExistsException()
+        if ( jobPostRepo.existsByTitleConflictForId(
+            portfolioId = jobPost.portfolioId, 
+            title = request.title,
+            jobPostId = jobPostId
+        )) throw JobPostAlreadyExistsException()
 
         jobPost.update(request)
         jobPostRepo.save(jobPost)
