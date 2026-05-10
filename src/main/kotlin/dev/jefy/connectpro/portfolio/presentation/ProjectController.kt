@@ -80,7 +80,7 @@ class ProjectController(
     @Throws(IOException::class)
     fun removeImage(
         @PathVariable @NotNull projectId: UUID,
-        @RequestParam @NotNull imageUrl: ImageUrl
+        @RequestBody @NotNull imageUrl: ImageUrl
     ): ResponseEntity<AppResponse<ProjectResponse>> {
         val id = command.removeImage(ProjectId.of(projectId), imageUrl)
         return buildResponse("Image removed", query.get(id))
@@ -93,7 +93,7 @@ class ProjectController(
         @PathVariable @NotNull projectId: UUID,
     ): ResponseEntity<AppResponse<ProjectResponse>> {
         command.delete(ProjectId.of(projectId))
-        return buildResponse("Project deleted", null);
+        return buildResponse("Project deleted", null)
     }
 
     private fun buildResponse(message: String, data: ProjectResponse?): ResponseEntity<AppResponse<ProjectResponse>> {

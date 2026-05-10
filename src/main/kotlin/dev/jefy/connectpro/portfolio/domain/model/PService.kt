@@ -62,7 +62,11 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
     var pricing: Pricing? = request.pricing?.toPricing()
         protected set
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(
+        mappedBy = "service",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true 
+    )
     var faqs: MutableList<FAQ> = mutableListOf()
         protected set
 

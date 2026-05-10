@@ -19,6 +19,7 @@ open class FAQ (service: PService, faq: FAQRequest) {
     var answer: String = faq.answer
         protected set
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "service_id", nullable = false)
     var service: PService = service
         protected set
     

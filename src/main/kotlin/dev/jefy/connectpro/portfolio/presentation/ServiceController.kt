@@ -88,7 +88,7 @@ class ServiceController(
     @Throws(IOException::class)
     fun removeImage(
         @PathVariable @NotNull serviceId: UUID,
-        @RequestParam @NotNull imageUrl: ImageUrl
+        @RequestBody @NotNull imageUrl: ImageUrl
     ): ResponseEntity<AppResponse<ServiceResponse>> {
         val id = command.removeImage(ServiceId.of(serviceId), imageUrl)
         return buildResponse("Image removed", query.getService(id))
@@ -167,7 +167,7 @@ class ServiceController(
                 status = HttpStatus.OK.value(),
                 timestamp = Instant.now()
             )
-        );
+        )
     }
 
 
@@ -182,7 +182,7 @@ class ServiceController(
                 status = HttpStatus.OK.value(),
                 timestamp = Instant.now()
             )
-        );
+        )
     }
 
     private fun buildResponse(message: String, data: ServiceResponse): ResponseEntity<AppResponse<ServiceResponse>> {

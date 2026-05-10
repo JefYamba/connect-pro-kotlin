@@ -8,3 +8,9 @@ import java.util.*
  */
 @Embeddable
 data class JobApplicationId(var applicantId: UUID, var jobPostId: UUID)
+
+enum class FeaturedSource {
+    RECOMMENDATION,
+    PAID,
+    ADMIN
+}
