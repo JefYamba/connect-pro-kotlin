@@ -26,5 +26,5 @@ fun Review.toResponse(reviewer: UserData): ReviewResponse = ReviewResponse(
     comment = this.comment,
     createdAt = this.createdAt,
     reviewerName = reviewer.name,
-    reviewerAvatar = reviewer.imageUrl
+    reviewerAvatar = reviewer.image
 )

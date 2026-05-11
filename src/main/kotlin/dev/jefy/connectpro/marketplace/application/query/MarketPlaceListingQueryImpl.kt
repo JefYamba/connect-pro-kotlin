@@ -18,6 +18,7 @@ import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.shared.application.dtos.PageResponse
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
 import dev.jefy.connectpro.shared.application.dtos.toPageResponse
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import org.jspecify.annotations.NullMarked
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -35,7 +36,8 @@ class MarketPlaceListingQueryImpl(
     private val engagementClient: EngagementClient,
     private val managementClient: ManagementClient,
     private val portfolioClient: PortfolioClient,
-    private val recommandationClient: RecommandationClient
+    private val recommandationClient: RecommandationClient,
+    private val resolver: ImageUrlResolver
 ) : MarketPlaceListingQuery {
 
     override fun filterService(request: SearchRequest): PageResponse<ServiceListingResponse> {
@@ -91,7 +93,7 @@ class MarketPlaceListingQueryImpl(
         val reviewData = engagementClient.getReviewData(service.id)
         val portfolioData = getPortfolioData(service.portfolioId)
 
-        service.toListingResponse(portfolioData, category, award, reviewData)
+        service.toListingResponse(portfolioData, category, award, reviewData, resolver)
     }
 
     private val mapToJobPostListingResponse: (JobPost) -> JobPostListingResponse = { jobPost ->

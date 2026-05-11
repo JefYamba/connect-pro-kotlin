@@ -6,6 +6,7 @@ import dev.jefy.connectpro.marketplace.application.dtos.ServiceListingResponse
 import dev.jefy.connectpro.portfolio.domain.model.Portfolio
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioStatus
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioType
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import java.time.Instant
 import java.util.*
 
@@ -33,7 +34,8 @@ fun Portfolio.toResponse(
     badge: BadgeResponse?,
     services: List<ServiceListingResponse>,
     jobPosts: List<JobPostListingResponse>,
-    projects: List<ProjectResponse>
+    projects: List<ProjectResponse>,
+    resolver: ImageUrlResolver
 ): PortfolioResponse = PortfolioResponse(
     id = this.id.value,
     userId = this.userId.value,
@@ -41,7 +43,7 @@ fun Portfolio.toResponse(
     status = this.status,
     badge = badge,
     createdAt = this.createdAt,
-    generalInfo = this.generalInfo.toResponse(),
+    generalInfo = this.generalInfo.toResponse(resolver),
     professionalInfo = this.professionalInfo.toResponse(projects),
     contactInfo = this.contactInfo.toData(),
     locationInfo = this.locationInfo.toData(),

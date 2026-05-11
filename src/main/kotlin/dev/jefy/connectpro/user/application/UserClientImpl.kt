@@ -1,5 +1,6 @@
 package dev.jefy.connectpro.user.application
 
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.application.dtos.UserData
 import dev.jefy.connectpro.user.application.dtos.toUserData
@@ -14,12 +15,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserClientImpl(
-    private val userRepo: UserRepository
+    private val userRepo: UserRepository,
+    private val resolver: ImageUrlResolver
 ) : UserClient {
 
     override fun getData(userId: UserId): UserData {
         return userRepo.findById(userId)
-            .map { it.toUserData() }
+            .map { it.toUserData(resolver) }
             .orElseThrow { UserNotFoundException() }
     }
 

@@ -5,7 +5,7 @@ import dev.jefy.connectpro.portfolio.application.dtos.FAQRequest
 import dev.jefy.connectpro.portfolio.application.dtos.ServiceRequest
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.application.dtos.ImageRequest
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
@@ -19,7 +19,7 @@ interface ServiceCommand {
     @Throws(IOException::class)
     fun addImage(serviceId: ServiceId, image: MultipartFile): ServiceId
     @Throws(IOException::class)
-    fun removeImage(serviceId: ServiceId, imageUrl: ImageUrl): ServiceId
+    fun removeImage(serviceId: ServiceId, image: ImageRequest): ServiceId
     fun addFaq(serviceId: ServiceId, request: FAQRequest): ServiceId
     fun removeFaq(serviceId: ServiceId, faqId: FAQId): ServiceId
     fun setAward(serviceId: ServiceId, awardId: AwardId): ServiceId

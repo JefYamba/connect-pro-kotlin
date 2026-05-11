@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.user.domain.model
 
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.user.domain.vo.Email
 import dev.jefy.connectpro.user.domain.vo.EncodedPassword
 import dev.jefy.connectpro.user.domain.vo.UserId
@@ -33,8 +33,8 @@ open class User(email: Email, password: EncodedPassword, role: UserRole, name: S
         protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "profile_image"))
-    var profileImage: ImageUrl? = null
+    @AttributeOverride(name = "value", column = Column(name = "image"))
+    var image: Image? = null
         protected set
 
     var isVerified: Boolean = false
@@ -56,5 +56,5 @@ open class User(email: Email, password: EncodedPassword, role: UserRole, name: S
         this.name = name
     }
 
-    fun changeProfileImage(profileImage: ImageUrl) { this.profileImage = profileImage }
+    fun changeProfileImage(profileImage: Image) { this.image = profileImage }
 }

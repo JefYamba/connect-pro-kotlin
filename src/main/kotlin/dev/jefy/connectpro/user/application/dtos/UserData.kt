@@ -1,30 +1,27 @@
 package dev.jefy.connectpro.user.application.dtos
 
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.domain.model.AuthUser
 import dev.jefy.connectpro.user.domain.model.User
-import dev.jefy.connectpro.user.domain.vo.UserRole
 import java.util.*
 
 data class UserData(
     val id: UUID,
     val email: String,
     val name: String,
-    val role: UserRole,
-    val imageUrl: String? = null
+    val image: String? = null
 )
 
-fun User.toUserData(): UserData = UserData(
+fun User.toUserData(resolver: ImageUrlResolver): UserData = UserData(
     id = this.id.value,
     email = this.email.value,
     name = this.name,
-    role = this.role,
-    imageUrl = this.profileImage?.value
+    image = resolver.resolve(this.image)
 )
 
 fun AuthUser.toUserData(): UserData = UserData(
     id = this.id,
     email = this.email,
     name = this.fullname,
-    role = this.role,
-    imageUrl = this.imageUrl
+    image = this.image
 )

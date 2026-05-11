@@ -103,7 +103,7 @@ class PortfolioCommandImpl(
         getPortfolio(portfolioId)
             .apply {
                 val imageUrl = imageService.save(image)
-                setCoverImageUrl(imageUrl)
+                setCoverImage(imageUrl)
             }
             .also { portfolioRepo.save(it) }
             .id
@@ -111,8 +111,8 @@ class PortfolioCommandImpl(
     @Throws(IOException::class)
     override fun deleteCoverImage(portfolioId: PortfolioId): PortfolioId = getPortfolio(portfolioId)
             .apply {
-                generalInfo.coverImageUrl?.let { imageService.delete(it) }
-                deleteCoverImageUrl()
+                generalInfo.coverImage?.let { imageService.delete(it) }
+                deleteCoverImage()
             }
             .also { portfolioRepo.save(it) }
             .id

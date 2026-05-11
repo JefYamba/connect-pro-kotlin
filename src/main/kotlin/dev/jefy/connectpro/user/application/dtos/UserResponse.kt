@@ -9,7 +9,7 @@ data class UserResponse(
     val id: UUID,
     val email: String,
     val name: String?,
-    val imageUrl: String?,
+    val image: String?,
     val role: UserRole,
     val portfolio: PortfolioSummaryData?
 )
@@ -18,7 +18,7 @@ fun AuthUser.toUserResponse(): UserResponse = UserResponse(
     id = this.id,
     email = this.email,
     name = this.fullname,
-    imageUrl = this.imageUrl,
+    image = this.image,
     role = this.role,
     portfolio = this.portfolio
 )

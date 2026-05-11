@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.shared.infrastructure.file_storage
 
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.shared.infrastructure.config.AwsProperties
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -18,7 +18,7 @@ class AwsS3ImageServiceImpl(
 ) : ImageService {
     
     @Throws(IOException::class)
-    override fun save(imageFile: MultipartFile): ImageUrl {
+    override fun save(imageFile: MultipartFile): Image {
         val extension = imageUtils.getExtension(imageFile)
         val imageName = imageUtils.createUniqueImageName(extension)
         val objectRequest = PutObjectRequest.builder()
@@ -28,24 +28,14 @@ class AwsS3ImageServiceImpl(
             .build()
         
         s3Client.putObject(objectRequest, RequestBody.fromBytes(imageFile.bytes))
-        return ImageUrl(imageUtils.fileUrl(imageName))
+        return Image(imageName)
     }
 
     @Throws(IOException::class)
-    override fun delete(imageUrl: ImageUrl) {
-        val image = imageUrl.value
-        val bucketUrlPrefix = imageUtils.getBucketUrlPrefix()
-        if (!image.startsWith(bucketUrlPrefix)) {
-            throw IllegalArgumentException("Invalid file URL: $image")
-        }
-
-        // Extract the S3 key from the URL
-        val key = image.removePrefix(bucketUrlPrefix)
-
-        // Delete the object
+    override fun delete(image: Image) {
         val deleteObjectRequest = DeleteObjectRequest.builder()
             .bucket(awsProperties.s3.bucketName)
-            .key(key)
+            .key(image.value)
             .build()
 
         s3Client.deleteObject(deleteObjectRequest)

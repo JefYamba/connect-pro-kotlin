@@ -1,7 +1,7 @@
 package dev.jefy.connectpro.user.presentation
 
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.user.application.command.UserCommand
 import dev.jefy.connectpro.user.application.dtos.*
 import dev.jefy.connectpro.user.application.query.UserQuery
@@ -122,7 +122,7 @@ class AuthController(private val command: UserCommand, private val query: UserQu
     @Throws(IOException::class)
     fun setProfileImage(
         @PathVariable @NotNull id: UUID, @RequestPart("image") @NotNull image: MultipartFile
-    ): ResponseEntity<AppResponse<ImageUrl>> {
+    ): ResponseEntity<AppResponse<Image>> {
         val url = command.setProfileImage(UserId.of(id), image)
         return ResponseEntity.ok(
             AppResponse(

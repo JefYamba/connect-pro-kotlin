@@ -1,6 +1,7 @@
 package dev.jefy.connectpro.user.application.service
 
 import dev.jefy.connectpro.portfolio.PortfolioClient
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.domain.model.toAuthUser
 import dev.jefy.connectpro.user.domain.repository.UserRepository
 import dev.jefy.connectpro.user.domain.vo.Email
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service
 @Service
 class UserDetailsServiceImpl(
     private val userRepository: UserRepository,
-    private val portfolioClient: PortfolioClient
+    private val portfolioClient: PortfolioClient,
+    private val resolver: ImageUrlResolver
 ) : UserDetailsService {
 
     private val log = LoggerFactory.getLogger(UserDetailsServiceImpl::class.java)
@@ -28,6 +30,6 @@ class UserDetailsServiceImpl(
 
         log.info("Loaded user: {} with portfolio data: {}", user.email, portfolioData)
 
-        return user.toAuthUser(portfolioData)
+        return user.toAuthUser(portfolioData, resolver)
     }
 }

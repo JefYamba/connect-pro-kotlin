@@ -25,6 +25,7 @@ import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.application.dtos.toSummaryData
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.Assert
@@ -38,7 +39,8 @@ class PortfolioQueryImpl(
     private val badgeRepo: BadgeRepository,
     private val projectRepo: ProjectRepository,
     private val engagementClient: EngagementClient,
-    private val managementClient: ManagementClient
+    private val managementClient: ManagementClient,
+    private val resolver: ImageUrlResolver
 ) : PortfolioQuery {
 
     override fun get(portfolioId: PortfolioId): PortfolioResponse {
@@ -56,9 +58,9 @@ class PortfolioQueryImpl(
             .map { mapToJobPostListingResponse(it, portfolio) }
 
         val projects = projectRepo.findAllByPortfolioId(portfolio.id)
-            .map{ it.toResponse()}
+            .map{ it.toResponse(resolver)}
 
-        return portfolio.toResponse( badge, services, jobPosts, projects)
+        return portfolio.toResponse( badge, services, jobPosts, projects, resolver)
     }
 
     override fun getJobPost(jobPostId: JobPostId): JobPostResponse {
@@ -93,11 +95,12 @@ class PortfolioQueryImpl(
         val recentReviews = engagementClient.recentReviews(service.id)
         
         service.toResponse(
-            portfolio.toSummaryData(),
+            portfolio.toSummaryData(resolver),
             category,
             award,
             reviewData,
-            recentReviews
+            recentReviews,
+            resolver
         )
     }
 
@@ -105,7 +108,7 @@ class PortfolioQueryImpl(
         val portfolio = getPortfolio(jobPost.portfolioId)
         val category = managementClient.getCategory(jobPost.categoryId)
 
-        jobPost.toResponse(portfolio.toSummaryData(), category)
+        jobPost.toResponse(portfolio.toSummaryData(resolver), category)
     }
     
     private val mapToServiceListingResponse: (PService, Portfolio) -> ServiceListingResponse = { service,portfolio ->
@@ -117,17 +120,18 @@ class PortfolioQueryImpl(
         val reviewData = engagementClient.getReviewData(service.id)
         
         service.toListingResponse(
-            portfolio.toSummaryData(),
+            portfolio.toSummaryData(resolver),
             category,
             award,
-            reviewData
+            reviewData,
+            resolver
         )
     }
     
 
     private val mapToJobPostListingResponse: (JobPost, Portfolio) -> JobPostListingResponse = { jobPost, portfolio ->
         val category = managementClient.getCategory(jobPost.categoryId)
-        jobPost.toListingResponse(portfolio.toSummaryData(), category)
+        jobPost.toListingResponse(portfolio.toSummaryData(resolver), category)
     }
 
     private fun getPortfolio(portfolioId: PortfolioId): Portfolio = portfolioRepo

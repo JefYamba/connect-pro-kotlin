@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.user.application.command
 
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
 import dev.jefy.connectpro.shared.infrastructure.messaging.EmailService
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.AccountActivatedEmailStrategy
@@ -115,12 +115,12 @@ class UserCommandImpl(
         emailService.sendEmail(user.email, PasswordUpdatedEmailStrategy(user.name))
     }
 
-    override fun setProfileImage(userId: UserId, image: MultipartFile): ImageUrl {
+    override fun setProfileImage(userId: UserId, image: MultipartFile): Image {
         val user = getUser(userId)
-        val imageUrl = imageService.save(image)
-        user.changeProfileImage(imageUrl)
+        val image = imageService.save(image)
+        user.changeProfileImage(image)
         userRepository.save(user)
-        return imageUrl
+        return image
     }
 
     override fun changePassword(request: ChangePasswordRequest) {

@@ -4,7 +4,7 @@ import dev.jefy.connectpro.management.domain.vo.BadgeId
 import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
 import dev.jefy.connectpro.portfolio.application.exceptions.SocialLinkNotFoundException
 import dev.jefy.connectpro.portfolio.domain.vo.*
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.user.domain.vo.UserId
 import jakarta.persistence.*
 import java.time.Instant
@@ -99,9 +99,9 @@ open class Portfolio(
         if (!removed) throw SocialLinkNotFoundException()
     }
 
-    fun setCoverImageUrl(imageUrl: ImageUrl) { this.generalInfo = this.generalInfo.copy(coverImageUrl = imageUrl) }
+    fun setCoverImage(image: Image) { this.generalInfo = this.generalInfo.copy(coverImage = image) }
 
-    fun deleteCoverImageUrl() { this.generalInfo = this.generalInfo.copy(coverImageUrl = null) }
+    fun deleteCoverImage() { this.generalInfo = this.generalInfo.copy(coverImage = null) }
 
     fun addBadgeId(badgeId: BadgeId) { this.badgeId = badgeId }
 }

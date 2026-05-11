@@ -24,7 +24,7 @@ data class GeneralInfoRequest(
             name = this.name,
             shortDescription = this.shortDescription,
             longDescription = this.longDescription,
-            coverImageUrl = null,
+            coverImage = null,
             spokenLanguages = this.spokenLanguages.stream().map{ Language.of(it) }.toList()
         )
     }

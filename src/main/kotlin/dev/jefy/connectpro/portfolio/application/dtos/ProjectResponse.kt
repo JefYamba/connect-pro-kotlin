@@ -1,6 +1,7 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
 import dev.jefy.connectpro.portfolio.domain.model.Project
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import java.time.LocalDate
 import java.util.*
 
@@ -13,18 +14,18 @@ data class ProjectResponse(
     val portfolioId: UUID,
     val title: String,
     val description: String?,
-    val imageUrls: List<String>,
+    val images: List<String>,
     val startAt: LocalDate?,
     val completedAt: LocalDate?
 ) {
     companion object {
-        fun fromDomain(project: Project): ProjectResponse {
+        fun fromDomain(project: Project, resolver: ImageUrlResolver): ProjectResponse {
             return ProjectResponse(
                 id = project.id.value,
                 portfolioId = project.portfolioId.value,
                 title = project.title,
                 description = project.description,
-                imageUrls = project.imageUrls.map{ it.value }.toList(),
+                images = resolver.resolve(project.images),
                 startAt = project.startAt,
                 completedAt = project.completedAt
             )
@@ -32,12 +33,12 @@ data class ProjectResponse(
     }
 }
 
-fun Project.toResponse(): ProjectResponse = ProjectResponse(
+fun Project.toResponse(resolver: ImageUrlResolver): ProjectResponse = ProjectResponse(
     id = this.id.value,
     portfolioId = this.portfolioId.value,
     title = this.title,
     description = this.description,
-    imageUrls = this.imageUrls.map{ it.value }.toList(),
+    images = resolver.resolve(this.images),
     startAt = this.startAt,
     completedAt = this.completedAt
 )

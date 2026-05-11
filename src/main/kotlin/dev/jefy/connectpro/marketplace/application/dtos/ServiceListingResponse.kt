@@ -6,6 +6,7 @@ import dev.jefy.connectpro.portfolio.domain.model.PService
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
 import dev.jefy.connectpro.shared.application.dtos.PricingData
 import dev.jefy.connectpro.shared.application.dtos.toData
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import java.util.*
 
 
@@ -19,14 +20,18 @@ data class ServiceListingResponse(
     val description: String,
     val category: CategoryResponse,
     val tags: List<String>,
-    val coverImageUrl: String?,
+    val coverImage: String?,
     val pricing: PricingData?,
     val award: AwardResponse?,
     val reviewData: ServiceReviewData
 )
 
 fun PService.toListingResponse(
-    portfolio: PortfolioSummaryData, category: CategoryResponse, award: AwardResponse?, reviewData: ServiceReviewData
+    portfolio: PortfolioSummaryData, 
+    category: CategoryResponse, 
+    award: AwardResponse?, 
+    reviewData: ServiceReviewData,
+    resolver: ImageUrlResolver
 ) = ServiceListingResponse(
     id = this.id.value,
     portfolio = portfolio,
@@ -34,7 +39,7 @@ fun PService.toListingResponse(
     description = this.description,
     category = category,
     tags = this.tags.map{ it.value},
-    coverImageUrl = this.coverImageUrl?.value,
+    coverImage = resolver.resolve(this.coverImage),
     pricing = this.pricing?.toData(),
     award = award,
     reviewData = reviewData

@@ -3,8 +3,8 @@ package dev.jefy.connectpro.portfolio.domain.model
 import dev.jefy.connectpro.portfolio.application.dtos.ProjectRequest
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
-import dev.jefy.connectpro.shared.infrastructure.converter.ImagesUrlListConverter
+import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.infrastructure.converter.ImagesListConverter
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -30,9 +30,9 @@ open class Project (portfolioId: PortfolioId, request: ProjectRequest) {
     var description: String? = request.description
         protected set
 
-    @Convert(converter = ImagesUrlListConverter::class)
+    @Convert(converter = ImagesListConverter::class)
     @Column(name = "images", columnDefinition = "TEXT")
-    var imageUrls: MutableList<ImageUrl> = mutableListOf()
+    var images: MutableList<Image> = mutableListOf()
 
     var startAt: LocalDate? = request.startAt
         protected set
@@ -48,10 +48,10 @@ open class Project (portfolioId: PortfolioId, request: ProjectRequest) {
         this.completedAt = request.completedAt
     }
 
-    fun addImage(imageUrl: ImageUrl) {
-        check(imageUrls.size < 4) { "A project must not have more than 4 images" }
-        imageUrls.add(imageUrl)
+    fun addImage(image: Image) {
+        check(images.size < 4) { "A project must not have more than 4 images" }
+        images.add(image)
     }
 
-    fun removeImage(imageUrl: ImageUrl) { imageUrls.removeIf { it == imageUrl } }
+    fun removeImage(image: Image) { images.removeIf { it == image } }
 }

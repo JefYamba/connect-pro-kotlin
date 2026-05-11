@@ -6,8 +6,8 @@ import dev.jefy.connectpro.portfolio.application.dtos.FAQRequest
 import dev.jefy.connectpro.portfolio.application.dtos.ServiceRequest
 import dev.jefy.connectpro.portfolio.application.exceptions.FaqNotFoundException
 import dev.jefy.connectpro.portfolio.domain.vo.*
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
-import dev.jefy.connectpro.shared.infrastructure.converter.ImagesUrlListConverter
+import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.infrastructure.converter.ImagesListConverter
 import dev.jefy.connectpro.shared.infrastructure.converter.PricingConverter
 import dev.jefy.connectpro.shared.infrastructure.converter.TagListConverter
 import jakarta.persistence.*
@@ -43,8 +43,8 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
         protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "cover_image_url"))
-    var coverImageUrl: ImageUrl? = null
+    @AttributeOverride(name = "value", column = Column(name = "cover_image"))
+    var coverImage: Image? = null
         protected set
 
     @Convert(converter = TagListConverter::class)
@@ -52,9 +52,9 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
     var tags: MutableSet<Tag> = request.tags.map { Tag(it) }.toMutableSet()
         protected set
 
-    @Convert(converter = ImagesUrlListConverter::class)
-    @Column(name = "image_urls", columnDefinition = "TEXT")
-    var imageUrls:MutableList<ImageUrl> = mutableListOf()
+    @Convert(converter = ImagesListConverter::class)
+    @Column(name = "images", columnDefinition = "TEXT")
+    var images:MutableList<Image> = mutableListOf()
         protected set
 
     @Convert(converter = PricingConverter::class)
@@ -84,16 +84,16 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
         this.pricing = request.pricing?.toPricing()
     }
 
-    fun addCoverImageUrl(coverImageUrl: ImageUrl) { this.coverImageUrl = coverImageUrl }
+    fun addCoverImage(coverImage: Image) { this.coverImage = coverImage }
 
-    fun deleteCoverImageUrl() { this.coverImageUrl = null }
+    fun deleteCoverImage() { this.coverImage = null }
 
-    fun addImage(imageUrl: ImageUrl) {
-        check(imageUrls.size < 4) { "A service must not have more than 4 images" }
-        imageUrls.add(imageUrl)
+    fun addImage(image: Image) {
+        check(images.size < 4) { "A service must not have more than 4 images" }
+        images.add(image)
     }
 
-    fun removeImage(imageUrl: ImageUrl) { imageUrls.removeIf {  it == imageUrl } }
+    fun removeImage(image: Image) { images.removeIf {  it == image } }
 
     fun addFaq(faq: FAQRequest) {
         require(faqs.none { it.question == faq.question }) { "${faq.question} already exists" }

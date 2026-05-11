@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.portfolio.domain.vo
 
-import dev.jefy.connectpro.shared.domain.vo.ImageUrl
+import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.shared.infrastructure.converter.LanguageListConverter
 import jakarta.persistence.*
 
@@ -14,7 +14,7 @@ data class GeneralInfo(
     var longDescription: String? = null,
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "cover_image"))
-    var coverImageUrl: ImageUrl? = null,
+    var coverImage: Image? = null,
     @Convert(converter = LanguageListConverter::class)
     @Column(name = "spoken_languages", columnDefinition = "TEXT")
     var spokenLanguages: List<Language> = mutableListOf()

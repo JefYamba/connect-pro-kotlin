@@ -19,6 +19,7 @@ import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
 import dev.jefy.connectpro.shared.application.dtos.toSummaryData
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.domain.vo.UserId
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -35,7 +36,8 @@ class PortfolioClientImpl(
     private val portfolioRepo: PortfolioRepository,
     private val serviceRepo: ServiceRepository,
     private val jobPostRepo: JobPostRepository,
-    private val managementClient: ManagementClient
+    private val managementClient: ManagementClient,
+    private val resolver: ImageUrlResolver
 ) : PortfolioClient {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -43,7 +45,7 @@ class PortfolioClientImpl(
     override fun getPortfolioSummary(id: UserId): Optional<PortfolioSummaryData> {
         log.info("Fetching portfolio summary for userId: {}", id.value)
 
-        val data = portfolioRepo.findByUserId(id).map { it.toSummaryData() }
+        val data = portfolioRepo.findByUserId(id).map { it.toSummaryData(resolver) }
 
         log.info(
             "Portfolio summary for userId: {} is present: {}",
@@ -55,7 +57,7 @@ class PortfolioClientImpl(
     }
 
     override fun getPortfolioSummary(portfolioId: PortfolioId): Optional<PortfolioSummaryData> =
-        portfolioRepo.findById(portfolioId).map { it.toSummaryData() }
+        portfolioRepo.findById(portfolioId).map { it.toSummaryData(resolver) }
 
     override fun notExistsAndValidService(serviceId: ServiceId): Boolean {
         val service = serviceRepo.findById(serviceId)
@@ -95,7 +97,7 @@ class PortfolioClientImpl(
 
     private fun getPortfolioSummaryData(portfolioId: PortfolioId): PortfolioSummaryData = portfolioRepo
         .findById(portfolioId)
-        .map { it.toSummaryData() }
+        .map { it.toSummaryData(resolver) }
         .orElseThrow { PortfolioNotFoundException() }
 
     override fun getServiceCategoryId(targetId: UUID): Optional<CategoryId> = serviceRepo

@@ -1,6 +1,7 @@
 package dev.jefy.connectpro.user.domain.model
 
 import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.domain.vo.UserRole
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -13,7 +14,7 @@ data class AuthUser(
     val fullname: String,
     val email: String,
     private val password: String,
-    val imageUrl: String?,
+    val image: String?,
     val portfolio: PortfolioSummaryData?,
     val role: UserRole,
     private val isVerified: Boolean
@@ -29,12 +30,12 @@ data class AuthUser(
     override fun isEnabled(): Boolean = isVerified
 }
 
-fun User.toAuthUser(portfolio: PortfolioSummaryData?): AuthUser = AuthUser(
+fun User.toAuthUser(portfolio: PortfolioSummaryData?, resolver: ImageUrlResolver): AuthUser = AuthUser(
     id = this.id.value,
     fullname = this.name,
     email = this.email.value,
     password = this.password.value,
-    imageUrl = this.profileImage?.value,
+    image = resolver.resolve(this.image),
     portfolio = portfolio,
     role = this.role,
     isVerified = this.isVerified
