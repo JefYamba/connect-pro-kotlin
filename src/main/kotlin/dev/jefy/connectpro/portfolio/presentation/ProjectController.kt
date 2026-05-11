@@ -7,8 +7,7 @@ import dev.jefy.connectpro.portfolio.application.query.ProjectQuery
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
-import dev.jefy.connectpro.shared.application.dtos.ImageRequest
-import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.application.dtos.ImageData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -81,7 +80,7 @@ class ProjectController(
     @Throws(IOException::class)
     fun removeImage(
         @PathVariable @NotNull projectId: UUID,
-        @RequestBody @NotNull image: ImageRequest
+        @RequestBody @NotNull image: ImageData
     ): ResponseEntity<AppResponse<ProjectResponse>> {
         val id = command.removeImage(ProjectId.of(projectId), image)
         return buildResponse("Image removed", query.get(id))

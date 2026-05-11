@@ -21,6 +21,7 @@ data class ServiceListingResponse(
     val category: CategoryResponse,
     val tags: List<String>,
     val coverImage: String?,
+    val images: List<String>,
     val pricing: PricingData?,
     val award: AwardResponse?,
     val reviewData: ServiceReviewData
@@ -40,6 +41,7 @@ fun PService.toListingResponse(
     category = category,
     tags = this.tags.map{ it.value},
     coverImage = resolver.resolve(this.coverImage),
+    images = resolver.resolve(this.images),
     pricing = this.pricing?.toData(),
     award = award,
     reviewData = reviewData

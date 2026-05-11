@@ -14,7 +14,7 @@ import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.recommandation.domain.vo.EventType
 import dev.jefy.connectpro.recommandation.domain.vo.TargetType
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
-import dev.jefy.connectpro.shared.application.dtos.ImageRequest
+import dev.jefy.connectpro.shared.application.dtos.ImageData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -88,7 +88,7 @@ class ServiceController(
     @Throws(IOException::class)
     fun removeImage(
         @PathVariable @NotNull serviceId: UUID,
-        @RequestBody @NotNull image: ImageRequest
+        @RequestBody @NotNull image: ImageData
     ): ResponseEntity<AppResponse<ServiceResponse>> {
         val id = command.removeImage(ServiceId.of(serviceId), image)
         return buildResponse("Image removed", query.getService(id))

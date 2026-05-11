@@ -16,8 +16,7 @@ import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
-import dev.jefy.connectpro.shared.application.dtos.ImageRequest
-import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.application.dtos.ImageData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -100,7 +99,7 @@ class ServiceCommandImpl(
             .id
 
     @Throws(IOException::class)
-    override fun removeImage(serviceId: ServiceId, image: ImageRequest): ServiceId =
+    override fun removeImage(serviceId: ServiceId, image: ImageData): ServiceId =
         getService(serviceId)
             .apply {
                 imageService.delete(image.getKey())

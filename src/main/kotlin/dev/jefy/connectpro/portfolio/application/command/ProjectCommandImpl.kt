@@ -8,7 +8,7 @@ import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
-import dev.jefy.connectpro.shared.application.dtos.ImageRequest
+import dev.jefy.connectpro.shared.application.dtos.ImageData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -60,7 +60,7 @@ class ProjectCommandImpl(
             .id
 
     @Throws(IOException::class)
-    override fun removeImage(projectId: ProjectId, image: ImageRequest): ProjectId =
+    override fun removeImage(projectId: ProjectId, image: ImageData): ProjectId =
         getProject(projectId)
             .apply {
                 imageService.delete(image.getKey())

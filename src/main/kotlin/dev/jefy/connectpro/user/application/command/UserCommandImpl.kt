@@ -1,7 +1,9 @@
 package dev.jefy.connectpro.user.application.command
 
-import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.application.dtos.ImageData
+import dev.jefy.connectpro.shared.application.dtos.toData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
+import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.shared.infrastructure.messaging.EmailService
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.AccountActivatedEmailStrategy
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.AccountCreationEmailStrategy
@@ -30,7 +32,8 @@ class UserCommandImpl(
     private val jwtService: JwtService,
     private val authManager: AuthenticationManager,
     private val passwordGenerator: PasswordGenerator,
-    private val imageService: ImageService
+    private val imageService: ImageService,
+    private val resolver: ImageUrlResolver
 ) : UserCommand {
 
     override fun login(request: LoginRequest): LoginResponse {
@@ -115,12 +118,13 @@ class UserCommandImpl(
         emailService.sendEmail(user.email, PasswordUpdatedEmailStrategy(user.name))
     }
 
-    override fun setProfileImage(userId: UserId, image: MultipartFile): Image {
+    override fun setProfileImage(userId: UserId, image: MultipartFile): ImageData {
         val user = getUser(userId)
         val image = imageService.save(image)
         user.changeProfileImage(image)
         userRepository.save(user)
-        return image
+        
+        return image.toData(resolver)
     }
 
     override fun changePassword(request: ChangePasswordRequest) {

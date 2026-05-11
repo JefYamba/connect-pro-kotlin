@@ -11,11 +11,9 @@ import dev.jefy.connectpro.shared.application.dtos.toData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import java.util.*
 
-
 /**
  * @author Jôph Yamba
  */
-
 data class ServiceResponse(
     val id: UUID,
     val portfolio: PortfolioSummaryData,

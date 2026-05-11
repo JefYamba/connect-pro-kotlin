@@ -1,6 +1,6 @@
 package dev.jefy.connectpro.user.application.command
 
-import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.application.dtos.ImageData
 import dev.jefy.connectpro.user.application.dtos.*
 import dev.jefy.connectpro.user.domain.vo.Email
 import dev.jefy.connectpro.user.domain.vo.TokenId
@@ -25,7 +25,7 @@ interface UserCommand {
     fun resetPassword(request: ResetPasswordRequest)
 
     @Throws(IOException::class)
-    fun setProfileImage(userId: UserId, image: MultipartFile): Image
+    fun setProfileImage(userId: UserId, image: MultipartFile): ImageData
 
     fun changePassword(request: ChangePasswordRequest)
 
