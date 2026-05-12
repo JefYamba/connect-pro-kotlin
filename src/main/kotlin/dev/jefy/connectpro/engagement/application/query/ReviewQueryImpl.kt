@@ -22,12 +22,12 @@ class ReviewQueryImpl(
     override fun findServiceReviewForCurrentUser(serviceId: ServiceId): ReviewResponse {
         val user: UserData = userClient.getCurrentUser()
         return reviewRepo.findById(ReviewId.of(UserId.of(user.id), serviceId))
-            .map { it.toResponse(userClient.getData(UserId(it.id.reviewerId))) }
+            .map { it.toResponse(userClient.getById(UserId(it.id.reviewerId))) }
             .orElseThrow { ReviewNotFountException()}
     }
 
     override fun findByService(serviceId: ServiceId): List<ReviewResponse> {
         return reviewRepo.findByIdServiceId(serviceId.value)
-            .map { it.toResponse(userClient.getData(UserId(it.id.reviewerId))) }
+            .map { it.toResponse(userClient.getById(UserId(it.id.reviewerId))) }
     }
 }

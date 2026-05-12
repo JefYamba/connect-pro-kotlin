@@ -17,12 +17,12 @@ open class Conversation(participantA: UserId, participantB: UserId) {
         protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "participiant_a"))
+    @AttributeOverride(name = "value", column = Column(name = "participant_a"))
     var participantA: UserId = participantA
         protected set
 
     @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "participiant_b"))
+    @AttributeOverride(name = "value", column = Column(name = "participant_b"))
     var participantB: UserId = participantB
         protected set
 

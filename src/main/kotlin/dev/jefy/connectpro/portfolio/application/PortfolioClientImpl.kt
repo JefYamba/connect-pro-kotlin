@@ -17,7 +17,7 @@ import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
-import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.shared.application.dtos.toSummaryData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import dev.jefy.connectpro.user.domain.vo.UserId
@@ -42,7 +42,7 @@ class PortfolioClientImpl(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun getPortfolioSummary(id: UserId): Optional<PortfolioSummaryData> {
+    override fun getPortfolioSummary(id: UserId): Optional<PortfolioData> {
         log.info("Fetching portfolio summary for userId: {}", id.value)
 
         val data = portfolioRepo.findByUserId(id).map { it.toSummaryData(resolver) }
@@ -56,7 +56,7 @@ class PortfolioClientImpl(
         return data
     }
 
-    override fun getPortfolioSummary(portfolioId: PortfolioId): Optional<PortfolioSummaryData> =
+    override fun getPortfolioSummary(portfolioId: PortfolioId): Optional<PortfolioData> =
         portfolioRepo.findById(portfolioId).map { it.toSummaryData(resolver) }
 
     override fun notExistsAndValidService(serviceId: ServiceId): Boolean {
@@ -95,7 +95,7 @@ class PortfolioClientImpl(
         }
         .orElseThrow { JobPostNotFoundException() }
 
-    private fun getPortfolioSummaryData(portfolioId: PortfolioId): PortfolioSummaryData = portfolioRepo
+    private fun getPortfolioSummaryData(portfolioId: PortfolioId): PortfolioData = portfolioRepo
         .findById(portfolioId)
         .map { it.toSummaryData(resolver) }
         .orElseThrow { PortfolioNotFoundException() }

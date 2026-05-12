@@ -66,7 +66,7 @@ class JobApplicationQueryImpl(
 
     private val mapForEmployer: (JobApplication) -> JobApplicationResponseForEmployer = { application ->
         val applicantId = UserId.of(application.id.applicantId)
-        val user = userClient.getData(applicantId)
+        val user = userClient.getById(applicantId)
         application.toEmployerResponse(user)
     }
 }

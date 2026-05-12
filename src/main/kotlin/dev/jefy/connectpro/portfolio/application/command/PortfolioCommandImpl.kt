@@ -35,7 +35,7 @@ class PortfolioCommandImpl(
 
     override fun create(request: PortfolioRequest): PortfolioId {
         val userId = UserId(request.userId)
-        val userData = userClient.getData(userId)
+        val userData = userClient.getById(userId)
 
         require(!portfolioRepo.existsByUserId(userId)) {
             "Portfolio already exists"

@@ -3,7 +3,7 @@ package dev.jefy.connectpro.marketplace.application.dtos
 import dev.jefy.connectpro.management.appliacaion.dtos.AwardResponse
 import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
 import dev.jefy.connectpro.portfolio.domain.model.PService
-import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.shared.application.dtos.PricingData
 import dev.jefy.connectpro.shared.application.dtos.toData
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
@@ -15,7 +15,7 @@ import java.util.*
  */
 data class ServiceListingResponse(
     val id: UUID,
-    val portfolio: PortfolioSummaryData,
+    val portfolio: PortfolioData,
     val title: String,
     val description: String,
     val category: CategoryResponse,
@@ -28,9 +28,9 @@ data class ServiceListingResponse(
 )
 
 fun PService.toListingResponse(
-    portfolio: PortfolioSummaryData, 
-    category: CategoryResponse, 
-    award: AwardResponse?, 
+    portfolio: PortfolioData,
+    category: CategoryResponse,
+    award: AwardResponse?,
     reviewData: ServiceReviewData,
     resolver: ImageUrlResolver
 ) = ServiceListingResponse(

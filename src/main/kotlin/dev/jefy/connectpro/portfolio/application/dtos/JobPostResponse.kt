@@ -3,7 +3,7 @@ package dev.jefy.connectpro.portfolio.application.dtos
 import dev.jefy.connectpro.management.appliacaion.dtos.CategoryResponse
 import dev.jefy.connectpro.portfolio.domain.model.JobPost
 import dev.jefy.connectpro.shared.application.dtos.BudgetData
-import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.shared.application.dtos.toData
 import dev.jefy.connectpro.shared.domain.vo.JobType
 import dev.jefy.connectpro.shared.domain.vo.WorkMode
@@ -16,7 +16,7 @@ import java.util.*
  */
 data class JobPostResponse(
     val id: UUID,
-    val portfolio: PortfolioSummaryData,
+    val portfolio: PortfolioData,
     val title: String,
     val description: String,
     val category: CategoryResponse,
@@ -28,7 +28,7 @@ data class JobPostResponse(
     val deadline: LocalDate?
 )
 
-fun JobPost.toResponse(portfolioData: PortfolioSummaryData, category: CategoryResponse): JobPostResponse = JobPostResponse(
+fun JobPost.toResponse(portfolioData: PortfolioData, category: CategoryResponse): JobPostResponse = JobPostResponse(
     id = this.id.value,
     portfolio = portfolioData,
     title = this.title,

@@ -35,6 +35,7 @@ dependencies {
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	
 	implementation("software.amazon.awssdk:s3:$awsS3Version")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
 	// ✅ JWT (AJOUTÉ)
 	implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")

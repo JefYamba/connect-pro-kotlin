@@ -7,7 +7,7 @@ import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
-import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.user.domain.vo.UserId
 import java.util.*
 
@@ -15,9 +15,9 @@ import java.util.*
  * @author Jôph Yamba
  */
 interface PortfolioClient {
-    fun getPortfolioSummary(id: UserId): Optional<PortfolioSummaryData>
+    fun getPortfolioSummary(id: UserId): Optional<PortfolioData>
 
-    fun getPortfolioSummary(portfolioId: PortfolioId): Optional<PortfolioSummaryData>
+    fun getPortfolioSummary(portfolioId: PortfolioId): Optional<PortfolioData>
 
     fun notExistsAndValidService(serviceId: ServiceId): Boolean
 

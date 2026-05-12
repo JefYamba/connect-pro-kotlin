@@ -16,7 +16,7 @@ import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.shared.application.dtos.PageResponse
-import dev.jefy.connectpro.shared.application.dtos.PortfolioSummaryData
+import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.shared.application.dtos.toPageResponse
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import org.jspecify.annotations.NullMarked
@@ -103,7 +103,7 @@ class MarketPlaceListingQueryImpl(
         jobPost.toListingResponse(portfolioData, category)
     }
 
-    private fun getPortfolioData(portfolioId: PortfolioId): PortfolioSummaryData =
+    private fun getPortfolioData(portfolioId: PortfolioId): PortfolioData =
         portfolioClient.getPortfolioSummary(portfolioId)
             .orElseThrow { IllegalStateException("Portfolio not found") }
 }

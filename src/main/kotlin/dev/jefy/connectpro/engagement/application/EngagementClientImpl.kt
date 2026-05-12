@@ -31,7 +31,7 @@ class EngagementClientImpl(
 
     override fun recentReviews(serviceId: ServiceId): List<ReviewResponse> {
         return reviewRepo.findTop10ByIdServiceIdOrderByCreatedAtDesc(serviceId.value)
-            .map { it.toResponse(userClient.getData(UserId(it.id.reviewerId))) }
+            .map { it.toResponse(userClient.getById(UserId(it.id.reviewerId))) }
     }
 
     override fun getReviewData(id: ServiceId): ServiceReviewData {

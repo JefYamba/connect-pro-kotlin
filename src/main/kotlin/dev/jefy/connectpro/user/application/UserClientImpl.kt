@@ -8,6 +8,7 @@ import dev.jefy.connectpro.user.application.exceptions.UnauthorizedException
 import dev.jefy.connectpro.user.application.exceptions.UserNotFoundException
 import dev.jefy.connectpro.user.domain.model.AuthUser
 import dev.jefy.connectpro.user.domain.repository.UserRepository
+import dev.jefy.connectpro.user.domain.vo.Email
 import dev.jefy.connectpro.user.domain.vo.UserId
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -19,11 +20,17 @@ class UserClientImpl(
     private val resolver: ImageUrlResolver
 ) : UserClient {
 
-    override fun getData(userId: UserId): UserData {
-        return userRepo.findById(userId)
-            .map { it.toUserData(resolver) }
-            .orElseThrow { UserNotFoundException() }
-    }
+    override fun getById(userId: UserId): UserData = userRepo
+        .findById(userId)
+        .map { it.toUserData(resolver) }
+        .orElseThrow { UserNotFoundException() }
+    
+
+    override fun getByEmail(email: Email): UserData = userRepo
+        .findByEmail(email)
+        .map { it.toUserData(resolver) }
+        .orElseThrow { UserNotFoundException() }
+    
 
     override fun getCurrentUser(): UserData {
         val authentication: Authentication = SecurityContextHolder.getContext().authentication
