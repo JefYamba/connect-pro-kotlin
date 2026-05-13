@@ -51,3 +51,10 @@ data class IncomingMessagePayload(
     val conversationId: UUID,
     val message: MessageResponse,
 )
+
+
+data class PresencePayload(
+    val userId: UUID,
+    val online: Boolean,
+)
+ 
