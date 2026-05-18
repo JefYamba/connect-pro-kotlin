@@ -16,7 +16,7 @@ spring:
     
   flyway:
     enabled: true
-
+    
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}

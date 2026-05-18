@@ -38,6 +38,7 @@ open class Message(
     var receiverId: ReceiverId = receiverId
         protected set
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     var content: String = content
         protected set
 

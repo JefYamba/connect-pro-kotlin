@@ -28,7 +28,7 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest, tags: Set
     var title: String = request.title
         protected set
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     var description: String = request.description
         protected set
 

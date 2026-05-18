@@ -24,6 +24,7 @@ open class JobApplication(applicantId: UserId, jobPostId: JobPostId, motivation:
     var id: JobApplicationId = JobApplicationId(applicantId.value, jobPostId.value)
         protected set
 
+    @Column(columnDefinition = "TEXT")
     var motivation: String = motivation
         protected set
 
