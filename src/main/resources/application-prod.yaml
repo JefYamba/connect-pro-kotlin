@@ -6,6 +6,10 @@ spring:
 
     hikari:
       auto-commit: false
+      minimum-idle: 1
+      maximum-pool-size: 5
+      connection-timeout: 30000
+      initialization-fail-timeout: 60000
 
   jpa:
     hibernate:
@@ -13,7 +17,11 @@ spring:
 
     show-sql: false
     open-in-view: false
-    
+    properties:
+      hibernate:
+        boot:
+          allow_jdbc_metadata_access: false
+          
   flyway:
     enabled: true
     
