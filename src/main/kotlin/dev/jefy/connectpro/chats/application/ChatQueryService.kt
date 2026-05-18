@@ -1,12 +1,12 @@
-package dev.jefy.connectpro.messaging.application
+package dev.jefy.connectpro.chats.application
 
-import dev.jefy.connectpro.messaging.application.dtos.ContactData
-import dev.jefy.connectpro.messaging.application.dtos.ConversationResponse
-import dev.jefy.connectpro.messaging.application.dtos.MessageResponse
-import dev.jefy.connectpro.messaging.domain.Conversation
-import dev.jefy.connectpro.messaging.domain.Message
-import dev.jefy.connectpro.messaging.domain.repositoty.ConversationRepository
-import dev.jefy.connectpro.messaging.domain.repositoty.MessageRepository
+import dev.jefy.connectpro.chats.application.dtos.ContactData
+import dev.jefy.connectpro.chats.application.dtos.ConversationResponse
+import dev.jefy.connectpro.chats.application.dtos.MessageResponse
+import dev.jefy.connectpro.chats.domain.Conversation
+import dev.jefy.connectpro.chats.domain.Message
+import dev.jefy.connectpro.chats.domain.repositoty.ConversationRepository
+import dev.jefy.connectpro.chats.domain.repositoty.MessageRepository
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.UserId
 import org.springframework.stereotype.Service

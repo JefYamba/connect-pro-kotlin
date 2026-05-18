@@ -1,6 +1,6 @@
-package dev.jefy.connectpro.messaging.infrastructure
+package dev.jefy.connectpro.chats.infrastructure
 
-import dev.jefy.connectpro.messaging.application.dtos.PresencePayload
+import dev.jefy.connectpro.chats.application.dtos.PresencePayload
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.Email
 import org.springframework.context.event.EventListener

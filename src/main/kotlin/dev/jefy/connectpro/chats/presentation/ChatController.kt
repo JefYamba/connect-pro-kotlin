@@ -1,10 +1,10 @@
-package dev.jefy.connectpro.messaging.presentation
+package dev.jefy.connectpro.chats.presentation
 
-import dev.jefy.connectpro.messaging.application.ChatCommandService
-import dev.jefy.connectpro.messaging.application.ChatQueryService
-import dev.jefy.connectpro.messaging.application.dtos.ConversationResponse
-import dev.jefy.connectpro.messaging.application.dtos.CreateConversationRequest
-import dev.jefy.connectpro.messaging.application.dtos.MessageResponse
+import dev.jefy.connectpro.chats.application.ChatCommandService
+import dev.jefy.connectpro.chats.application.ChatQueryService
+import dev.jefy.connectpro.chats.application.dtos.ConversationResponse
+import dev.jefy.connectpro.chats.application.dtos.CreateConversationRequest
+import dev.jefy.connectpro.chats.application.dtos.MessageResponse
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
 import dev.jefy.connectpro.user.UserClient
 import org.springframework.web.bind.annotation.*

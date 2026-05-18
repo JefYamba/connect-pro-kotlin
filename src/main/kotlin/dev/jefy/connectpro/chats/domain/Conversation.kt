@@ -1,6 +1,6 @@
-package dev.jefy.connectpro.messaging.domain
+package dev.jefy.connectpro.chats.domain
 
-import dev.jefy.connectpro.messaging.domain.vo.ConversationId
+import dev.jefy.connectpro.chats.domain.vo.ConversationId
 import dev.jefy.connectpro.user.domain.vo.UserId
 import jakarta.persistence.*
 import java.time.Instant

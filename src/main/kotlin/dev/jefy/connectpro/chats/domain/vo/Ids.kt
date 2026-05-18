@@ -1,4 +1,4 @@
-package dev.jefy.connectpro.messaging.domain.vo
+package dev.jefy.connectpro.chats.domain.vo
 
 import jakarta.persistence.Embeddable
 import java.util.*

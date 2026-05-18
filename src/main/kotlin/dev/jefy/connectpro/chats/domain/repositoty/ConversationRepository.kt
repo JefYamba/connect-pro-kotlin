@@ -1,8 +1,8 @@
-package dev.jefy.connectpro.messaging.domain.repositoty
+package dev.jefy.connectpro.chats.domain.repositoty
 
 
-import dev.jefy.connectpro.messaging.domain.Conversation
-import dev.jefy.connectpro.messaging.domain.vo.ConversationId
+import dev.jefy.connectpro.chats.domain.Conversation
+import dev.jefy.connectpro.chats.domain.vo.ConversationId
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param

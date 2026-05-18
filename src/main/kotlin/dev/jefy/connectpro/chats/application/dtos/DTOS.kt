@@ -1,4 +1,4 @@
-package dev.jefy.connectpro.messaging.application.dtos
+package dev.jefy.connectpro.chats.application.dtos
 
 import java.time.Instant
 import java.util.*
@@ -57,4 +57,8 @@ data class PresencePayload(
     val userId: UUID,
     val online: Boolean,
 )
- 
+
+data class ReadReceiptPayload(
+    val conversationId: UUID,
+    val readByUserId: UUID,
+)

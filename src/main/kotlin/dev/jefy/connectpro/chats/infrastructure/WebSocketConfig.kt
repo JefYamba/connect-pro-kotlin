@@ -1,4 +1,4 @@
-package dev.jefy.connectpro.messaging.infrastructure
+package dev.jefy.connectpro.chats.infrastructure
 
 import dev.jefy.connectpro.user.infrastructure.config.JwtService
 import org.springframework.context.annotation.Configuration

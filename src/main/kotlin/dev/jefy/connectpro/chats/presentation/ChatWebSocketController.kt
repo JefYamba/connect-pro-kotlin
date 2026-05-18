@@ -1,9 +1,9 @@
-package dev.jefy.connectpro.messaging.presentation
+package dev.jefy.connectpro.chats.presentation
 
 
-import dev.jefy.connectpro.messaging.application.ChatCommandService
-import dev.jefy.connectpro.messaging.application.dtos.MessageResponse
-import dev.jefy.connectpro.messaging.application.dtos.SendMessageRequest
+import dev.jefy.connectpro.chats.application.ChatCommandService
+import dev.jefy.connectpro.chats.application.dtos.MessageResponse
+import dev.jefy.connectpro.chats.application.dtos.SendMessageRequest
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.Email
 import org.springframework.messaging.handler.annotation.DestinationVariable
