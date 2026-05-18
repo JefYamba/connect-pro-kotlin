@@ -38,6 +38,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     implementation("org.springframework.boot:spring-boot-starter-flyway")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.14.1")
 	runtimeOnly("org.postgresql:postgresql")
 	// ✅ JWT (AJOUTÉ)
 	implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
