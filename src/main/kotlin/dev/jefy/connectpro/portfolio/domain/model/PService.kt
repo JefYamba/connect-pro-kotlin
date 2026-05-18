@@ -12,7 +12,7 @@ import dev.jefy.connectpro.shared.infrastructure.converter.PricingConverter
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "portfolio_services")
+@Table(name = "services")
 open class PService(portfolioId: PortfolioId, request: ServiceRequest, tags: Set<Tag>) {
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
@@ -46,7 +46,7 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest, tags: Set
     var coverImage: Image? = null
         protected set
 
-    @ManyToMany(mappedBy = "services", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "service_tags",
         joinColumns = [JoinColumn(name = "service_id")],

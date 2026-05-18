@@ -36,7 +36,7 @@ open class JobPost(portfolioId: PortfolioId, request: JobPostRequest, tags: Set<
     var categoryId: CategoryId = request.categoryId.let { CategoryId.of(it) }
     protected set
 
-    @ManyToMany(mappedBy = "jobPosts", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "job_post_tags",
         joinColumns = [JoinColumn(name = "job_post_id")],

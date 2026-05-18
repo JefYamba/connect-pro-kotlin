@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @ConfigurationPropertiesScan
 @EnableJpaRepositories
 @SpringBootApplication
-class ConnectproApplication
+class ConnectPro
 
 fun main(args: Array<String>) {
-	runApplication<ConnectproApplication>(*args)
+	runApplication<ConnectPro>(*args)
 }

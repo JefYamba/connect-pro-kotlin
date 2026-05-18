@@ -9,7 +9,7 @@ import jakarta.persistence.*
 import java.time.LocalDate
 
 @Entity
-@Table(name = "portfolio_projects")
+@Table(name = "projects")
 open class Project (portfolioId: PortfolioId, request: ProjectRequest) {
 
     @EmbeddedId
