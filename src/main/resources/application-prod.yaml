@@ -30,6 +30,10 @@ spring:
           auth: true
           starttls:
             enable: true
+            
+  docker:
+    compose:
+      enabled: false
 
 security:
   otp-token:
