@@ -34,7 +34,7 @@ fun JobPost.toResponse(portfolioData: PortfolioData, category: CategoryResponse)
     title = this.title,
     description = this.description,
     category = category,
-    tags = this.tags.map{ it.value }.toList(),
+    tags = this.tags.map{ it.name }.toList(),
     budget = this.budget?.toData(),
     jobType = this.jobType,
     workMode = this.workMode,

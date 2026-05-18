@@ -11,7 +11,7 @@ data class JobPostRequest(
     val title: String,
     val description: String,
     val categoryId: UUID,
-    val tags: List<String>,
+    val tags: Set<String>,
     val budget: BudgetData?,
     val jobType: JobType?,
     val workMode: WorkMode?,

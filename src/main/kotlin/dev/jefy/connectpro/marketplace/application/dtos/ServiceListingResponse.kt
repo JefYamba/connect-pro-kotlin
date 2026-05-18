@@ -39,7 +39,7 @@ fun PService.toListingResponse(
     title = this.title,
     description = this.description,
     category = category,
-    tags = this.tags.map{ it.value},
+    tags = this.tags.map{ it.name },
     coverImage = resolver.resolve(this.coverImage),
     images = resolver.resolve(this.images),
     pricing = this.pricing?.toData(),

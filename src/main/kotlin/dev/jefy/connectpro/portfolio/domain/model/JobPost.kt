@@ -2,17 +2,19 @@ package dev.jefy.connectpro.portfolio.domain.model
 
 import dev.jefy.connectpro.management.domain.vo.CategoryId
 import dev.jefy.connectpro.portfolio.application.dtos.JobPostRequest
-import dev.jefy.connectpro.portfolio.domain.vo.*
+import dev.jefy.connectpro.portfolio.domain.vo.Budget
+import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
+import dev.jefy.connectpro.portfolio.domain.vo.Language
+import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.shared.domain.vo.JobType
 import dev.jefy.connectpro.shared.domain.vo.WorkMode
 import dev.jefy.connectpro.shared.infrastructure.converter.LanguageListConverter
-import dev.jefy.connectpro.shared.infrastructure.converter.TagListConverter
 import jakarta.persistence.*
 import java.time.LocalDate
 
 @Entity
 @Table(name = "job_posts")
-open class JobPost(portfolioId: PortfolioId, request: JobPostRequest) {
+open class JobPost(portfolioId: PortfolioId, request: JobPostRequest, tags: Set<Tag>) {
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: JobPostId = JobPostId.generate()
@@ -34,9 +36,13 @@ open class JobPost(portfolioId: PortfolioId, request: JobPostRequest) {
     var categoryId: CategoryId = request.categoryId.let { CategoryId.of(it) }
     protected set
 
-    @Convert(converter = TagListConverter::class)
-    @Column(name = "tags")
-    var tags: MutableSet<Tag> = request.tags.map { Tag(it) }.toMutableSet()
+    @ManyToMany(mappedBy = "jobPosts", fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "job_post_tags",
+        joinColumns = [JoinColumn(name = "job_post_id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_id")]
+    )
+    var tags: MutableSet<Tag> = tags.toMutableSet()
     protected set
     
     
@@ -64,11 +70,11 @@ open class JobPost(portfolioId: PortfolioId, request: JobPostRequest) {
     var deadline: LocalDate? = request.deadline
     
 
-     fun update(request: JobPostRequest) {
+     fun update(request: JobPostRequest, tags: Set<Tag>) {
         this.title = request.title
         this.description = request.description
         this.categoryId = CategoryId.of(request.categoryId)
-        this.tags = request.tags.map { Tag(it) }.toMutableSet()
+        this.tags = tags.toMutableSet()
         this.budget = request.budget?.toBudget()
         this.jobType = request.jobType
         this.workMode = request.workMode

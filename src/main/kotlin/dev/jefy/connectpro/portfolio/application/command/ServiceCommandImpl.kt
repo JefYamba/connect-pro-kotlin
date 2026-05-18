@@ -30,7 +30,8 @@ class ServiceCommandImpl(
     private val serviceRepo: ServiceRepository,
     private val imageService: ImageService,
     private val managementClient: ManagementClient,
-    private val engagementClient: EngagementClient
+    private val engagementClient: EngagementClient,
+    private val tagService: TagService
 ) : ServiceCommand {
 
     override fun create(request: ServiceRequest): ServiceId {
@@ -43,7 +44,9 @@ class ServiceCommandImpl(
 
         if (serviceRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.title)) throw ServiceAlreadyExistsException()
 
-        val service = PService(portfolioId, request)
+        val tags = tagService.resolveTags(stringTags = request.tags)
+
+        val service = PService(portfolioId = portfolioId, request = request, tags = tags)
         serviceRepo.save(service)
 
         return service.id
@@ -62,8 +65,10 @@ class ServiceCommandImpl(
                         title = request.title, 
                         serviceId = serviceId
                 )) throw ServiceAlreadyExistsException()
-
-                update(request)
+                
+                val tags = tagService.resolveTags(stringTags = request.tags)
+                
+                update(request  = request, tags = tags)
             }
             .also { serviceRepo.save(it) }
             .id
@@ -155,5 +160,4 @@ class ServiceCommandImpl(
 
     private fun getService(serviceId: ServiceId): PService = serviceRepo
         .findById(serviceId).orElseThrow { ServiceNotFoundException() }
-    
 }

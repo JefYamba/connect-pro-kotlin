@@ -39,10 +39,7 @@ class PresenceEventListener(
 
     private fun broadcast(principal: Principal, online: Boolean) {
         try {
-            // principal.name = email (username Spring Security)
-            val user = userClient.getByEmail(
-                Email(principal.name)
-            )
+            val user = userClient.getByEmail(Email(principal.name))
             messagingTemplate.convertAndSend(
                 "/topic/presence",
                 PresencePayload(userId = user.id, online = online),

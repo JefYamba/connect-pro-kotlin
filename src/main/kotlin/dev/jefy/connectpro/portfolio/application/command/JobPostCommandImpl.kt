@@ -22,7 +22,8 @@ class JobPostCommandImpl(
     private val jobPostRepo: JobPostRepository,
     private val portfolioRepo: PortfolioRepository,
     private val managementClient: ManagementClient,
-    private val marketplaceClient: MarketplaceClient
+    private val marketplaceClient: MarketplaceClient,
+    private val tagService: TagService
 ) : JobPostCommand {
 
     override fun create(request: JobPostRequest): JobPostId {
@@ -37,7 +38,9 @@ class JobPostCommandImpl(
         val isConflict = jobPostRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.title)
         if (isConflict) throw JobPostAlreadyExistsException()
 
-        val jobPost = JobPost(portfolioId, request)
+        val tags = tagService.resolveTags(stringTags = request.tags)
+        
+        val jobPost = JobPost(portfolioId = portfolioId, request = request, tags = tags)
         jobPostRepo.save(jobPost)
 
         return jobPost.id
@@ -55,8 +58,10 @@ class JobPostCommandImpl(
             title = request.title,
             jobPostId = jobPostId
         )) throw JobPostAlreadyExistsException()
+        
+        val tags = tagService.resolveTags(stringTags = request.tags)
 
-        jobPost.update(request)
+        jobPost.update(request = request, tags = tags)
         jobPostRepo.save(jobPost)
 
         return jobPost.id

@@ -33,7 +33,7 @@ fun JobPost.toListingResponse(portfolio: PortfolioData, category: CategoryRespon
     title = this.title,
     description = this.description,
     category = category,
-    tags = this.tags.map{ it.value },
+    tags = this.tags.map{ it.name },
     budget = this.budget?.toData(),
     jobType = this.jobType,
     workMode = this.workMode,

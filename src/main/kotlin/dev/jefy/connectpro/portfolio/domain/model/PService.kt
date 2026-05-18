@@ -9,12 +9,11 @@ import dev.jefy.connectpro.portfolio.domain.vo.*
 import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.shared.infrastructure.converter.ImagesListConverter
 import dev.jefy.connectpro.shared.infrastructure.converter.PricingConverter
-import dev.jefy.connectpro.shared.infrastructure.converter.TagListConverter
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "portfolio_services")
-open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
+open class PService(portfolioId: PortfolioId, request: ServiceRequest, tags: Set<Tag>) {
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
      var id: ServiceId = ServiceId.generate()
@@ -47,9 +46,13 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
     var coverImage: Image? = null
         protected set
 
-    @Convert(converter = TagListConverter::class)
-    @Column(name = "tags", columnDefinition = "TEXT")
-    var tags: MutableSet<Tag> = request.tags.map { Tag(it) }.toMutableSet()
+    @ManyToMany(mappedBy = "services", fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "service_tags",
+        joinColumns = [JoinColumn(name = "service_id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_id")]
+    )
+    var tags: MutableSet<Tag> = tags.toMutableSet()
         protected set
 
     @Convert(converter = ImagesListConverter::class)
@@ -76,12 +79,17 @@ open class PService(portfolioId: PortfolioId, request: ServiceRequest) {
         protected set
 
     
-    fun update(request: ServiceRequest) {
+    fun update(request: ServiceRequest, tags: Set<Tag>) {
         this.title = request.title
         this.description = request.description
         this.categoryId = CategoryId.of(request.categoryId)
-        this.tags = request.tags.map { Tag(it) }.toMutableSet()
+        this.tags = tags.toMutableSet()
         this.pricing = request.pricing?.toPricing()
+    }
+    
+    fun updateTags(tags: List<Tag>) {
+        require(tags.isNotEmpty()) { "A service must have at least one tag" }
+        this.tags = tags.toMutableSet()
     }
 
     fun addCoverImage(coverImage: Image) { this.coverImage = coverImage }

@@ -83,9 +83,11 @@ aws:
     access-key: connect-pro
     secret-key: connect-pro
   s3:
-    endpoint: http://localhost:4566
     bucket-name: connect-pro-images
-    public-url: http://192.168.1.100:4566
+#    endpoint: http://localhost:4566
+    endpoint: http:/10.25.104.5:4566
+#    public-url: http://192.168.1.100:4566
+    public-url: http:/10.25.104.5:4566
 
 server:
   port: 8080
