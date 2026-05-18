@@ -37,11 +37,12 @@ dependencies {
 	implementation("software.amazon.awssdk:s3:$awsS3Version")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+	runtimeOnly("org.postgresql:postgresql")
 	// ✅ JWT (AJOUTÉ)
 	implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
-	runtimeOnly("org.postgresql:postgresql")
 	
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	

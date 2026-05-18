@@ -16,14 +16,19 @@ class S3Config {
     fun s3Client(awsProperties: AwsProperties): S3Client {
         
         val credentials = AwsBasicCredentials.create(
-            awsProperties.credentials.accessKey, 
+            awsProperties.credentials.accessKey,
             awsProperties.credentials.secretKey
         )
-        return S3Client.builder()
-            .endpointOverride(URI.create(awsProperties.s3.endpoint))
+
+        val builder = S3Client.builder()
             .region(Region.of(awsProperties.region.static))
             .credentialsProvider(StaticCredentialsProvider.create(credentials))
-            .forcePathStyle(true)
-            .build()
+
+        awsProperties.s3.endpoint?.let {
+            builder.endpointOverride(URI.create(it))
+            builder.forcePathStyle(true)
+        }
+
+        return builder.build()
     }
 }

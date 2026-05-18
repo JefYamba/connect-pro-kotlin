@@ -1,8 +1,7 @@
-
 spring:
   application:
-    name: connect_pro_backend
-  
+    name: connect_pro
+
   profiles:
     active: dev
 
@@ -16,88 +15,111 @@ spring:
     virtual:
       enabled: true
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/connect-pro-db
-    username: connect-pro
-    password: connect-pro
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      auto-commit: false
-
-  jpa:
-    hibernate:
-      ddl-auto: update  # in dev only | use validate in prod
-
-    show-sql: true   # in dev only
-    open-in-view: false
-    
-    properties:
-      hibernate:  
-        format_sql: true  # in dev only
-        generate_statistics: true  # in dev only
-
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  docker:
-    compose:
-      enabled: true
-      lifecycle-management: start_only
-
-  mail:
-    host: localhost
-    port: 1025
-    username: contact.connect_pro@gmail.com
-    password: dev
-    properties:
-      mail:
-        smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enable: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
-
-
-  devtools:
-    restart:
-      enabled: true
-      trigger-file:
-    livereload:
-      enabled: true
-
-security:
-  otp-token:
-    expiration-time: 20 # minutes
-  jwt:
-    # generate with terminal cmd: openssl rand -base64 32
-    secret: "lvWNwREIlN4FEIrwApmUwP1EIKaYpFggdZMZMAMFdo8="
-    expiration-time: 720 # minutes
-
-aws:
-  region:
-    static: us-east-1
-  credentials:
-    access-key: connect-pro
-    secret-key: connect-pro
-  s3:
-    bucket-name: connect-pro-images
-#    endpoint: http://localhost:4566
-    endpoint: http:/10.25.104.5:4566
-#    public-url: http://192.168.1.100:4566
-    public-url: http:/10.25.104.5:4566
-
 server:
   port: 8080
   servlet:
     context-path: /api/v1
-  address: 0.0.0.0
 
-logging:
-  level:
-    #    org.springframework.data: DEBUG
-    org.springframework.security: DEBUG
-#    org.postgresql: DEBUG
-#    org.hibernate: DEBUG
+#
+#spring:
+#  application:
+#    name: connect_pro
+#  
+#  profiles:
+#    active: dev
+#
+#  servlet:
+#    multipart:
+#      enabled: true
+#      max-file-size: 3MB
+#      max-request-size: 10MB
+#
+#  threads:
+#    virtual:
+#      enabled: true
+#
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/connect-pro-db
+#    username: connect-pro
+#    password: connect-pro
+#    driver-class-name: org.postgresql.Driver
+#    hikari:
+#      auto-commit: false
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update  # in dev only | use validate in prod
+#
+#    show-sql: true   # in dev only
+#    open-in-view: false
+#    
+#    properties:
+#      hibernate:  
+#        format_sql: true  # in dev only
+#        generate_statistics: true  # in dev only
+#
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#
+#  docker:
+#    compose:
+#      enabled: true
+#      lifecycle-management: start_only
+#
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: contact.connect_pro@gmail.com
+#    password: dev
+#    properties:
+#      mail:
+#        smtp:
+#          trust: "*"
+#        auth: true
+#        starttls:
+#          enable: true
+#        connectiontimeout: 5000
+#        timeout: 3000
+#        writetimeout: 5000
+#
+#
+#  devtools:
+#    restart:
+#      enabled: true
+#      trigger-file:
+#    livereload:
+#      enabled: true
+#
+#security:
+#  otp-token:
+#    expiration-time: 20 # minutes
+#  jwt:
+#    # generate with terminal cmd: openssl rand -base64 32
+#    secret: "lvWNwREIlN4FEIrwApmUwP1EIKaYpFggdZMZMAMFdo8="
+#    expiration-time: 720 # minutes
+#
+#aws:
+#  region:
+#    static: us-east-1
+#  credentials:
+#    access-key: connect-pro
+#    secret-key: connect-pro
+#  s3:
+#    bucket-name: connect-pro-images
+#    endpoint:   http://192.168.1.100:4566
+#    public-url: http://192.168.1.100:4566
+##    endpoint:   http:/10.25.104.5:4566
+##    public-url: http:/10.25.104.5:4566
+#
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /api/v1
+#  address: 0.0.0.0
+#
+#logging:
+#  level:
+#    #    org.springframework.data: DEBUG
+#    org.springframework.security: DEBUG
+##    org.postgresql: DEBUG
+##    org.hibernate: DEBUG

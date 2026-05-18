@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    hikari:
+      auto-commit: false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    show-sql: false
+    open-in-view: false
+    
+  flyway:
+    enabled: true
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+security:
+  otp-token:
+    expiration-time: 20
+
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-time: 720
+
+aws:
+  region:
+    static: ${AWS_REGION}
+
+  credentials:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+
+  s3:
+    bucket-name: ${S3_BUCKET_NAME}
+    bucket-url-prefix: ${S3_BUCKET_URL_PREFIX}
+
+logging:
+  level:
+    root: INFO

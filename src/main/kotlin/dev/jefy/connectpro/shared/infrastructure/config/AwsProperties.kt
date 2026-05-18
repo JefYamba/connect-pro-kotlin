@@ -23,7 +23,7 @@ data class CredentialsProperties(
 )
 @ConfigurationProperties(prefix = "aws.s3")
 data class S3Properties(
-    val endpoint: String,
+    val endpoint: String?,
     val bucketName: String,
-    val publicUrl: String
+    val bucketUrlPrefix: String
 )

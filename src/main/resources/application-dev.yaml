@@ -1,0 +1,59 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/connect-pro-db
+    username: connect-pro
+    password: connect-pro
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      auto-commit: false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    show-sql: true
+    open-in-view: false
+
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start_only
+
+  mail:
+    host: localhost
+    port: 1025
+    username: dev
+    password: dev
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+security:
+  otp-token:
+    expiration-time: 20
+
+  jwt:
+    secret: dev-secret-change-this
+    expiration-time: 720
+
+aws:
+  region:
+    static: us-east-1
+
+  credentials:
+    access-key: connect-pro
+    secret-key: connect-pro
+
+  s3:
+    bucket-name: connect-pro-images
+    endpoint: http://192.168.1.100:4566
+    bucket-url-prefix: http://192.168.1.100:4566/connect-pro-images/

@@ -12,16 +12,7 @@ class ImageUtils(private val awsProperties: AwsProperties) {
 
 
     fun fileUrl(imageName: String): String {
-        return "${getBucketUrlPrefix()}$imageName"
-    }
-
-    fun getBucketUrlPrefix(): String {
-        val activeProfile = System.getProperty("spring.profiles.active")
-        val isDev = activeProfile == null || activeProfile != "prod"
-
-        return if (isDev) "${awsProperties.s3.publicUrl}/${awsProperties.s3.bucketName}/"
-        else "https://${awsProperties.s3.bucketName}.s3.${awsProperties.region.static}.amazonaws.com/"
-        
+        return "${awsProperties.s3.bucketUrlPrefix}$imageName"
     }
 
     private fun getExtensionFromMimeContentType(image: MultipartFile): String {

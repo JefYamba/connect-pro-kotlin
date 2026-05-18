@@ -1,6 +1,6 @@
 services:
   postgres-db:
-    container_name: connect-pro-postgres
+    container_name: connect-pro-db
     image: postgres:17-alpine
     environment:
       POSTGRES_USER: connect-pro
