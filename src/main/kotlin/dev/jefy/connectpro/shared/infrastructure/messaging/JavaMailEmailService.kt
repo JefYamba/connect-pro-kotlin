@@ -4,19 +4,25 @@ import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.EmailStrateg
 import dev.jefy.connectpro.user.domain.vo.Email
 import jakarta.mail.MessagingException
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
 @Service
-class EmailServiceImpl(
+@ConditionalOnProperty(
+    name = ["app.mail.provider"],
+    havingValue = "javamail",
+    matchIfMissing = true
+)
+class JavaMailEmailService(
     private val mailSender: JavaMailSender,
-    @Value("\${spring.mail.username}") private val sendingEmail: String
+    @Value($$"${spring.mail.username}") private val sendingEmail: String
 ) : EmailService {
 
     @Async
-    override fun sendEmail(email: Email, strategy: EmailStrategy) {
+    override fun send(email: Email, strategy: EmailStrategy) {
         val message = strategy.message()
         val subject = strategy.subject()
         try {

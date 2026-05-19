@@ -56,7 +56,7 @@ class PortfolioCommandImpl(
 
         portfolioRepo.save(portfolio)
 
-        emailService.sendEmail(Email(userData.email), PortfolioCreatedEmailStrategy(userData.name))
+        emailService.send(Email(userData.email), PortfolioCreatedEmailStrategy(userData.name))
 
         return portfolio.id
     }

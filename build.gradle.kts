@@ -40,6 +40,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.14.1")
 	runtimeOnly("org.postgresql:postgresql")
+    
+    //RESEND EMAIL
+    implementation("com.resend:resend-java:3.1.0")
+    
 	// ✅ JWT (AJOUTÉ)
 	implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")

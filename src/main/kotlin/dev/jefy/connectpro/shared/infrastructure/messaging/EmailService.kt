@@ -6,5 +6,5 @@ import org.springframework.scheduling.annotation.Async
 
 interface EmailService {
     @Async
-    fun sendEmail(email: Email, strategy: EmailStrategy)
+    fun send(email: Email, strategy: EmailStrategy)
 }

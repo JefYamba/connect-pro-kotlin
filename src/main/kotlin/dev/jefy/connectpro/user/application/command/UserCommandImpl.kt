@@ -70,7 +70,7 @@ class UserCommandImpl(
         userRepository.save(user)
 
         val token = tokenManager.generateAndSave(user.id)
-        emailService.sendEmail(email, AccountCreationEmailStrategy(request.name, token.code))
+        emailService.send(email, AccountCreationEmailStrategy(request.name, token.code))
         return token.id
     }
 
@@ -83,7 +83,7 @@ class UserCommandImpl(
         userRepository.save(user)
         tokenManager.save(token)
 
-        emailService.sendEmail(user.email, AccountActivatedEmailStrategy(user.name))
+        emailService.send(user.email, AccountActivatedEmailStrategy(user.name))
     }
 
     override fun requestForPasswordReset(email: Email): TokenId {
@@ -94,7 +94,7 @@ class UserCommandImpl(
         }
         val token = tokenManager.generateAndSave(user.id)
 
-        emailService.sendEmail(email, ResetPasswordEmailStrategy(user.name, token.code))
+        emailService.send(email, ResetPasswordEmailStrategy(user.name, token.code))
         return token.id
     }
 
@@ -117,7 +117,7 @@ class UserCommandImpl(
         user.updatePassword(password)
         userRepository.save(user)
 
-        emailService.sendEmail(user.email, PasswordUpdatedEmailStrategy(user.name))
+        emailService.send(user.email, PasswordUpdatedEmailStrategy(user.name))
     }
 
     override fun setProfileImage(userId: UserId, image: MultipartFile): ImageData {

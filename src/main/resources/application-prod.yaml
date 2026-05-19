@@ -41,6 +41,14 @@ spring:
     compose:
       enabled: false
 
+app:
+  mail:
+    provider: resend
+
+resend:
+  api-key: ${RESEND_API_KEY}
+  email: ${RESEND_EMAIL}
+
 security:
   otp-token:
     expiration-time: 20
@@ -66,6 +74,8 @@ aws:
   s3:
     bucket-name: ${S3_BUCKET_NAME}
     bucket-url-prefix: ${S3_BUCKET_URL_PREFIX}
+
+
 
 logging:
   level:
