@@ -17,7 +17,7 @@ import java.util.*
  * @author Jôph Yamba
  */
 @RestController
-@RequestMapping("/cateory")   // Note : il y a une faute ici ("cateory" au lieu de "category")
+@RequestMapping("/category")
 @Tag(name = "Category Api")
 class CategoryController(
     private val command: CategoryCommand,

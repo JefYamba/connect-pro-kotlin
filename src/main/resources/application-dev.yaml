@@ -28,14 +28,21 @@ spring:
       lifecycle-management: start_only
 
   mail:
-    host: localhost
+    host: 192.168.1.100
     port: 1025
-    username: dev
+    username: contact.connect_pro@gmail.com
     password: dev
-    
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+  
 app:
   mail:
     provider: javamail
@@ -45,7 +52,7 @@ security:
     expiration-time: 20
 
   jwt:
-    secret: dev-secret-change-this
+    secret: "lvWNwREIlN4FEIrwApmUwP1EIKaYpFggdZMZMAMFdo8="
     expiration-time: 720
 
 aws:

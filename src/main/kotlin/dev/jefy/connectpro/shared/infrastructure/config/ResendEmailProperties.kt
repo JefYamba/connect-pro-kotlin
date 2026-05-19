@@ -7,6 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  */
 @ConfigurationProperties(prefix = "resend")
 data class ResendEmailProperties(
-    val apiKey: String,
-    val email: String
+    val apiKey: String = "",
+    val email: String = ""
 )
