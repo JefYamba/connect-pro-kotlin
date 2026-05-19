@@ -18,10 +18,7 @@ spring:
 
     show-sql: false
     open-in-view: false
-    properties:
-      hibernate:
-        boot:
-          allow_jdbc_metadata_access: false
+
           
   flyway:
     enabled: true
