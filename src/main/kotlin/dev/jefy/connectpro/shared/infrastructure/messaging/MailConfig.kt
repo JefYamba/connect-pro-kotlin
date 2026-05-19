@@ -1,15 +1,13 @@
 package dev.jefy.connectpro.shared.infrastructure.messaging
 
-import org.springframework.context.annotation.Bean
+import dev.jefy.connectpro.shared.infrastructure.config.ResendEmailProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import org.springframework.mail.javamail.JavaMailSenderImpl
 
 /**
  * @author  Jôph Yamba
  */
 @Configuration
+@EnableConfigurationProperties(ResendEmailProperties::class)
 class MailConfig {
-    
-    @Bean
-    fun mailSender() = JavaMailSenderImpl()
 }

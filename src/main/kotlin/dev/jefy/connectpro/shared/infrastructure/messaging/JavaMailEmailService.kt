@@ -3,6 +3,7 @@ package dev.jefy.connectpro.shared.infrastructure.messaging
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.EmailStrategy
 import dev.jefy.connectpro.user.domain.vo.Email
 import jakarta.mail.MessagingException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.mail.SimpleMailMessage

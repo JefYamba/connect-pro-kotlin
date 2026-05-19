@@ -18,29 +18,17 @@ spring:
 
     show-sql: false
     open-in-view: false
-
           
   flyway:
     enabled: true
     
-  mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            
   docker:
     compose:
       enabled: false
-
+      
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration
 app:
   mail:
     provider: resend
