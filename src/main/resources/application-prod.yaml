@@ -70,3 +70,4 @@ aws:
 logging:
   level:
     root: INFO
+    org.hibernate.tool.schema: DEBUG

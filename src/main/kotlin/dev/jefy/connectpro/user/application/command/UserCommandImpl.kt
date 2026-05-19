@@ -22,9 +22,11 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 @Service
+@Transactional
 class UserCommandImpl(
     private val userRepository: UserRepository,
     private val tokenManager: TokenManager,
@@ -120,11 +122,11 @@ class UserCommandImpl(
 
     override fun setProfileImage(userId: UserId, image: MultipartFile): ImageData {
         val user = getUser(userId)
-        val image = imageService.save(image)
-        user.changeProfileImage(image)
+        val savedImage = imageService.save(image)
+        user.changeProfileImage(savedImage)
         userRepository.save(user)
         
-        return image.toData(resolver)
+        return savedImage.toData(resolver)
     }
 
     override fun changePassword(request: ChangePasswordRequest) {
