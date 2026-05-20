@@ -65,8 +65,12 @@ aws:
 
   s3:
     bucket-name: connect-pro-images
-    endpoint: http://192.168.1.100:4566
-    bucket-url-prefix: http://192.168.1.100:4566/connect-pro-images/
+#    endpoint: http://192.168.1.100:4566
+#    bucket-url-prefix: http://192.168.1.100:4566/connect-pro-images/
+#    endpoint: http://10.25.104.5:4566
+#    bucket-url-prefix: http://10.25.104.5:4566/connect-pro-images/
+    endpoint: http://172.28.176.250:4566
+    bucket-url-prefix: http://172.28.176.250:4566/connect-pro-images/
     
 logging:
   level:
