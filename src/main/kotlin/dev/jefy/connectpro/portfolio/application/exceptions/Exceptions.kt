@@ -8,7 +8,7 @@ class ServiceAlreadyExistsException() : RuntimeException("Service already exists
 
 class ProjectNotFoundException() : RuntimeException("Project not found")
 class AwardNotFoundException() : RuntimeException("Award not found")
-class SocialLinkNotFoundException() : RuntimeException("Social link not found")
+class SocialNotFoundException() : RuntimeException("Social link not found")
 class PortfolioNotFoundException() : RuntimeException("Portfolio not found")
 class FaqNotFoundException() : RuntimeException("Faq not found")
 class ServiceNotFoundException() : RuntimeException("Service not found")

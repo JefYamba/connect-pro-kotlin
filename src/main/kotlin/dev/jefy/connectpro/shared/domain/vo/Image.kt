@@ -1,9 +1,7 @@
 package dev.jefy.connectpro.shared.domain.vo
 
-import jakarta.persistence.Embeddable
-
-@Embeddable
-data class Image(var value: String){
+@JvmInline
+value class Image(val value: String){
     init {
         require(value.matches(IMAGE_KEY_REGEX)) { "Invalid image key format" }
     }

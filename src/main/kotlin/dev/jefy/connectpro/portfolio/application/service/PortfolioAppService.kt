@@ -1,9 +1,8 @@
 package dev.jefy.connectpro.portfolio.application.service
 
-import dev.jefy.connectpro.portfolio.application.dtos.ContactInfoData
-import dev.jefy.connectpro.portfolio.application.dtos.GeneralInfoRequest
-import dev.jefy.connectpro.portfolio.application.dtos.PortfolioRequest
-import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
+import dev.jefy.connectpro.portfolio.application.dtos.ContactData
+import dev.jefy.connectpro.portfolio.application.dtos.CreatePortfolioRequest
+import dev.jefy.connectpro.portfolio.application.dtos.SocialData
 import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioAlreadyExistsException
 import dev.jefy.connectpro.portfolio.application.exceptions.SocialLinkAlreadyExistsException
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
@@ -21,27 +20,18 @@ class PortfolioAppService(
     private val socialLinkRepo: SocialLinkQueryRepository
 ) {
 
-    fun checkConflict(request: PortfolioRequest) {
-        val phones = listOfNotNull(
-            request.contactInfo.phone1,
-            request.contactInfo.phone2
-        )
-
-        if (phones.isEmpty()) {
-            throw IllegalArgumentException("At least one phone number is required")
-        }
-
+    fun checkConflict(request: CreatePortfolioRequest) {
+        
         val isConflict = portfolioRepos.existsPortfolioConflict(
-            request.generalInfo.name,
-            Email.of(request.contactInfo.email),
-            phones
+            request.name,
+            Email.of(request.contact.email)
         )
 
         if (isConflict) throw PortfolioAlreadyExistsException()
     }
 
-    fun checkSocialLinksConflict(socialLinks: List<SocialLinkData>) {
-        val urls = socialLinks.mapNotNull { it.url }
+    fun checkSocialLinksConflict(socialLinks: List<SocialData>) {
+        val urls = socialLinks.map { it.url }
 
         if (urls.isEmpty()) return
 
@@ -52,26 +42,14 @@ class PortfolioAppService(
         }
     }
 
-    fun checkGeneralInfoConflict(portfolioId: PortfolioId, request: GeneralInfoRequest) {
-        val isConflict = portfolioRepos.existsNameConflict(portfolioId, request.name)
+    fun checkGeneralInfoConflict(portfolioId: PortfolioId, name: String) {
+        val isConflict = portfolioRepos.existsNameConflict(portfolioId, name)
         if (isConflict) throw PortfolioAlreadyExistsException()
     }
 
-    fun checkContactInfoConflict(portfolioId: PortfolioId, request: ContactInfoData) {
-        val phones = listOfNotNull(
-            request.phone1,
-            request.phone2
-        )
+    fun checkContactInfoConflict(portfolioId: PortfolioId, request: ContactData) {
 
-        if (phones.isEmpty()) {
-            throw IllegalArgumentException("At least one phone number is required")
-        }
-
-        val isConflict = portfolioRepos.existsContactConflict(
-            portfolioId,
-            request.email,
-            phones
-        )
+        val isConflict = portfolioRepos.existsContactConflict(portfolioId, request.email,)
 
         if (isConflict) throw PortfolioAlreadyExistsException()
     }

@@ -4,54 +4,40 @@ import dev.jefy.connectpro.portfolio.application.dtos.ProjectRequest
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
 import dev.jefy.connectpro.shared.domain.vo.Image
-import dev.jefy.connectpro.shared.infrastructure.converter.ImagesListConverter
 import jakarta.persistence.*
-import java.time.LocalDate
 
 @Entity
 @Table(name = "projects")
-open class Project (portfolioId: PortfolioId, request: ProjectRequest) {
-
+open class Project (
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
-    var id: ProjectId = ProjectId.generate()
-        protected set
-
+    var id: ProjectId = ProjectId.generate(),
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "portfolio_id"))
-    var portfolioId: PortfolioId = portfolioId
-        protected set
-
-    @Column(name = "title", length = 500)
-    var title: String = request.title
-        protected set
-    
+    var portfolioId: PortfolioId,
+    @Column(name = "name", length = 500)
+    var name: String,
     @Column(name = "description", columnDefinition = "TEXT")
-    var description: String? = request.description
-        protected set
-
-    @Convert(converter = ImagesListConverter::class)
-    @Column(name = "images", columnDefinition = "TEXT")
-    var images: MutableList<Image> = mutableListOf()
-
-    var startAt: LocalDate? = request.startAt
-        protected set
-
-    var completedAt: LocalDate? = request.completedAt
-        protected set
+    var description: String? = null,
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "project_images",
+        joinColumns = [JoinColumn(name = "project_id")]
+    )
+    @Column(name = "image")
+    var images: MutableList<String> = mutableListOf(),
+) {
 
     
     fun update(request: ProjectRequest) {
-        this.title = request.title
+        this.name = request.name
         this.description = request.description
-        this.startAt = request.startAt
-        this.completedAt = request.completedAt
     }
 
     fun addImage(image: Image) {
         check(images.size < 4) { "A project must not have more than 4 images" }
-        images.add(image)
+        images.add(image.value)
     }
 
-    fun removeImage(image: Image) { images.removeIf { it == image } }
+    fun removeImage(image: Image) { images.removeIf { it == image.value } }
 }

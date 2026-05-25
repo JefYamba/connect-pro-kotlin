@@ -7,10 +7,9 @@ import dev.jefy.connectpro.chats.domain.Conversation
 import dev.jefy.connectpro.chats.domain.Message
 import dev.jefy.connectpro.chats.domain.repositoty.ConversationRepository
 import dev.jefy.connectpro.chats.domain.repositoty.MessageRepository
+import dev.jefy.connectpro.shared.infrastructure.annotations.QueryService
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.UserId
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 /**
@@ -19,8 +18,7 @@ import java.util.*
  * Toutes les opérations de lecture sur le module messaging.
  * UserClient.getById(id) retourne un objet avec au moins id, name, image.
  */
-@Service
-@Transactional(readOnly = true)
+@QueryService
 class ChatQueryService(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,

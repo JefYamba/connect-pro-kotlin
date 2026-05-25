@@ -5,7 +5,6 @@ import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.marketplace.application.dtos.ServiceListingResponse
 import dev.jefy.connectpro.portfolio.domain.model.Portfolio
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioStatus
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioType
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
 import java.time.Instant
 import java.util.*
@@ -13,19 +12,21 @@ import java.util.*
 /**
  * @author Jôph Yamba
  */
-@JvmRecord
+
 data class PortfolioResponse(
     val id: UUID,
     val userId: UUID,
-    val type: PortfolioType,
+    val name: String,
+    val bio: String,
+    val details: String?,
+    val coverImage: String? = null,
     val status: PortfolioStatus,
     val badge: BadgeResponse?,
     val createdAt: Instant,
-    val generalInfo: GeneralInfoResponse,
-    val professionalInfo: ProfessionalInfoResponse,
-    val contactInfo: ContactInfoData,
-    val locationInfo: LocationInfoData,
-    val socialLinks: List<SocialLinkData>,
+    val contact: ContactData,
+    val location: LocationData,
+    val socials: List<SocialData>,
+    val projects: List<ProjectResponse>,
     val services: List<ServiceListingResponse>,
     val jobPosts: List<JobPostListingResponse>
 )
@@ -39,15 +40,17 @@ fun Portfolio.toResponse(
 ): PortfolioResponse = PortfolioResponse(
     id = this.id.value,
     userId = this.userId.value,
-    type = this.type,
+    name = this.name,
+    bio = this.bio,
+    details = this.details,
+    coverImage = resolver.resolve(this.coverImage),
     status = this.status,
     badge = badge,
     createdAt = this.createdAt,
-    generalInfo = this.generalInfo.toResponse(resolver),
-    professionalInfo = this.professionalInfo.toResponse(projects),
-    contactInfo = this.contactInfo.toData(),
-    locationInfo = this.locationInfo.toData(),
-    socialLinks = this.socialLinks.map{ it.toData() }.toList(),
+    contact = this.contact.toData(),
+    location = this.location.toData(),
+    socials = this.socials.map{ it.toData() }.toList(),
+    projects = projects,
     services = services,
     jobPosts = jobPosts
 )

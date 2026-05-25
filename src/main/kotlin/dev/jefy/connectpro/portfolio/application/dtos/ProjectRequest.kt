@@ -1,17 +1,13 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
-import java.time.LocalDate
 import java.util.*
 
 data class ProjectRequest(
     val portfolioId: UUID,
-    val title: String,
-    val description: String,
-    val startAt: LocalDate?,
-    val completedAt: LocalDate?
+    val name: String,
+    val description: String?,
 ){
     init {
-        require(title.isNotBlank()) { "title must not be blank" }
-        require(description.isNotBlank()) { "description must not be blank" }
+        require(name.isNotBlank()) { "title must not be blank" }
     }
 }

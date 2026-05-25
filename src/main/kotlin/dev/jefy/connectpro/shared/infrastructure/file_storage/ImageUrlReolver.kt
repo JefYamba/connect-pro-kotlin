@@ -1,6 +1,5 @@
 package dev.jefy.connectpro.shared.infrastructure.file_storage
 
-import dev.jefy.connectpro.shared.domain.vo.Image
 import org.springframework.stereotype.Component
 
 /**
@@ -9,15 +8,15 @@ import org.springframework.stereotype.Component
 @Component
 class ImageUrlResolver(private val imageUtils: ImageUtils) {
 
-    fun resolve(image: Image?): String? {
+    fun resolve(image: String?): String? {
         return image?.let {
-            imageUtils.fileUrl(it.value)
+            imageUtils.fileUrl(it)
         }
     }
 
-    fun resolve(images: Collection<Image>): List<String> {
+    fun resolve(images: Collection<String>): List<String> {
         return images.map {
-            imageUtils.fileUrl(it.value)
+            imageUtils.fileUrl(it)
         }
     }
 }

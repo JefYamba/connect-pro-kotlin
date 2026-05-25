@@ -11,6 +11,6 @@ data class ImageData(@field:NotBlank var value: String){
     fun getKey() = Image(value.substringAfterLast("/"))
 }
 fun Image.toData(resolver: ImageUrlResolver): ImageData {
-    val image = resolver.resolve(this) ?: throw IllegalArgumentException("Image not found")
+    val image = resolver.resolve(this.value) ?: throw IllegalArgumentException("Image not found")
     return ImageData(image)
 }

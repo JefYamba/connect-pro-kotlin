@@ -14,12 +14,11 @@ data class PortfolioData(
 ) 
 
 fun Portfolio.toSummaryData(resolver: ImageUrlResolver): PortfolioData {
-    val image = this.generalInfo.coverImage
     return PortfolioData(
         id = this.id.value,
-        name = this.generalInfo.name,
-        coverImage = resolver.resolve(image),
-        shortDescription = this.generalInfo.shortDescription,
+        name = this.name,
+        coverImage = resolver.resolve(this.coverImage),
+        shortDescription = this.bio,
         active = this.isActive(),
         userId = this.userId.value
     )

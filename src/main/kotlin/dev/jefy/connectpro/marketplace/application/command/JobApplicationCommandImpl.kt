@@ -8,18 +8,13 @@ import dev.jefy.connectpro.marketplace.domain.repository.JobApplicationRepositor
 import dev.jefy.connectpro.marketplace.domain.vo.JobApplicationId
 import dev.jefy.connectpro.portfolio.PortfolioClient
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.user.UserClient
-import dev.jefy.connectpro.user.domain.vo.UserId
-import org.jspecify.annotations.NullMarked
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
-@Service
-@Transactional
+@CommandService
 class JobApplicationCommandImpl(
     private val jobApplicationRepo: JobApplicationRepository,
     private val portfolioClient: PortfolioClient,
@@ -32,7 +27,10 @@ class JobApplicationCommandImpl(
             throw JobPostNotExistOrValidException()
         }
         val user = userClient.getCurrentUser()
-        val application = JobApplication(UserId(user.id), jobPostId, request.motivation)
+        val application = JobApplication(
+            id = JobApplicationId(applicantId = user.id, jobPostId = jobPostId.value), 
+            motivation = request.motivation
+        )
         jobApplicationRepo.save(application)
 
         return application.id

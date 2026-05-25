@@ -1,21 +1,21 @@
 package dev.jefy.connectpro.portfolio.application.dtos
 
-import dev.jefy.connectpro.portfolio.domain.vo.LocationInfo
+import dev.jefy.connectpro.portfolio.domain.vo.Location
 
 
 /**
  * @author Jôph Yamba
  */
 
-data class LocationInfoData(
+data class LocationData(
     val country: String,
     val city: String,
     val address: String?,
     val latitude: Double?,
     val longitude: Double?
 ) {
-    fun toDomain(): LocationInfo {
-        return LocationInfo(
+    fun toDomain(): Location {
+        return Location(
             country = this.country,
             city = this.city,
             address = this.address,
@@ -26,7 +26,7 @@ data class LocationInfoData(
     
 }
 
-fun LocationInfo.toData(): LocationInfoData = LocationInfoData(
+fun Location.toData(): LocationData = LocationData(
     country = this.country,
     city = this.city,
     address = this.address,

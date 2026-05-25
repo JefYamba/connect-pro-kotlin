@@ -13,11 +13,9 @@ import dev.jefy.connectpro.portfolio.domain.repository.JobPostRepository
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 
-@Service
-@Transactional
+@CommandService
 class JobPostCommandImpl(
     private val jobPostRepo: JobPostRepository,
     private val portfolioRepo: PortfolioRepository,
@@ -28,19 +26,26 @@ class JobPostCommandImpl(
 
     override fun create(request: JobPostRequest): JobPostId {
         val portfolioId = PortfolioId.of(request.portfolioId)
+        val categoryId = CategoryId.of(request.categoryId)
 
-        if (managementClient.notExistsCategory(CategoryId.of(request.categoryId))) {
+        if (managementClient.notExistsCategory(categoryId)) {
             throw CategoryNotFoundException()
         }
 
         if (!portfolioRepo.existsById(portfolioId)) throw  PortfolioNotFoundException()
         
-        val isConflict = jobPostRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.title)
+        val isConflict = jobPostRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.name)
         if (isConflict) throw JobPostAlreadyExistsException()
 
         val tags = tagService.resolveTags(stringTags = request.tags)
         
-        val jobPost = JobPost(portfolioId = portfolioId, request = request, tags = tags)
+        val jobPost = JobPost(
+            portfolioId = portfolioId,
+            name = request.name,
+            description = request.description,
+            categoryId = categoryId,
+            tags = tags.toMutableSet(),
+        )
         jobPostRepo.save(jobPost)
 
         return jobPost.id
@@ -55,7 +60,7 @@ class JobPostCommandImpl(
 
         if ( jobPostRepo.existsByTitleConflictForId(
             portfolioId = jobPost.portfolioId, 
-            title = request.title,
+            title = request.name,
             jobPostId = jobPostId
         )) throw JobPostAlreadyExistsException()
         

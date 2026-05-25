@@ -7,16 +7,10 @@ import jakarta.persistence.Embeddable
 import jakarta.persistence.Embedded
 
 @Embeddable
-data class ContactInfo(
+data class Contact(
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "email"))
-    var email: Email,
-    @Column(nullable = false)
-    var phone1: String,
-    var phone2: String? = null,
-    var websiteUrl: String? = null
-) {
-    init {
-        require(phone1.isNotBlank()) { "phone1 must not be blank" }
-    }
-}
+    var email: Email? = null,
+    var phone: String? = null,
+    var website: String? = null
+)

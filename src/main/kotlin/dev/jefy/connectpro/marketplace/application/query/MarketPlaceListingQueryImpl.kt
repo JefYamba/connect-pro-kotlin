@@ -10,7 +10,7 @@ import dev.jefy.connectpro.marketplace.application.dtos.toListingResponse
 import dev.jefy.connectpro.portfolio.PortfolioClient
 import dev.jefy.connectpro.portfolio.application.exceptions.AwardNotFoundException
 import dev.jefy.connectpro.portfolio.domain.model.JobPost
-import dev.jefy.connectpro.portfolio.domain.model.PService
+import dev.jefy.connectpro.portfolio.domain.model.Service
 import dev.jefy.connectpro.portfolio.domain.repository.JobPostRepository
 import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
@@ -18,18 +18,14 @@ import dev.jefy.connectpro.recommandation.RecommandationClient
 import dev.jefy.connectpro.shared.application.dtos.PageResponse
 import dev.jefy.connectpro.shared.application.dtos.PortfolioData
 import dev.jefy.connectpro.shared.application.dtos.toPageResponse
+import dev.jefy.connectpro.shared.infrastructure.annotations.QueryService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
-import org.jspecify.annotations.NullMarked
 import org.springframework.data.domain.PageRequest
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * @author Jôph Yamba
  */
-@NullMarked
-@Service
-@Transactional(readOnly = true)
+@QueryService
 class MarketPlaceListingQueryImpl(
     private val serviceRepo: ServiceRepository,
     private val jobPostRepo: JobPostRepository,
@@ -85,7 +81,7 @@ class MarketPlaceListingQueryImpl(
             .toPageResponse()
     }
 
-    private val mapToServiceListingResponse: (PService) -> ServiceListingResponse = { service ->
+    private val mapToServiceListingResponse: (Service) -> ServiceListingResponse = { service ->
         val category = managementClient.getCategory(service.categoryId)
         val award = service.awardId?.let { 
             managementClient.getAward(it).orElseThrow{ AwardNotFoundException() } 

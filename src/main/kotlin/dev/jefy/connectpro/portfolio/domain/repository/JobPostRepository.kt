@@ -14,24 +14,28 @@ import org.springframework.stereotype.Repository
 @Repository
 interface JobPostRepository : JpaRepository<JobPost, JobPostId> {
 
-    @Query("""
+    @Query(
+        """
         select case when count(jobPost) > 0 then true else false end
         from JobPost jobPost
         where jobPost.portfolioId = :portfolioId
-        and jobPost.title = :title
-    """)
+        and jobPost.name = :title
+    """
+    )
     fun existsByTitleConflict
         (@Param("portfolioId") portfolioId: PortfolioId, 
          @Param("title") title: String
     ): Boolean
     
-    @Query("""
+    @Query(
+        """
         select case when count(jobPost) > 0 then true else false end
         from JobPost jobPost
         where jobPost.portfolioId = :portfolioId
-        and jobPost.title = :title
+        and jobPost.name = :title
         and jobPost.id <> :jobPostId
-    """)
+    """
+    )
     fun existsByTitleConflictForId(
         @Param("portfolioId") portfolioId: PortfolioId, 
         @Param("title") title: String,
@@ -42,14 +46,16 @@ interface JobPostRepository : JpaRepository<JobPost, JobPostId> {
 
     fun findAllByPortfolioId(id: PortfolioId): List<JobPost>
 
-    @Query("""
+    @Query(
+        """
         select jobPost from JobPost jobPost
         where (:categoryId is null or jobPost.categoryId = :categoryId)
           and (:search is null or (
-                lower(jobPost.title) like lower(concat('%', :search, '%'))
+                lower(jobPost.name) like lower(concat('%', :search, '%'))
              or lower(jobPost.description) like lower(concat('%', :search, '%'))
         ))
-    """)
+    """
+    )
     fun filter(
         @Param("search") search: String?,
         @Param("categoryId") categoryId: CategoryId?,

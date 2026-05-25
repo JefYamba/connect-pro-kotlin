@@ -20,16 +20,14 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
     fun findByUserId(@Param("userId") userId: UserId): Optional<Portfolio>
 
     @Query("""
-        select count(portfolio) > 0 from Portfolio portfolio
-        where portfolio.generalInfo.name = :name
-        or portfolio.contactInfo.email = :email
-        or portfolio.contactInfo.phone1 in :phones
-        or portfolio.contactInfo.phone2 in :phones
+        select count(portfolio) > 0
+        from Portfolio portfolio
+        where portfolio.name = :name
+        or (:email is not null and portfolio.contact.email = :email)
     """)
     fun existsPortfolioConflict(
         @Param("name") name: String,
-        @Param("email") email: Email,
-        @Param("phones") phones: List<String>
+        @Param("email") email: Email?,
     ): Boolean
 
     fun existsByUserId(userId: UserId): Boolean
@@ -37,24 +35,23 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
     @Query("""
         select count(portfolio) > 0 from Portfolio portfolio
         where portfolio.id != :portfolioId
-        and portfolio.generalInfo.name = :name
+        and portfolio.name = :name
     """)
     fun existsNameConflict(
         @Param("portfolioId") portfolioId: PortfolioId,
         @Param("name") name: String
     ): Boolean
 
-    @Query("""
+    @Query(
+        """
         select count(portfolio) > 0 from Portfolio portfolio
         where portfolio.id != :portfolioId
-        or portfolio.contactInfo.email = :email
-        or portfolio.contactInfo.phone1 in :phones
-        or portfolio.contactInfo.phone2 in :phones
-    """)
+        or (:email is not null and portfolio.contact.email = :email)
+    """
+    )
     fun existsContactConflict(
         @Param("id") portfolioId: PortfolioId,
-        @Param("email") email: String,
-        @Param("phones") phones: List<String>
+        @Param("email") email: String?,
     ): Boolean
 
     fun existsByBadgeId(badgeId: BadgeId): Boolean

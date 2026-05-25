@@ -5,8 +5,7 @@ import dev.jefy.connectpro.portfolio.application.command.PortfolioCommand
 import dev.jefy.connectpro.portfolio.application.dtos.*
 import dev.jefy.connectpro.portfolio.application.query.PortfolioQuery
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioType
-import dev.jefy.connectpro.portfolio.domain.vo.SocialLinkId
+import dev.jefy.connectpro.portfolio.domain.vo.SocialId
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -36,44 +35,35 @@ class PortfolioController(
 
     @PostMapping
     @Operation(summary = "Create a portfolio for a user")
-    fun create(@RequestBody @Valid request: PortfolioRequest): ResponseEntity<AppResponse<PortfolioResponse>> {
+    fun create(@RequestBody @Valid request: CreatePortfolioRequest): ResponseEntity<AppResponse<PortfolioResponse>> {
         val portfolioId = command.create(request)
         return buildResponse("Account created successfully", query.get(portfolioId))
     }
 
-    @PatchMapping("/{portfolioId}/general-info")
+    @PutMapping("/{portfolioId}")
     fun updateGeneralInfo(
         @PathVariable portfolioId: UUID,
-        @RequestBody @Valid request: GeneralInfoRequest
+        @RequestBody @Valid request: UpdatePortfolioRequest
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.updateGeneralInfo(PortfolioId.of(portfolioId), request)
-        return buildResponse("General info updated successfully", query.get(id))
+        val id = command.update(PortfolioId.of(portfolioId), request)
+        return buildResponse("Portfolio updated successfully", query.get(id))
     }
-
-    @PatchMapping("/{portfolioId}/professional-info")
-    fun updateProfessionalInfo(
-        @PathVariable portfolioId: UUID,
-        @RequestBody @Valid request: ProfessionalInfoRequest
-    ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.updateProfessional(PortfolioId.of(portfolioId), request)
-        return buildResponse("Professional info updated successfully", query.get(id))
-    }
-
+    
     @PatchMapping("/{portfolioId}/contact-info")
     fun updateContactInfo(
         @PathVariable portfolioId: UUID,
-        @RequestBody @Valid request: ContactInfoData
+        @RequestBody @Valid request: ContactData
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.updateContactInfo(PortfolioId.of(portfolioId), request)
+        val id = command.updateContact(PortfolioId.of(portfolioId), request)
         return buildResponse("Contact info updated successfully", query.get(id))
     }
 
     @PatchMapping("/{portfolioId}/location-info")
     fun updateLocationInfo(
         @PathVariable portfolioId: UUID,
-        @RequestBody @Valid request: LocationInfoData
+        @RequestBody @Valid request: LocationData
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.updateLocationInfo(PortfolioId.of(portfolioId), request)
+        val id = command.updateLocation(PortfolioId.of(portfolioId), request)
         return buildResponse("Location info updated successfully", query.get(id))
     }
 
@@ -96,7 +86,7 @@ class PortfolioController(
     @PostMapping("/{portfolioId}/social-links")
     fun addSocialLink(
         @PathVariable portfolioId: UUID,
-        @RequestBody @Valid linkData: SocialLinkData
+        @RequestBody @Valid linkData: SocialData
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
         val id = command.addSocialLink(PortfolioId.of(portfolioId), linkData)
         return buildResponse("Social link added successfully", query.get(id))
@@ -107,7 +97,7 @@ class PortfolioController(
         @PathVariable portfolioId: UUID,
         @PathVariable socialLinkId: UUID
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.deleteSocialLink(PortfolioId.of(portfolioId), SocialLinkId.of(socialLinkId))
+        val id = command.deleteSocialLink(PortfolioId.of(portfolioId), SocialId.of(socialLinkId))
         return buildResponse("Social link deleted successfully", query.get(id))
     }
 
@@ -128,16 +118,7 @@ class PortfolioController(
         val id = command.bloc(PortfolioId.of(portfolioId))
         return buildResponse("Portfolio blocked successfully", query.get(id))
     }
-
-    @PatchMapping("/{portfolioId}/type-change", consumes = [MediaType.TEXT_PLAIN_VALUE])
-    fun changeType(
-        @PathVariable portfolioId: UUID,
-        @RequestBody @Valid type: PortfolioType
-    ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.changeType(PortfolioId.of(portfolioId), type)
-        return buildResponse("Portfolio type changed successfully", query.get(id))
-    }
-
+    
     @PatchMapping("/{portfolioId}/badge/{badgeId}")
     fun changeBadge(
         @PathVariable portfolioId: UUID,

@@ -9,14 +9,13 @@ import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
 import dev.jefy.connectpro.shared.application.dtos.ImageData
+import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
-@Service
-@Transactional
+@CommandService
 class ProjectCommandImpl(
     private val portfolioRepo: PortfolioRepository,
     private val projectRepo: ProjectRepository,
@@ -28,10 +27,14 @@ class ProjectCommandImpl(
 
         check(portfolioRepo.existsById(portfolioId)) { "Portfolio with id $portfolioId not found" }
 
-        val isConflict = projectRepo.isTitleConflict(portfolioId, request.title)
+        val isConflict = projectRepo.isTitleConflict(portfolioId, request.name)
         if (isConflict) throw ProjectAlreadyExistsException()
 
-        val project = Project(portfolioId, request)
+        val project = Project(
+            portfolioId = portfolioId,
+            name = request.name,
+            description = request.description,
+        )
         projectRepo.save(project)
 
         return project.id
@@ -41,7 +44,7 @@ class ProjectCommandImpl(
         projectId: ProjectId, request: ProjectRequest
     ): ProjectId = getProject(projectId)
             .apply {
-                val isConflict = projectRepo.isTitleConflict(portfolioId, request.title)
+                val isConflict = projectRepo.isTitleConflict(portfolioId, request.name)
                 if (isConflict) throw ProjectAlreadyExistsException()
                 update(request)
             }
@@ -72,7 +75,7 @@ class ProjectCommandImpl(
     @Throws(IOException::class)
     override fun delete(projectId: ProjectId) {
         val project = getProject(projectId)
-        project.images.forEach { imageService.delete(it) }
+        project.images.forEach { imageService.delete(Image(it)) }
         projectRepo.delete(project)
     }
 

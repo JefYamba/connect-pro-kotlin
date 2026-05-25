@@ -15,7 +15,7 @@ interface ProjectRepository : JpaRepository<Project, ProjectId> {
         """
         select count(project) > 0 from Project project
         where project.portfolioId = :portfolioId
-        and project.title = :title
+        and project.name = :title
         """
     )
     fun isTitleConflict(

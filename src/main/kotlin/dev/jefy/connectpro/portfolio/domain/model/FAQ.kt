@@ -6,7 +6,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "faqs")
-open class FAQ (service: PService, faq: FAQRequest) {
+open class FAQ (service: Service, faq: FAQRequest) {
 
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
@@ -20,7 +20,7 @@ open class FAQ (service: PService, faq: FAQRequest) {
         protected set
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "service_id", nullable = false)
-    var service: PService = service
+    var service: Service = service
         protected set
     
     

@@ -41,11 +41,11 @@ data class ServiceId(var value: UUID) {
 }
 
 @Embeddable
-data class SocialLinkId(var value: UUID) {
+data class SocialId(var value: UUID) {
 
     companion object {
-        fun generate(): SocialLinkId = SocialLinkId(UUID.randomUUID())
-        fun of(socialLinkId: UUID): SocialLinkId = SocialLinkId(socialLinkId)
+        fun generate(): SocialId = SocialId(UUID.randomUUID())
+        fun of(socialLinkId: UUID): SocialId = SocialId(socialLinkId)
     }
 }
 

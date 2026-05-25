@@ -66,7 +66,12 @@ class UserCommandImpl(
         if (request.password != request.confirmPassword) {
             throw IllegalArgumentException("Passwords do not match")
         }
-        val user = User(email, passwordGenerator.generate(request.password), UserRole.USER, request.name)
+        val user = User(
+            name =  request.name,
+            email=email, 
+            password = passwordGenerator.generate(request.password), 
+            role =  UserRole.USER, 
+        )
         userRepository.save(user)
 
         val token = tokenManager.generateAndSave(user.id)

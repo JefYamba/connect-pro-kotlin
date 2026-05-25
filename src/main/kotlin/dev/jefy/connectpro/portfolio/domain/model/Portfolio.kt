@@ -1,8 +1,7 @@
 package dev.jefy.connectpro.portfolio.domain.model
 
 import dev.jefy.connectpro.management.domain.vo.BadgeId
-import dev.jefy.connectpro.portfolio.application.dtos.SocialLinkData
-import dev.jefy.connectpro.portfolio.application.exceptions.SocialLinkNotFoundException
+import dev.jefy.connectpro.portfolio.application.exceptions.SocialNotFoundException
 import dev.jefy.connectpro.portfolio.domain.vo.*
 import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.user.domain.vo.UserId
@@ -12,68 +11,37 @@ import java.time.Instant
 @Entity
 @Table(name = "portfolios")
 open class Portfolio(
-    userId: UserId,
-    type: PortfolioType,
-    generalInfo: GeneralInfo,
-    professionalInfo: ProfessionalInfo,
-    contactInfo: ContactInfo,
-    locationInfo: LocationInfo,
-    socialLinks: List<SocialLinkData>
-    
-)  {
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
-    var id: PortfolioId = PortfolioId.generate()
-        protected set
-
+    var id: PortfolioId = PortfolioId.generate(),
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "user_id"))
-    var userId: UserId = userId
-        protected set
-
+    var userId: UserId,
+    @Column(nullable = false)
+    var name: String,
+    @Column(nullable = false)
+    var bio: String,
+    @Column(columnDefinition = "TEXT")
+    var details: String?,
+    var coverImage: String? = null,
     @Enumerated(EnumType.STRING)
-    var type: PortfolioType = type
-        protected set
-
-    @Enumerated(EnumType.STRING)
-    var status: PortfolioStatus = PortfolioStatus.ACTIVE
-        protected set
-
+    var status: PortfolioStatus = PortfolioStatus.ACTIVE,
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "badge_id"))
-    var badgeId: BadgeId? = null
-        protected set
-
-    var createdAt: Instant = Instant.now()
-        protected set
-
+    var badgeId: BadgeId? = null,
+    var createdAt: Instant = Instant.now(),
     @Embedded
-    var generalInfo: GeneralInfo = generalInfo
-        protected set
-
+    var contact: Contact,
     @Embedded
-    var professionalInfo: ProfessionalInfo = professionalInfo
-        protected set
-
-    @Embedded
-    var contactInfo: ContactInfo = contactInfo
-        protected set
-
-    @Embedded
-    var locationInfo: LocationInfo = locationInfo
-        protected set
-
+    var location: Location,
     @OneToMany(mappedBy = "portfolio", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    var socialLinks: MutableList<SocialLink> =  run {
-        val platforms = mutableSetOf<SocialPlatform>()
-        socialLinks.map { data ->
-            check(platforms.add(data.platform)) { "Duplicate social link platform: ${data.platform}" }
-            SocialLink(this, data)
-        }.toMutableList()
+    var socials: MutableSet<Social> = mutableSetOf(),
+    
+)  {
+    init {
+        require(name.isNotBlank()) { "name must not be blank" }
+        require(bio.isNotBlank()) { "short description must not be blank" }
     }
-        protected set
-
-    fun changeType(newType: PortfolioType) { this.type = newType }
 
     fun activate() { this.status = PortfolioStatus.ACTIVE }
 
@@ -81,27 +49,27 @@ open class Portfolio(
 
     fun block() { this.status = PortfolioStatus.BLOCKED }
 
-    fun updateGeneralInfo(generalInfo: GeneralInfo) { this.generalInfo = generalInfo }
+    fun update(name: String, bio: String, details: String?,) {
+        require(name.isNotBlank()) { "name must not be blank" }
+        require(bio.isNotBlank()) { "short description must not be blank" }
+        this.name = name
+        this.bio = bio
+        this.details = details
+    }
 
-    fun updateProfessionalInfo(professionalInfo: ProfessionalInfo) {this.professionalInfo = professionalInfo }
+    fun updateContact(contact: Contact) { this.contact = contact }
 
-    fun updateContactInfo(contactInfo: ContactInfo) { this.contactInfo = contactInfo }
-
-    fun updateLocationInfo(locationInfo: LocationInfo) { this.locationInfo = locationInfo }
+    fun updateLocation(location: Location) { this.location = location }
 
     fun isActive(): Boolean = this.status == PortfolioStatus.ACTIVE
     
-    fun addSocialLink(socialLink: SocialLinkData) { this.socialLinks.add(SocialLink(this, socialLink)) }
+    fun addSocial(social: Social) { this.socials.add(social) }
 
-    fun deleteSocialLink(socialLinkId: SocialLinkId) {
-        val removed = socialLinks.removeIf { it.id == socialLinkId }
-
-        if (!removed) throw SocialLinkNotFoundException()
+    fun deleteSocial(socialId: SocialId) {
+        val removed = socials.removeIf { it.id == socialId }
+        if (!removed) throw SocialNotFoundException()
     }
-
-    fun setCoverImage(image: Image) { this.generalInfo = this.generalInfo.copy(coverImage = image) }
-
-    fun deleteCoverImage() { this.generalInfo = this.generalInfo.copy(coverImage = null) }
-
+    fun setCoverImage(image: Image) { coverImage = image.value }
+    fun deleteCoverImage() { coverImage = null }
     fun addBadgeId(badgeId: BadgeId) { this.badgeId = badgeId }
 }

@@ -8,6 +8,6 @@ data class Email(var value: String) {
         require(value.isNotBlank()) { "email must not be blank" }
     }
     companion object {
-        fun of(email: String) = Email(email)
+        fun of(email: String?) = if (email != null ) Email(email) else null
     }
 }

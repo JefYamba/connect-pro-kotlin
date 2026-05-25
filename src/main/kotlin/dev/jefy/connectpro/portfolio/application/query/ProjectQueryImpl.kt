@@ -5,12 +5,10 @@ import dev.jefy.connectpro.portfolio.application.exceptions.ProjectNotFoundExcep
 import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ProjectId
+import dev.jefy.connectpro.shared.infrastructure.annotations.QueryService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
-@Service
-@Transactional(readOnly = true)
+@QueryService
 class ProjectQueryImpl(
     private val projectRepo: ProjectRepository,
     private val resolver: ImageUrlResolver

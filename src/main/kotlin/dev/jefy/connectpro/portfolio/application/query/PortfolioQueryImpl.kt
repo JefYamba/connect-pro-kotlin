@@ -15,8 +15,8 @@ import dev.jefy.connectpro.portfolio.application.exceptions.JobPostNotFoundExcep
 import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioNotFoundException
 import dev.jefy.connectpro.portfolio.application.exceptions.ServiceNotFoundException
 import dev.jefy.connectpro.portfolio.domain.model.JobPost
-import dev.jefy.connectpro.portfolio.domain.model.PService
 import dev.jefy.connectpro.portfolio.domain.model.Portfolio
+import dev.jefy.connectpro.portfolio.domain.model.Service
 import dev.jefy.connectpro.portfolio.domain.repository.JobPostRepository
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.repository.ProjectRepository
@@ -25,13 +25,11 @@ import dev.jefy.connectpro.portfolio.domain.vo.JobPostId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.application.dtos.toSummaryData
+import dev.jefy.connectpro.shared.infrastructure.annotations.QueryService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageUrlResolver
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.Assert
 
-@Service
-@Transactional(readOnly = true)
+@QueryService
 class PortfolioQueryImpl(
     private val portfolioRepo: PortfolioRepository,
     private val jobPostRepo: JobPostRepository,
@@ -85,7 +83,7 @@ class PortfolioQueryImpl(
             .map{ mapToServiceListingResponse(it, getPortfolio(portfolioId)) }
     }
 
-    private fun mapToServiceResponse(): (PService) -> ServiceResponse = { service ->
+    private fun mapToServiceResponse(): (Service) -> ServiceResponse = { service ->
         val portfolio = getPortfolio(service.portfolioId)
         val category = managementClient.getCategory(service.categoryId)
 
@@ -111,7 +109,7 @@ class PortfolioQueryImpl(
         jobPost.toResponse(portfolio.toSummaryData(resolver), category)
     }
     
-    private val mapToServiceListingResponse: (PService, Portfolio) -> ServiceListingResponse = { service,portfolio ->
+    private val mapToServiceListingResponse: (Service, Portfolio) -> ServiceListingResponse = { service, portfolio ->
 
         val category = managementClient.getCategory(service.categoryId)
 

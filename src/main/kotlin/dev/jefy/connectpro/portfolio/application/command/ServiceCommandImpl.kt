@@ -10,21 +10,20 @@ import dev.jefy.connectpro.portfolio.application.exceptions.AwardNotFoundExcepti
 import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
 import dev.jefy.connectpro.portfolio.application.exceptions.ServiceAlreadyExistsException
 import dev.jefy.connectpro.portfolio.application.exceptions.ServiceNotFoundException
-import dev.jefy.connectpro.portfolio.domain.model.PService
+import dev.jefy.connectpro.portfolio.domain.model.Service
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.repository.ServiceRepository
 import dev.jefy.connectpro.portfolio.domain.vo.FAQId
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
 import dev.jefy.connectpro.shared.application.dtos.ImageData
+import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
-@Service
-@Transactional
+@CommandService
 class ServiceCommandImpl(
     private val portfolioRepo: PortfolioRepository,
     private val serviceRepo: ServiceRepository,
@@ -42,11 +41,17 @@ class ServiceCommandImpl(
 
         require(portfolioRepo.existsById(portfolioId)) { "Portfolio with id $portfolioId not found" }
 
-        if (serviceRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.title)) throw ServiceAlreadyExistsException()
+        if (serviceRepo.existsByTitleConflict(portfolioId = portfolioId, title = request.name)) throw ServiceAlreadyExistsException()
 
         val tags = tagService.resolveTags(stringTags = request.tags)
 
-        val service = PService(portfolioId = portfolioId, request = request, tags = tags)
+        val service = Service(
+            portfolioId = portfolioId,
+            name = request.name,
+            description = request.description,
+            categoryId = categoryId,
+            tags = tags.toMutableSet()
+        )
         serviceRepo.save(service)
 
         return service.id
@@ -62,13 +67,18 @@ class ServiceCommandImpl(
 
                 if (serviceRepo.existsByTitleConflictForId(
                         portfolioId = portfolioId, 
-                        title = request.title, 
+                        title = request.name, 
                         serviceId = serviceId
                 )) throw ServiceAlreadyExistsException()
                 
                 val tags = tagService.resolveTags(stringTags = request.tags)
                 
-                update(request  = request, tags = tags)
+                update(
+                    title = request.name,
+                    description = request.description,
+                    categoryId = categoryId,
+                    tags = tags
+                )
             }
             .also { serviceRepo.save(it) }
             .id
@@ -87,7 +97,7 @@ class ServiceCommandImpl(
     override fun deleteCoverImage(serviceId: ServiceId): ServiceId =
         getService(serviceId)
             .apply {
-                coverImage?.let { imageService.delete(it) }
+                coverImage?.let { imageService.delete(Image(it)) }
                 deleteCoverImage()
             }
             .also { serviceRepo.save(it) }
@@ -158,6 +168,6 @@ class ServiceCommandImpl(
         serviceRepo.deleteById(service.id)
     }
 
-    private fun getService(serviceId: ServiceId): PService = serviceRepo
+    private fun getService(serviceId: ServiceId): Service = serviceRepo
         .findById(serviceId).orElseThrow { ServiceNotFoundException() }
 }

@@ -16,7 +16,7 @@ class TagService(val tagRepo: TagRepository) {
         val newTags = mutableSetOf<Tag>()
         for (name in stringTags) {
             if (!tagsByName.containsKey(name)) {
-                val tag = Tag(name)
+                val tag = Tag(name = name)
                 newTags.add(tag)
                 tagsByName[name] = tag
             }

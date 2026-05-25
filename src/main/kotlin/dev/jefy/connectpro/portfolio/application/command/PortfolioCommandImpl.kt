@@ -7,23 +7,22 @@ import dev.jefy.connectpro.portfolio.application.exceptions.BadgeNotFoundExcepti
 import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioNotFoundException
 import dev.jefy.connectpro.portfolio.application.service.PortfolioAppService
 import dev.jefy.connectpro.portfolio.domain.model.Portfolio
+import dev.jefy.connectpro.portfolio.domain.model.Social
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
-import dev.jefy.connectpro.portfolio.domain.vo.PortfolioType
-import dev.jefy.connectpro.portfolio.domain.vo.SocialLinkId
+import dev.jefy.connectpro.portfolio.domain.vo.SocialId
+import dev.jefy.connectpro.shared.domain.vo.Image
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
 import dev.jefy.connectpro.shared.infrastructure.messaging.EmailService
 import dev.jefy.connectpro.shared.infrastructure.messaging.strategy.PortfolioCreatedEmailStrategy
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.Email
 import dev.jefy.connectpro.user.domain.vo.UserId
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
-@Service
-@Transactional
+@CommandService
 class PortfolioCommandImpl(
     private val portfolioRepo: PortfolioRepository,
     private val portfolioAppService: PortfolioAppService,
@@ -33,7 +32,7 @@ class PortfolioCommandImpl(
     private val managementClient: ManagementClient
 ) : PortfolioCommand {
 
-    override fun create(request: PortfolioRequest): PortfolioId {
+    override fun create(request: CreatePortfolioRequest): PortfolioId {
         val userId = UserId(request.userId)
         val userData = userClient.getById(userId)
 
@@ -42,18 +41,20 @@ class PortfolioCommandImpl(
         }
 
         portfolioAppService.checkConflict(request)
-        portfolioAppService.checkSocialLinksConflict(request.socialLinks)
+        portfolioAppService.checkSocialLinksConflict(request.socials)
 
         val portfolio = Portfolio(
-            userId,
-            request.type,
-            request.generalInfo.toDomain(),
-            request.professionalInfo.toDomain(),
-            request.contactInfo.toContactInfo(),
-            request.locationInfo.toDomain(),
-            request.socialLinks
+            userId = UserId(request.userId),
+            name = request.name,
+            bio = request.bio,
+            details = request.details,
+            contact = request.contact.toContactInfo(),
+            location = request.location.toDomain(),
         )
-
+        val socials = request.socials.map { 
+            Social(platform = it.platform, url = it.url, portfolio = portfolio) 
+        }.toMutableSet()
+        portfolio.socials = socials
         portfolioRepo.save(portfolio)
 
         emailService.send(Email(userData.email), PortfolioCreatedEmailStrategy(userData.name))
@@ -61,38 +62,31 @@ class PortfolioCommandImpl(
         return portfolio.id
     }
 
-    override fun updateGeneralInfo(
-        portfolioId: PortfolioId, request: GeneralInfoRequest
+    override fun update(
+        portfolioId: PortfolioId, request: UpdatePortfolioRequest,
     ): PortfolioId =
         getPortfolio(portfolioId)
             .apply {
-                portfolioAppService.checkGeneralInfoConflict(portfolioId, request)
-                updateGeneralInfo(request.toDomain())
+                portfolioAppService.checkGeneralInfoConflict(portfolioId=portfolioId, name=name)
+                update(name = request.name, bio = request.bio, details = request.details)
             }
             .also { portfolioRepo.save(it) }
             .id
-
-    override fun updateProfessional(
-        portfolioId: PortfolioId, request: ProfessionalInfoRequest
-    ): PortfolioId = getPortfolio(portfolioId)
-            .apply { updateProfessionalInfo(request.toDomain()) }
-            .also { portfolioRepo.save(it) }
-            .id
-
-    override fun updateContactInfo(
-        portfolioId: PortfolioId, request: ContactInfoData
+    
+    override fun updateContact(
+        portfolioId: PortfolioId, request: ContactData
     ): PortfolioId = getPortfolio(portfolioId)
             .apply {
                 portfolioAppService.checkContactInfoConflict(portfolioId, request)
-                updateContactInfo(request.toContactInfo())
+                updateContact(request.toContactInfo())
             }
             .also { portfolioRepo.save(it) }
             .id
 
-    override fun updateLocationInfo(
-        portfolioId: PortfolioId, request: LocationInfoData
+    override fun updateLocation(
+        portfolioId: PortfolioId, request: LocationData
     ): PortfolioId = getPortfolio(portfolioId)
-            .apply { updateLocationInfo(request.toDomain()) }
+            .apply { updateLocation(request.toDomain()) }
             .also { portfolioRepo.save(it) }
             .id
 
@@ -111,7 +105,7 @@ class PortfolioCommandImpl(
     @Throws(IOException::class)
     override fun deleteCoverImage(portfolioId: PortfolioId): PortfolioId = getPortfolio(portfolioId)
             .apply {
-                generalInfo.coverImage?.let { imageService.delete(it) }
+                coverImage?.let { imageService.delete(Image(it)) }
                 deleteCoverImage()
             }
             .also { portfolioRepo.save(it) }
@@ -119,19 +113,19 @@ class PortfolioCommandImpl(
 
     override fun addSocialLink(
         portfolioId: PortfolioId,
-        linkData: SocialLinkData
+        social: SocialData
     ): PortfolioId =
         getPortfolio(portfolioId)
-            .apply { addSocialLink(linkData) }
+            .apply { addSocial(Social(platform = social.platform, url = social.url, portfolio = this)) }
             .also { portfolioRepo.save(it) }
             .id
 
     override fun deleteSocialLink(
         portfolioId: PortfolioId,
-        socialLinkId: SocialLinkId
+        socialId: SocialId
     ): PortfolioId =
         getPortfolio(portfolioId)
-            .apply { deleteSocialLink(socialLinkId) }
+            .apply { deleteSocial(socialId) }
             .also { portfolioRepo.save(it) }
             .id
 
@@ -152,16 +146,6 @@ class PortfolioCommandImpl(
             .apply { block() }
             .also { portfolioRepo.save(it) }
             .id
-
-    override fun changeType(
-        portfolioId: PortfolioId,
-        type: PortfolioType
-    ): PortfolioId {
-        return getPortfolio(portfolioId)
-            .apply { changeType(type) }
-            .also { portfolioRepo.save(it) }
-            .id
-    }
 
     override fun setBadge(portfolioId: PortfolioId, badgeId: BadgeId): PortfolioId {
 

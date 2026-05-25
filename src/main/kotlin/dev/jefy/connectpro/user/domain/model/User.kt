@@ -9,36 +9,23 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
-open class User(email: Email, password: EncodedPassword, role: UserRole, name: String) {
+open class User(
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
-    var id: UserId = UserId.generate()
-        protected set
-
+    var id: UserId = UserId.generate(),
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "email"))
-    var email: Email = email 
-        protected set
-
+    var email: Email,
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "password"))
-    var password: EncodedPassword = password
-        protected set
-
+    var password: EncodedPassword,
     @Enumerated(EnumType.STRING)
-    var role: UserRole = role
-        protected set
-
-    var name: String = name
-        protected set
-
-    @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "image"))
-    var image: Image? = null
-        protected set
-
+    var role: UserRole,
+    var name: String,
+    var image: String? = null,
     var isVerified: Boolean = false
-
+) {
+    
     init {
         require(name.isNotBlank()) { "name must not be blank" }
     }
@@ -56,5 +43,5 @@ open class User(email: Email, password: EncodedPassword, role: UserRole, name: S
         this.name = name
     }
 
-    fun changeProfileImage(profileImage: Image) { this.image = profileImage }
+    fun changeProfileImage(image: Image) { this.image = image.value }
 }

@@ -12,11 +12,10 @@ import dev.jefy.connectpro.chats.domain.repositoty.MessageRepository
 import dev.jefy.connectpro.chats.domain.vo.ConversationId
 import dev.jefy.connectpro.chats.domain.vo.ReceiverId
 import dev.jefy.connectpro.chats.domain.vo.SenderId
+import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.user.UserClient
 import dev.jefy.connectpro.user.domain.vo.UserId
 import org.springframework.messaging.simp.SimpMessagingTemplate
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 /**
@@ -25,8 +24,7 @@ import java.util.*
  * Toutes les opérations d'écriture sur le module messaging.
  * Après persist, notifie le destinataire via STOMP sur /user/{receiverId}/queue/messages
  */
-@Service
-@Transactional
+@CommandService
 class ChatCommandService(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
