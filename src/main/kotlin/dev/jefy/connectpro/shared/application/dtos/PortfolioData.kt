@@ -8,7 +8,7 @@ data class PortfolioData(
     val id: UUID,
     val name: String,
     val coverImage: String?,
-    val shortDescription: String,
+    val bio: String,
     val active: Boolean,
     val userId: UUID,
 ) 
@@ -18,7 +18,7 @@ fun Portfolio.toSummaryData(resolver: ImageUrlResolver): PortfolioData {
         id = this.id.value,
         name = this.name,
         coverImage = resolver.resolve(this.coverImage),
-        shortDescription = this.bio,
+        bio = this.bio,
         active = this.isActive(),
         userId = this.userId.value
     )

@@ -18,7 +18,7 @@ open class Project (
     @Column(name = "name", length = 500)
     var name: String,
     @Column(name = "description", columnDefinition = "TEXT")
-    var description: String? = null,
+    var description: String,
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "project_images",
@@ -27,6 +27,11 @@ open class Project (
     @Column(name = "image")
     var images: MutableList<String> = mutableListOf(),
 ) {
+    
+    init {
+        require(name.isNotBlank()) { "name must not be blank" }
+        require(description.isNotBlank()) { "description must not be blank" }
+    }
 
     
     fun update(request: ProjectRequest) {

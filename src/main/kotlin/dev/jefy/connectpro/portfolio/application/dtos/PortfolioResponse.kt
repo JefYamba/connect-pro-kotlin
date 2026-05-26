@@ -19,7 +19,7 @@ data class PortfolioResponse(
     val name: String,
     val bio: String,
     val details: String?,
-    val coverImage: String? = null,
+    val coverImage: String?,
     val status: PortfolioStatus,
     val badge: BadgeResponse?,
     val createdAt: Instant,

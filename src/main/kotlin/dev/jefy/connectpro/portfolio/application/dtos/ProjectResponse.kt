@@ -12,7 +12,7 @@ data class ProjectResponse(
     val id: UUID,
     val portfolioId: UUID,
     val name: String,
-    val description: String?,
+    val description: String,
     val images: List<String>,
 ) {
     companion object {
