@@ -10,7 +10,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "job_posts")
-open class JobPost(
+class JobPost(
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: JobPostId = JobPostId.generate(),
@@ -23,9 +23,9 @@ open class JobPost(
     @AttributeOverride(name = "value", column = Column(name = "category_id"))
     var categoryId: CategoryId,
     @Enumerated(EnumType.STRING)
-    var jobType: JobType? = null,
+    var jobType: JobType,
     @Enumerated(EnumType.STRING)
-    var workMode: WorkMode? = null,
+    var workMode: WorkMode,
     var isClosed: Boolean = false,
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

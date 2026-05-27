@@ -10,8 +10,8 @@ data class JobPostRequest(
     val description: String,
     val categoryId: UUID,
     val tags: Set<String>,
-    val jobType: JobType?,
-    val workMode: WorkMode?,
+    val jobType: JobType,
+    val workMode: WorkMode,
 ){
     init {
         require(name.isNotBlank()) { "title must not be blank" }

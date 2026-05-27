@@ -10,7 +10,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "portfolios")
-open class Portfolio(
+class Portfolio(
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: PortfolioId = PortfolioId.generate(),
@@ -34,7 +34,7 @@ open class Portfolio(
     var contact: Contact,
     @Embedded
     var location: Location,
-    @OneToMany(mappedBy = "portfolio", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "portfolio", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     var socials: MutableSet<Social> = mutableSetOf(),
     
 )  {
@@ -65,8 +65,8 @@ open class Portfolio(
     
     fun addSocial(social: Social) { this.socials.add(social) }
 
-    fun deleteSocial(socialId: SocialId) {
-        val removed = socials.removeIf { it.id == socialId }
+    fun deleteSocial(platform: SocialPlatform) {
+        val removed = socials.removeIf { it.platform == platform }
         if (!removed) throw SocialNotFoundException()
     }
     fun setCoverImage(image: Image) { coverImage = image.value }

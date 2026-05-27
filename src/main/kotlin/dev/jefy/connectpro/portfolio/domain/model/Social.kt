@@ -10,7 +10,7 @@ import jakarta.persistence.*
     name = "socials",
     uniqueConstraints = [UniqueConstraint(columnNames = ["portfolio_id", "platform"])]
 )
-open class Social(
+class Social(
     @EmbeddedId
     @AttributeOverride(name = "value", column = Column(name = "id"))
     var id: SocialId = SocialId.generate(),
@@ -26,4 +26,6 @@ open class Social(
         check(portfolio.socials.none { it.platform == data.platform }){ "Social Link with platform already exists"}
         url = data.url
     }
+    
+    override fun toString(): String = "Social(id=$id, platform=$platform, url=$url)"
 }

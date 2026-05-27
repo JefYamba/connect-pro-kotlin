@@ -5,7 +5,7 @@ import dev.jefy.connectpro.portfolio.application.command.PortfolioCommand
 import dev.jefy.connectpro.portfolio.application.dtos.*
 import dev.jefy.connectpro.portfolio.application.query.PortfolioQuery
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
-import dev.jefy.connectpro.portfolio.domain.vo.SocialId
+import dev.jefy.connectpro.portfolio.domain.vo.SocialPlatform
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -92,12 +92,12 @@ class PortfolioController(
         return buildResponse("Social link added successfully", query.get(id))
     }
 
-    @DeleteMapping("/{portfolioId}/social-links/{socialLinkId}")
+    @DeleteMapping("/{portfolioId}/social-links/{platform}")
     fun deleteSocialLink(
         @PathVariable portfolioId: UUID,
-        @PathVariable socialLinkId: UUID
+        @PathVariable platform: SocialPlatform
     ): ResponseEntity<AppResponse<PortfolioResponse>> {
-        val id = command.deleteSocialLink(PortfolioId.of(portfolioId), SocialId.of(socialLinkId))
+        val id = command.deleteSocialLink(PortfolioId.of(portfolioId), platform)
         return buildResponse("Social link deleted successfully", query.get(id))
     }
 

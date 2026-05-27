@@ -76,4 +76,4 @@ aws:
 logging:
   level:
     org.springframework.security: DEBUG
-    org.hibernate: DEBUG
+    org.springframework.data: DEBUG

@@ -44,6 +44,8 @@ class JobPostCommandImpl(
             name = request.name,
             description = request.description,
             categoryId = categoryId,
+            jobType = request.jobType,
+            workMode = request.workMode,
             tags = tags.toMutableSet(),
         )
         jobPostRepo.save(jobPost)

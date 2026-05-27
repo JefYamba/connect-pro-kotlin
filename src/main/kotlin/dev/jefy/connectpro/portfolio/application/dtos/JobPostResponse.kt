@@ -18,8 +18,8 @@ data class JobPostResponse(
     val description: String,
     val category: CategoryResponse,
     val tags: List<String>,
-    val jobType: JobType?,
-    val workMode: WorkMode?,
+    val jobType: JobType,
+    val workMode: WorkMode,
 )
 
 fun JobPost.toResponse(portfolioData: PortfolioData, category: CategoryResponse): JobPostResponse = JobPostResponse(

@@ -27,7 +27,10 @@ class ProjectCommandImpl(
 
         check(portfolioRepo.existsById(portfolioId)) { "Portfolio with id $portfolioId not found" }
 
-        val isConflict = projectRepo.isTitleConflict(portfolioId, request.name)
+        val isConflict = projectRepo.isTitleConflict(
+            portfolioId = portfolioId,
+            title = request.name,
+        )
         if (isConflict) throw ProjectAlreadyExistsException()
 
         val project = Project(
@@ -44,7 +47,11 @@ class ProjectCommandImpl(
         projectId: ProjectId, request: ProjectRequest
     ): ProjectId = getProject(projectId)
             .apply {
-                val isConflict = projectRepo.isTitleConflict(portfolioId, request.name)
+                val isConflict = projectRepo.isTitleConflictForId(
+                    portfolioId = portfolioId, 
+                    title = request.name, 
+                    projectId = projectId
+                )
                 if (isConflict) throw ProjectAlreadyExistsException()
                 update(request)
             }

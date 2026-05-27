@@ -10,7 +10,7 @@ import dev.jefy.connectpro.portfolio.domain.model.Portfolio
 import dev.jefy.connectpro.portfolio.domain.model.Social
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
-import dev.jefy.connectpro.portfolio.domain.vo.SocialId
+import dev.jefy.connectpro.portfolio.domain.vo.SocialPlatform
 import dev.jefy.connectpro.shared.domain.vo.Image
 import dev.jefy.connectpro.shared.infrastructure.annotations.CommandService
 import dev.jefy.connectpro.shared.infrastructure.file_storage.ImageService
@@ -122,12 +122,18 @@ class PortfolioCommandImpl(
 
     override fun deleteSocialLink(
         portfolioId: PortfolioId,
-        socialId: SocialId
-    ): PortfolioId =
-        getPortfolio(portfolioId)
-            .apply { deleteSocial(socialId) }
-            .also { portfolioRepo.save(it) }
-            .id
+        platform: SocialPlatform
+    ): PortfolioId {
+        val portfolio = getPortfolio(portfolioId)
+        println("before delete: $platform")
+        println(portfolio.socials)
+        portfolio.deleteSocial(platform) 
+        val saved = portfolioRepo.save(portfolio) 
+        println("after delete: $platform")
+        println(saved.socials)
+        return portfolio.id
+    }
+        
 
     override fun activate(portfolioId: PortfolioId): PortfolioId =
         getPortfolio(portfolioId)

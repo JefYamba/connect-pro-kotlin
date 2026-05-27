@@ -22,6 +22,20 @@ interface ProjectRepository : JpaRepository<Project, ProjectId> {
         @Param("portfolioId") portfolioId: PortfolioId,
         @Param("title") title: String
     ): Boolean
+    
+    @Query(
+        """
+        select count(project) > 0 from Project project
+        where project.portfolioId = :portfolioId
+        and project.name = :title
+        and project.id <> :projectId
+        """
+    )
+    fun isTitleConflictForId(
+        @Param("portfolioId") portfolioId: PortfolioId,
+        @Param("title") title: String, 
+        @Param("projectId") projectId: ProjectId
+    ): Boolean
 
     fun findAllByPortfolioId(portfolioId: PortfolioId): List<Project>
 }
