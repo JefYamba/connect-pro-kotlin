@@ -2,9 +2,7 @@ package dev.jefy.connectpro.portfolio.application.service
 
 import dev.jefy.connectpro.portfolio.application.dtos.ContactData
 import dev.jefy.connectpro.portfolio.application.dtos.CreatePortfolioRequest
-import dev.jefy.connectpro.portfolio.application.dtos.SocialData
 import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.SocialLinkAlreadyExistsException
 import dev.jefy.connectpro.portfolio.domain.repository.PortfolioRepository
 import dev.jefy.connectpro.portfolio.domain.repository.SocialLinkQueryRepository
 import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
@@ -28,18 +26,6 @@ class PortfolioAppService(
         )
 
         if (isConflict) throw PortfolioAlreadyExistsException()
-    }
-
-    fun checkSocialLinksConflict(socialLinks: List<SocialData>) {
-        val urls = socialLinks.map { it.url }
-
-        if (urls.isEmpty()) return
-
-        val exists = socialLinkRepo.existsByUrls(urls)
-
-        if (exists) {
-            throw SocialLinkAlreadyExistsException()
-        }
     }
 
     fun checkGeneralInfoConflict(portfolioId: PortfolioId, name: String) {

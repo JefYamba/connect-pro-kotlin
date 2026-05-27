@@ -8,12 +8,4 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SocialLinkQueryRepository : JpaRepository<Social, SocialId> {
-
-    @Query(
-        """
-        select count(sl) > 0 from Social sl where sl.url in :urls
-    """
-    )
-    fun existsByUrls(@Param("urls") urls: List<String>): Boolean
-}
+interface SocialLinkQueryRepository : JpaRepository<Social, SocialId> 

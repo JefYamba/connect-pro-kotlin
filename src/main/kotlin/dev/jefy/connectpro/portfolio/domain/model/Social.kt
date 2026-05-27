@@ -18,7 +18,7 @@ class Social(
     var portfolio: Portfolio,
     @Enumerated(EnumType.STRING)
     var platform: SocialPlatform,
-    @Column(unique = true)
+    @Column(unique = false)
     var url: String,
 ){
     

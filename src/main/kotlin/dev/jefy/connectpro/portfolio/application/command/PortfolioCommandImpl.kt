@@ -41,7 +41,6 @@ class PortfolioCommandImpl(
         }
 
         portfolioAppService.checkConflict(request)
-        portfolioAppService.checkSocialLinksConflict(request.socials)
 
         val portfolio = Portfolio(
             userId = UserId(request.userId),
