@@ -21,10 +21,6 @@ spring:
           
   flyway:
     enabled: true
-    
-  docker:
-    compose:
-      enabled: false
       
   autoconfigure:
     exclude:
