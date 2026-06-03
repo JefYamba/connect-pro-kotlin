@@ -19,9 +19,6 @@ spring:
     show-sql: false
     open-in-view: false
           
-  flyway:
-    enabled: true
-      
   autoconfigure:
     exclude:
       - org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration

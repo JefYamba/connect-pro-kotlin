@@ -28,7 +28,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.springframework.boot:spring-boot-starter-flyway")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
@@ -46,7 +45,6 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.14.1")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
