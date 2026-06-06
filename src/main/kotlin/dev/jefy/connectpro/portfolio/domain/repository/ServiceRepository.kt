@@ -57,6 +57,7 @@ interface ServiceRepository : JpaRepository<Service, ServiceId> {
                 lower(service.name) like lower(concat('%', :search, '%'))
              or lower(service.description) like lower(concat('%', :search, '%'))
         ))
+        order by service.createdDate desc
         """
     )
     fun filter(

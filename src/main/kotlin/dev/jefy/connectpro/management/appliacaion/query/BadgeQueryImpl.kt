@@ -20,7 +20,7 @@ class BadgeQueryImpl(private val badgeRepo: BadgeRepository) : BadgeQuery {
         .map{ it.toResponse() }
         .orElseThrow { BadgeNotFoundException() }
     
-    override fun gatAll(): MutableList<BadgeResponse> = badgeRepo
+    override fun gatAll(): List<BadgeResponse> = badgeRepo
         .findAll()
         .stream()
         .map{ it.toResponse() }

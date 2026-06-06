@@ -8,11 +8,18 @@ import java.io.IOException
 
 interface ProjectCommand {
     fun create(request: ProjectRequest): ProjectId
+    
     fun update(projectId: ProjectId, request: ProjectRequest): ProjectId
+    
     @Throws(IOException::class)
     fun addImage(projectId: ProjectId, image: MultipartFile): ProjectId
+    
+    @Throws(IOException::class)
+    fun addImages(projectId: ProjectId, images: List<MultipartFile> ): ProjectId
+    
     @Throws(IOException::class)
     fun removeImage(projectId: ProjectId, image: ImageData): ProjectId
+    
     @Throws(IOException::class)
     fun delete(projectId: ProjectId)
 }

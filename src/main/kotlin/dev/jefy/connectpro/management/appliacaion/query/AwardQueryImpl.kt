@@ -21,7 +21,7 @@ class AwardQueryImpl(private val awardRepo: AwardRepository) : AwardQuery {
         .orElseThrow { AwardNotFoundException() }
     
 
-    override fun getAll(): MutableList<AwardResponse> = awardRepo
+    override fun getAll(): List<AwardResponse> = awardRepo
         .findAll()
         .stream()
         .map{ it.toResponse()}

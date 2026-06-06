@@ -72,7 +72,7 @@ class ServiceController(
         return buildResponse("Cover image removed", query.getService(id))
     }
 
-    @PostMapping("/{serviceId}/images")
+    /*@PostMapping("/{serviceId}/images")
     @Operation(summary = "Add image")
     @Throws(IOException::class)
     fun addImage(
@@ -81,6 +81,17 @@ class ServiceController(
     ): ResponseEntity<AppResponse<ServiceResponse>> {
         val id = command.addImage(ServiceId.of(serviceId), image)
         return buildResponse("Image added", query.getService(id))
+    }*/
+
+    @PostMapping("/{serviceId}/images")
+    @Operation(summary = "Add multiple images")
+    @Throws(IOException::class)
+    fun addImages(
+        @PathVariable @NotNull serviceId: UUID,
+        @RequestParam @NotNull images: List<MultipartFile> 
+    ): ResponseEntity<AppResponse<ServiceResponse>> {
+        val id = command.addImages(ServiceId.of(serviceId), images)
+        return buildResponse("Images added successfully", query.getService(id))
     }
 
     @DeleteMapping("/{serviceId}/images")

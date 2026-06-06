@@ -43,41 +43,49 @@ class ProjectCommandImpl(
         return project.id
     }
 
-    override fun update(
-        projectId: ProjectId, request: ProjectRequest
-    ): ProjectId = getProject(projectId)
-            .apply {
-                val isConflict = projectRepo.isTitleConflictForId(
-                    portfolioId = portfolioId, 
-                    title = request.name, 
-                    projectId = projectId
-                )
-                if (isConflict) throw ProjectAlreadyExistsException()
-                update(request)
-            }
-            .also { projectRepo.save(it) }
-            .id
+    override fun update(projectId: ProjectId, request: ProjectRequest): ProjectId {
+        val project = getProject(projectId)
+        val isConflict = projectRepo.isTitleConflictForId(
+            portfolioId = project.portfolioId,
+            title = request.name,
+            projectId = projectId
+        )
+        if (isConflict) throw ProjectAlreadyExistsException()
+        project.update(request)
+        projectRepo.save(project) 
+        return project.id
+    }
 
     @Throws(IOException::class)
-    override fun addImage(
-        projectId: ProjectId, image: MultipartFile
-    ): ProjectId = getProject(projectId)
-            .apply {
-                val imageUrl = imageService.save(image)
-                addImage(imageUrl)
-            }
-            .also { projectRepo.save(it) }
-            .id
+    override fun addImage(projectId: ProjectId, image: MultipartFile): ProjectId {
+        val project = getProject(projectId)
+        val imageUrl = imageService.save(image)
+        project.addImage(imageUrl)
+        projectRepo.save(project)
+        return project.id
+    }
+    
+    @Throws(IOException::class)
+    override fun addImages(projectId: ProjectId, images: List<MultipartFile>): ProjectId {
+        val project = getProject(projectId)
+        images.forEach { file -> 
+            val imageUrl = imageService.save(file)
+            project.addImage(imageUrl)
+        }
+        projectRepo.save(project)
+        return project.id
+    }
 
     @Throws(IOException::class)
-    override fun removeImage(projectId: ProjectId, image: ImageData): ProjectId =
-        getProject(projectId)
-            .apply {
-                imageService.delete(image.getKey())
-                removeImage(image.getKey())
-            }
-            .also { projectRepo.save(it) }
-            .id
+    override fun removeImage(projectId: ProjectId, image: ImageData): ProjectId {
+        val project = getProject(projectId)
+        imageService.delete(image.getKey())
+        project.removeImage(image.getKey())
+        projectRepo.save(project)
+        return project.id
+    }
+        
+            
 
     @Throws(IOException::class)
     override fun delete(projectId: ProjectId) {

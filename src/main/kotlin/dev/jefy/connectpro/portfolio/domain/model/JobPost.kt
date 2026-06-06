@@ -7,6 +7,7 @@ import dev.jefy.connectpro.portfolio.domain.vo.PortfolioId
 import dev.jefy.connectpro.shared.domain.vo.JobType
 import dev.jefy.connectpro.shared.domain.vo.WorkMode
 import jakarta.persistence.*
+import java.time.Instant
 
 @Entity
 @Table(name = "job_posts")
@@ -34,6 +35,8 @@ class JobPost(
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
     var tags: MutableSet<Tag> = mutableSetOf(),
+    @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    var createdDate: Instant = Instant.now(),
 ) {
     
 

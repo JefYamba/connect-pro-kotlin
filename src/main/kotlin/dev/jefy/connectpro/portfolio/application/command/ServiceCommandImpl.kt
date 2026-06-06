@@ -59,69 +59,80 @@ class ServiceCommandImpl(
 
     override fun update(
         serviceId: ServiceId, request: ServiceRequest
-    ): ServiceId = getService(serviceId)
-            .apply {
-                val categoryId = CategoryId.of(request.categoryId)
+    ): ServiceId {
+        val service = getService(serviceId)
+        val categoryId = CategoryId.of(request.categoryId)
 
-                if (managementClient.notExistsCategory(categoryId)) throw CategoryNotFoundException()
+        if (managementClient.notExistsCategory(categoryId)) throw CategoryNotFoundException()
 
-                if (serviceRepo.existsByTitleConflictForId(
-                        portfolioId = portfolioId, 
-                        title = request.name, 
-                        serviceId = serviceId
-                )) throw ServiceAlreadyExistsException()
-                
-                val tags = tagService.resolveTags(stringTags = request.tags)
-                
-                update(
-                    title = request.name,
-                    description = request.description,
-                    categoryId = categoryId,
-                    tags = tags
-                )
-            }
-            .also { serviceRepo.save(it) }
-            .id
+        if (serviceRepo.existsByTitleConflictForId(
+                portfolioId = service.portfolioId,
+                title = request.name,
+                serviceId = serviceId
+            )) throw ServiceAlreadyExistsException()
 
-    @Throws(IOException::class)
-    override fun setCoverImage(serviceId: ServiceId, image: MultipartFile): ServiceId =
-        getService(serviceId)
-            .apply {
-                val imageUrl = imageService.save(image)
-                addCoverImage(imageUrl)
-            }
-            .also { serviceRepo.save(it) }
-            .id
+        val tags = tagService.resolveTags(stringTags = request.tags)
+
+        service.update(
+            title = request.name,
+            description = request.description,
+            categoryId = categoryId,
+            tags = tags
+        )
+        serviceRepo.save(service)
+        
+        return service.id
+    }
 
     @Throws(IOException::class)
-    override fun deleteCoverImage(serviceId: ServiceId): ServiceId =
-        getService(serviceId)
-            .apply {
-                coverImage?.let { imageService.delete(Image(it)) }
-                deleteCoverImage()
-            }
-            .also { serviceRepo.save(it) }
-            .id
+    override fun setCoverImage(serviceId: ServiceId, image: MultipartFile): ServiceId {
+        val service = getService(serviceId)
+        val imageUrl = imageService.save(image)
+        service.addCoverImage(imageUrl)
+        serviceRepo.save(service)
+        return service.id
+    }
+        
 
     @Throws(IOException::class)
-    override fun addImage(serviceId: ServiceId, image: MultipartFile): ServiceId =
-        getService(serviceId)
-            .apply {
-                val imageUrl = imageService.save(image)
-                addImage(imageUrl)
-            }
-            .also { serviceRepo.save(it) }
-            .id
+    override fun deleteCoverImage(serviceId: ServiceId): ServiceId {
+        val service = getService(serviceId)
+        service.coverImage?.let { imageService.delete(Image(it)) }
+        service.deleteCoverImage()
+        serviceRepo.save(service)
+        return service.id
+    }
 
     @Throws(IOException::class)
-    override fun removeImage(serviceId: ServiceId, image: ImageData): ServiceId =
-        getService(serviceId)
-            .apply {
-                imageService.delete(image.getKey())
-                removeImage(image.getKey())
-            }
-            .also { serviceRepo.save(it) }
-            .id
+    override fun addImage(serviceId: ServiceId, image: MultipartFile): ServiceId {
+        val service = getService(serviceId)
+        val imageUrl = imageService.save(image)
+        service.addImage(imageUrl)
+        serviceRepo.save(service)
+        return service.id
+    }
+
+
+    @Throws(IOException::class)
+    override fun addImages(serviceId: ServiceId, images: List<MultipartFile>): ServiceId {
+        val service = getService(serviceId)
+        images.forEach { file ->
+            val imageUrl = imageService.save(file)
+            service.addImage(imageUrl)
+        }
+        serviceRepo.save(service)
+        return service.id
+    }
+
+    @Throws(IOException::class)
+    override fun removeImage(serviceId: ServiceId, image: ImageData): ServiceId {
+        val service = getService(serviceId)
+        imageService.delete(image.getKey())
+        service.removeImage(image.getKey())
+        serviceRepo.save(service)
+        return service.id
+    }
+        
 
     override fun addFaq(serviceId: ServiceId, request: FAQRequest): ServiceId =
         getService(serviceId)

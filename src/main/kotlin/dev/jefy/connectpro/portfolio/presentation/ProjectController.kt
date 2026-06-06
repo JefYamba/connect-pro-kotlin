@@ -63,7 +63,7 @@ class ProjectController(
         val id = command.update(ProjectId.of(projectId), request)
         return buildResponse("Project updated successfully", query.get(id))
     }
-
+/*
     @PostMapping("/{projectId}/images")
     @Operation(summary = "Add image")
     @Throws(IOException::class)
@@ -73,6 +73,17 @@ class ProjectController(
     ): ResponseEntity<AppResponse<ProjectResponse>> {
         val id = command.addImage(ProjectId.of(projectId), image)
         return buildResponse("Image added", query.get(id))
+    }*/
+
+    @PostMapping("/{projectId}/images")
+    @Operation(summary = "Add image")
+    @Throws(IOException::class)
+    fun addImages(
+        @PathVariable @NotNull projectId: UUID,
+        @RequestParam @NotNull images: List<MultipartFile>
+    ): ResponseEntity<AppResponse<ProjectResponse>> {
+        val id = command.addImages(ProjectId.of(projectId), images)
+        return buildResponse("Images added", query.get(id))
     }
 
     @DeleteMapping("/{projectId}/images")

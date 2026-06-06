@@ -54,6 +54,7 @@ interface JobPostRepository : JpaRepository<JobPost, JobPostId> {
                 lower(jobPost.name) like lower(concat('%', :search, '%'))
              or lower(jobPost.description) like lower(concat('%', :search, '%'))
         ))
+        order by jobPost.createdDate desc
     """
     )
     fun filter(

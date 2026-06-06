@@ -7,6 +7,7 @@ import dev.jefy.connectpro.portfolio.application.exceptions.FaqNotFoundException
 import dev.jefy.connectpro.portfolio.domain.vo.*
 import dev.jefy.connectpro.shared.domain.vo.Image
 import jakarta.persistence.*
+import java.time.Instant
 
 @Entity
 @Table(name = "services")
@@ -51,6 +52,8 @@ open class Service(
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "award_id"))
     var awardId: AwardId? = null,
+    @Column(name = "created_date")
+    var createdDate: Instant = Instant.now(),
 ) {
     
     
