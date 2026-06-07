@@ -3,25 +3,9 @@ package dev.jefy.connectpro.shared.infrastructure
 import dev.jefy.connectpro.marketplace.application.exception.JobApplicationNotFound
 import dev.jefy.connectpro.marketplace.application.exception.JobPostNotExistOrValidException
 import dev.jefy.connectpro.marketplace.application.exception.ServiceNotExistOrValidException
-import dev.jefy.connectpro.portfolio.application.exceptions.AwardNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.BadgeNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.CategoryNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.FaqNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.JobPostAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.JobPostNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.PortfolioNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.ProjectAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.ProjectNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.ServiceAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.ServiceNotFoundException
-import dev.jefy.connectpro.portfolio.application.exceptions.SocialLinkAlreadyExistsException
-import dev.jefy.connectpro.portfolio.application.exceptions.SocialNotFoundException
+import dev.jefy.connectpro.portfolio.application.exceptions.*
 import dev.jefy.connectpro.shared.application.dtos.AppResponse
-import dev.jefy.connectpro.user.application.exceptions.TokenHasExpiredException
-import dev.jefy.connectpro.user.application.exceptions.TokenNotFoundException
-import dev.jefy.connectpro.user.application.exceptions.UnauthorizedException
-import dev.jefy.connectpro.user.application.exceptions.UserNotFoundException
+import dev.jefy.connectpro.user.application.exceptions.*
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.ConstraintViolationException
 import org.hibernate.exception.ConstraintViolationException as HibernateConstraintViolationException
@@ -41,11 +25,10 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException
 import java.io.IOException
 import java.time.Instant
 
-
 /**
- * @author  Jôph Yamba
+ * Gestionnaire global d'exceptions pour l'application Connect Pro
+ * @author Jôph Yamba
  */
-
 @RestControllerAdvice(basePackages = ["dev.jefy.connectpro"])
 class GlobalExceptionHandler {
 
@@ -53,17 +36,20 @@ class GlobalExceptionHandler {
 
     // ====================== EXCEPTIONS CUSTOM ======================
 
-    // User
+    // User Module
     @ExceptionHandler(UserNotFoundException::class)
-    fun handleUserNotFound(ex: UserNotFoundException) = createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "User not found")
+    fun handleUserNotFound(ex: UserNotFoundException) =
+        createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Utilisateur non trouvé")
 
     @ExceptionHandler(UnauthorizedException::class)
-    fun handleUnauthorized(ex: UnauthorizedException) = createErrorResponse(HttpStatus.UNAUTHORIZED, ex.message ?: "Unauthorized")
+    fun handleUnauthorized(ex: UnauthorizedException) =
+        createErrorResponse(HttpStatus.UNAUTHORIZED, ex.message ?: "Non autorisé")
 
     @ExceptionHandler(TokenNotFoundException::class, TokenHasExpiredException::class)
-    fun handleTokenIssues(ex: RuntimeException) = createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Token issue")
+    fun handleTokenIssues(ex: RuntimeException) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Problème avec le token")
 
-    // Portfolio
+    // Portfolio Module
     @ExceptionHandler(
         PortfolioAlreadyExistsException::class,
         ProjectAlreadyExistsException::class,
@@ -71,7 +57,8 @@ class GlobalExceptionHandler {
         JobPostAlreadyExistsException::class,
         ServiceAlreadyExistsException::class
     )
-    fun handleAlreadyExists(ex: RuntimeException) = createErrorResponse(HttpStatus.CONFLICT, ex.message ?: "Resource already exists")
+    fun handleAlreadyExists(ex: RuntimeException) =
+        createErrorResponse(HttpStatus.CONFLICT, ex.message ?: "Ressource déjà existante")
 
     @ExceptionHandler(
         ProjectNotFoundException::class,
@@ -84,91 +71,75 @@ class GlobalExceptionHandler {
         CategoryNotFoundException::class,
         BadgeNotFoundException::class
     )
-    fun handleNotFound(ex: RuntimeException) = createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Resource not found")
+    fun handleNotFound(ex: RuntimeException) =
+        createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Ressource non trouvée")
 
-    // Marketplace
+    // Marketplace Module
     @ExceptionHandler(JobPostNotExistOrValidException::class, ServiceNotExistOrValidException::class)
-    fun handleMarketplaceValidation(ex: RuntimeException) = createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Invalid resource")
+    fun handleMarketplaceValidation(ex: RuntimeException) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Ressource invalide")
 
     @ExceptionHandler(JobApplicationNotFound::class)
-    fun handleJobApplicationNotFound(ex: JobApplicationNotFound) = createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Job application not found")
+    fun handleJobApplicationNotFound(ex: JobApplicationNotFound) =
+        createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Candidature non trouvée")
 
     // ====================== EXCEPTIONS STANDARDS ======================
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgument(ex: IllegalArgumentException) = createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Invalid argument")
+    fun handleIllegalArgument(ex: IllegalArgumentException) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Argument invalide")
 
     @ExceptionHandler(EntityNotFoundException::class)
-    fun handleEntityNotFound(ex: EntityNotFoundException) = createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Entity not found")
+    fun handleEntityNotFound(ex: EntityNotFoundException) =
+        createErrorResponse(HttpStatus.NOT_FOUND, ex.message ?: "Entité non trouvée")
 
-    // Validation
+    // === Validation ===
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<AppResponse<Nothing>> {
         val errors = ex.bindingResult.fieldErrors.joinToString(", ") { "${it.field}: ${it.defaultMessage}" }
         log.warn("Validation failed: $errors")
-        return createErrorResponse(HttpStatus.BAD_REQUEST, "Validation error: $errors")
+        return createErrorResponse(HttpStatus.BAD_REQUEST, "Erreur de validation : $errors")
     }
 
     @ExceptionHandler(ConstraintViolationException::class, HandlerMethodValidationException::class)
-    fun handleConstraint(ex: Exception) = createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Constraint violation")
+    fun handleConstraintViolation(ex: Exception) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, ex.message ?: "Violation de contrainte")
 
-    // JPA / Database
+    // === JPA / Database ===
     @ExceptionHandler(DataIntegrityViolationException::class, HibernateConstraintViolationException::class)
-    fun handleDataIntegrity(ex: Exception) = createErrorResponse(HttpStatus.CONFLICT, "Data integrity violation (duplicate key or constraint)")
+    fun handleDataIntegrity(ex: Exception) =
+        createErrorResponse(HttpStatus.CONFLICT, "Violation d'intégrité des données (clé dupliquée ou contrainte)")
 
-    // Security
+    // === Security ===
     @ExceptionHandler(BadCredentialsException::class)
-    fun handleBadCredentials(ex: BadCredentialsException) = createErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials")
+    fun handleBadCredentials(ex: BadCredentialsException) =
+        createErrorResponse(HttpStatus.UNAUTHORIZED, "Identifiants invalides")
 
     @ExceptionHandler(AuthenticationException::class)
-    fun handleAuthentication(ex: AuthenticationException) = createErrorResponse(HttpStatus.UNAUTHORIZED, "Authentication failed")
+    fun handleAuthentication(ex: AuthenticationException) =
+        createErrorResponse(HttpStatus.UNAUTHORIZED, "Authentification échouée")
 
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDenied(ex: AccessDeniedException) = createErrorResponse(HttpStatus.FORBIDDEN, "Access denied")
+    fun handleAccessDenied(ex: AccessDeniedException) =
+        createErrorResponse(HttpStatus.FORBIDDEN, "Accès refusé")
 
-    // IO / Upload
+    // === IO / Upload ===
     @ExceptionHandler(IOException::class, MaxUploadSizeExceededException::class)
-    fun handleIO(ex: Exception) = createErrorResponse(HttpStatus.BAD_REQUEST, "File processing error: ${ex.message}")
-
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleMalformedJson(ex: HttpMessageNotReadableException) = createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid JSON format")
-
-    // Catch-all
-    @ExceptionHandler(Exception::class)
-    fun handleGeneric(ex: Exception): ResponseEntity<AppResponse<Nothing>> {
-        log.error("Unexpected error occurred", ex)
-        return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again.")
-    }
-    
-
-    @ExceptionHandler(ConstraintViolationException::class, HandlerMethodValidationException::class)
-    fun handleConstraintViolation(ex: Exception): ResponseEntity<AppResponse<Nothing>> {
-        log.warn("Constraint violation: {}", ex.message)
-        return createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid data: ${ex.message}")
-    }
-    
-
-    // === IO / File Upload ===
-    @ExceptionHandler(IOException::class, MaxUploadSizeExceededException::class)
-    fun handleIOException(ex: Exception): ResponseEntity<AppResponse<Nothing>> {
-        log.error("IO error", ex)
-        return createErrorResponse(HttpStatus.BAD_REQUEST, "File processing error: ${ex.message}")
-    }
+    fun handleIOException(ex: Exception) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, "Erreur de traitement de fichier : ${ex.message}")
 
     // === JSON / Request body ===
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleHttpMessageNotReadable(ex: HttpMessageNotReadableException): ResponseEntity<AppResponse<Nothing>> {
-        log.warn("Malformed JSON: {}", ex.message)
-        return createErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request format")
-    }
+    fun handleMalformedJson(ex: HttpMessageNotReadableException) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, "Format de requête invalide")
 
-    // === Catch-all ===
+    // === Catch-all (doit rester en dernier) ===
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<AppResponse<Nothing>> {
-        log.error("Unexpected error", ex)
+        log.error("Erreur inattendue", ex)
         return createErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "An unexpected error occurred. Please try again later."
+            "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
         )
     }
 
