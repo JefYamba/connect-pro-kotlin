@@ -94,7 +94,7 @@ class JobPostCommandImpl(
 
     override fun delete(jobPostId: JobPostId) {
         val jobPost = getJobPost(jobPostId)
-        if (marketplaceClient.jobPostHasApplications(jobPostId)) {
+        if (marketplaceClient.hasUserAppliedToJob(jobPostId)) {
             throw IllegalStateException("Cannot delete job post with applications")
         } 
         jobPostRepo.deleteById(jobPost.id)

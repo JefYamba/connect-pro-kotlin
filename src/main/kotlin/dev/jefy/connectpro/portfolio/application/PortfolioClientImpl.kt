@@ -5,6 +5,7 @@ import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.domain.vo.AwardId
 import dev.jefy.connectpro.management.domain.vo.BadgeId
 import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.marketplace.MarketplaceClient
 import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.marketplace.application.dtos.toListingResponse
 import dev.jefy.connectpro.portfolio.PortfolioClient
@@ -37,6 +38,7 @@ class PortfolioClientImpl(
     private val serviceRepo: ServiceRepository,
     private val jobPostRepo: JobPostRepository,
     private val managementClient: ManagementClient,
+    private val marketplaceClient: MarketplaceClient,
     private val resolver: ImageUrlResolver
 ) : PortfolioClient {
 
@@ -90,8 +92,12 @@ class PortfolioClientImpl(
         .map { job ->
             val portfolio = getPortfolioSummaryData(job.portfolioId)
             val category = managementClient.getCategory(job.categoryId)
-
-            job.toListingResponse(portfolio, category)
+            val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = job.id);
+            job.toListingResponse(
+                portfolio = portfolio,
+                category = category,
+                userApplied = userApplied
+            )
         }
         .orElseThrow { JobPostNotFoundException() }
 

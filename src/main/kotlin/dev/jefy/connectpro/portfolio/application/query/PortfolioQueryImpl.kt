@@ -4,6 +4,7 @@ import dev.jefy.connectpro.engagement.EngagementClient
 import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.appliacaion.dtos.toResponse
 import dev.jefy.connectpro.management.domain.repository.BadgeRepository
+import dev.jefy.connectpro.marketplace.MarketplaceClient
 import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.marketplace.application.dtos.ServiceListingResponse
 import dev.jefy.connectpro.marketplace.application.dtos.toListingResponse
@@ -38,6 +39,7 @@ class PortfolioQueryImpl(
     private val projectRepo: ProjectRepository,
     private val engagementClient: EngagementClient,
     private val managementClient: ManagementClient,
+    private val marketplaceClient: MarketplaceClient,
     private val resolver: ImageUrlResolver
 ) : PortfolioQuery {
 
@@ -105,8 +107,13 @@ class PortfolioQueryImpl(
     private val mapToJobPostResponse : (JobPost) -> JobPostResponse = { jobPost ->
         val portfolio = getPortfolio(jobPost.portfolioId)
         val category = managementClient.getCategory(jobPost.categoryId)
-
-        jobPost.toResponse(portfolio.toSummaryData(resolver), category)
+        
+        val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = jobPost.id)
+        jobPost.toResponse(
+            portfolio = portfolio.toSummaryData(resolver), 
+            category = category, 
+            userApplied = userApplied
+        )
     }
     
     private val mapToServiceListingResponse: (Service, Portfolio) -> ServiceListingResponse = { service, portfolio ->
@@ -129,7 +136,12 @@ class PortfolioQueryImpl(
 
     private val mapToJobPostListingResponse: (JobPost, Portfolio) -> JobPostListingResponse = { jobPost, portfolio ->
         val category = managementClient.getCategory(jobPost.categoryId)
-        jobPost.toListingResponse(portfolio.toSummaryData(resolver), category)
+        val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = jobPost.id)
+        jobPost.toListingResponse(
+            portfolio = portfolio.toSummaryData(resolver), 
+            category =  category, 
+            userApplied = userApplied
+        )
     }
 
     private fun getPortfolio(portfolioId: PortfolioId): Portfolio = portfolioRepo

@@ -20,9 +20,10 @@ data class JobPostListingResponse(
     val tags: List<String>,
     val jobType: JobType,
     val workMode: WorkMode,
+    val userApplied: Boolean
 )
 
-fun JobPost.toListingResponse(portfolio: PortfolioData, category: CategoryResponse) = JobPostListingResponse(
+fun JobPost.toListingResponse(portfolio: PortfolioData, category: CategoryResponse, userApplied: Boolean) = JobPostListingResponse(
     id = this.id.value,
     portfolio = portfolio,
     name = this.name,
@@ -30,5 +31,6 @@ fun JobPost.toListingResponse(portfolio: PortfolioData, category: CategoryRespon
     category = category,
     tags = this.tags.map{ it.name },
     jobType = this.jobType,
-    workMode = this.workMode
+    workMode = this.workMode,
+    userApplied = userApplied
 )

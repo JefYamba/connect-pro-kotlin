@@ -3,6 +3,7 @@ package dev.jefy.connectpro.marketplace.application.query
 import dev.jefy.connectpro.engagement.EngagementClient
 import dev.jefy.connectpro.management.ManagementClient
 import dev.jefy.connectpro.management.domain.vo.CategoryId
+import dev.jefy.connectpro.marketplace.MarketplaceClient
 import dev.jefy.connectpro.marketplace.application.dtos.JobPostListingResponse
 import dev.jefy.connectpro.marketplace.application.dtos.SearchRequest
 import dev.jefy.connectpro.marketplace.application.dtos.ServiceListingResponse
@@ -33,6 +34,7 @@ class MarketPlaceListingQueryImpl(
     private val managementClient: ManagementClient,
     private val portfolioClient: PortfolioClient,
     private val recommandationClient: RecommandationClient,
+    private val marketplaceClient: MarketplaceClient,
     private val resolver: ImageUrlResolver
 ) : MarketPlaceListingQuery {
 
@@ -95,8 +97,13 @@ class MarketPlaceListingQueryImpl(
     private val mapToJobPostListingResponse: (JobPost) -> JobPostListingResponse = { jobPost ->
         val category = managementClient.getCategory(jobPost.categoryId)
         val portfolioData = getPortfolioData(jobPost.portfolioId)
-
-        jobPost.toListingResponse(portfolioData, category)
+        
+        val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = jobPost.id)
+        jobPost.toListingResponse(
+            portfolio = portfolioData,
+            category = category,
+            userApplied = userApplied
+        )
     }
 
     private fun getPortfolioData(portfolioId: PortfolioId): PortfolioData =
