@@ -25,7 +25,8 @@ class EngagementClientImpl(
         return likeRepo.countByIdServiceId(serviceId.value)
     }
 
-    override fun hasLiked(serviceId: ServiceId, userId: UserId): Boolean {
+    override fun isLiked(serviceId: ServiceId): Boolean {
+        val userId = UserId(userClient.getCurrentUser().id);
         return likeRepo.existsById(LikeId.of(userId, serviceId))
     }
 

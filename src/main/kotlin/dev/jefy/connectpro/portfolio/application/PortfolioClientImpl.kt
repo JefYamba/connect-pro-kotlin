@@ -92,7 +92,7 @@ class PortfolioClientImpl(
         .map { job ->
             val portfolio = getPortfolioSummaryData(job.portfolioId)
             val category = managementClient.getCategory(job.categoryId)
-            val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = job.id);
+            val userApplied: Boolean = marketplaceClient.hasUserAppliedToJob(jobPostId = job.id)
             job.toListingResponse(
                 portfolio = portfolio,
                 category = category,

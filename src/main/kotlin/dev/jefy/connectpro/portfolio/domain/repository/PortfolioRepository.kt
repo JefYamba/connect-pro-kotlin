@@ -25,7 +25,7 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
         where portfolio.name = :name
         or (:email is not null and portfolio.contact.email = :email)
     """)
-    fun existsPortfolioConflict(
+    fun checkPortfolioConflict(
         @Param("name") name: String,
         @Param("email") email: Email?,
     ): Boolean
@@ -37,7 +37,7 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
         where portfolio.id != :portfolioId
         and portfolio.name = :name
     """)
-    fun existsNameConflict(
+    fun checkNameConflict(
         @Param("portfolioId") portfolioId: PortfolioId,
         @Param("name") name: String
     ): Boolean
@@ -46,12 +46,12 @@ interface PortfolioRepository : JpaRepository<Portfolio, PortfolioId> {
         """
         select count(portfolio) > 0 from Portfolio portfolio
         where portfolio.id != :portfolioId
-        or (:email is not null and portfolio.contact.email = :email)
+        and (:email is not null and portfolio.contact.email = :email)
     """
     )
-    fun existsContactConflict(
-        @Param("id") portfolioId: PortfolioId,
-        @Param("email") email: String?,
+    fun checkEmailConflict(
+        @Param("portfolioId") portfolioId: PortfolioId,
+        @Param("email") email: Email?,
     ): Boolean
 
     fun existsByBadgeId(badgeId: BadgeId): Boolean

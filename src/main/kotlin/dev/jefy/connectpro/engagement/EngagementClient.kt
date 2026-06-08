@@ -7,7 +7,7 @@ import dev.jefy.connectpro.user.domain.vo.UserId
 
 interface EngagementClient {
     fun countLike(serviceId: ServiceId): Long
-    fun hasLiked(serviceId: ServiceId, userId: UserId): Boolean
+    fun isLiked(serviceId: ServiceId): Boolean
     fun recentReviews(serviceId: ServiceId): List<ReviewResponse>
     fun getReviewData(id: ServiceId): ServiceReviewData
     fun deleteLikesAndReviewsForService(serviceId: ServiceId)

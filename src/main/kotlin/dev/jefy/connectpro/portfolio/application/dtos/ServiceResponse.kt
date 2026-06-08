@@ -24,7 +24,8 @@ data class ServiceResponse(
     val faqs: List<FAQResponse>,
     val award: AwardResponse?,
     val reviewData: ServiceReviewData,
-    val recentReviews: List<ReviewResponse>
+    val recentReviews: List<ReviewResponse>,
+    val isLiked: Boolean,
 )
 
 fun Service.toResponse(
@@ -33,7 +34,8 @@ fun Service.toResponse(
     award: AwardResponse?,
     reviewData: ServiceReviewData,
     recentReviews: List<ReviewResponse>,
-    resolver: ImageUrlResolver
+    resolver: ImageUrlResolver,
+    isLiked: Boolean,
 ): ServiceResponse = ServiceResponse(
     id = this.id.value,
     portfolio = portfolio,
@@ -46,6 +48,7 @@ fun Service.toResponse(
     faqs = this.faqs.map{ it.toResponse() }.toList(),
     award = award,
     reviewData = reviewData,
-    recentReviews = recentReviews
+    recentReviews = recentReviews,
+    isLiked = isLiked,
 )
 

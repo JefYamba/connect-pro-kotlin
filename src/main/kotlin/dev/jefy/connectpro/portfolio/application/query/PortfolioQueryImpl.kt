@@ -93,14 +93,15 @@ class PortfolioQueryImpl(
 
         val reviewData = engagementClient.getReviewData(service.id)
         val recentReviews = engagementClient.recentReviews(service.id)
-        
+        val isLiked = engagementClient.isLiked(service.id);
         service.toResponse(
             portfolio.toSummaryData(resolver),
             category,
             award,
             reviewData,
             recentReviews,
-            resolver
+            resolver,
+            isLiked,
         )
     }
 
@@ -123,13 +124,15 @@ class PortfolioQueryImpl(
         val award = service.awardId?.let { managementClient.getAward(it).orElse(null) }
 
         val reviewData = engagementClient.getReviewData(service.id)
-        
+
+        val isLiked = engagementClient.isLiked(service.id);
         service.toListingResponse(
             portfolio.toSummaryData(resolver),
             category,
             award,
             reviewData,
-            resolver
+            resolver,
+            isLiked,
         )
     }
     

@@ -7,7 +7,6 @@ import dev.jefy.connectpro.portfolio.domain.vo.ServiceId
  */
 
 interface LikeCommand {
-    fun like(serviceId: ServiceId)
-    fun unlike(serviceId: ServiceId)
+    fun like(serviceId: ServiceId): Boolean
 }
 

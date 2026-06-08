@@ -21,7 +21,8 @@ data class ServiceListingResponse(
     val coverImage: String?,
     val images: List<String>,
     val award: AwardResponse?,
-    val reviewData: ServiceReviewData
+    val reviewData: ServiceReviewData,
+    val isLiked: Boolean,
 )
 
 fun Service.toListingResponse(
@@ -29,7 +30,8 @@ fun Service.toListingResponse(
     category: CategoryResponse,
     award: AwardResponse?,
     reviewData: ServiceReviewData,
-    resolver: ImageUrlResolver
+    resolver: ImageUrlResolver,
+    isLiked: Boolean
 ) = ServiceListingResponse(
     id = this.id.value,
     portfolio = portfolio,
@@ -40,5 +42,6 @@ fun Service.toListingResponse(
     coverImage = resolver.resolve(this.coverImage),
     images = resolver.resolve(this.images),
     award = award,
-    reviewData = reviewData
+    reviewData = reviewData,
+    isLiked = isLiked,
 )

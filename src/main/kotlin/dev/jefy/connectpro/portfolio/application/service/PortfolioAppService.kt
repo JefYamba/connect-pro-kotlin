@@ -20,7 +20,7 @@ class PortfolioAppService(
 
     fun checkConflict(request: CreatePortfolioRequest) {
         
-        val isConflict = portfolioRepos.existsPortfolioConflict(
+        val isConflict = portfolioRepos.checkPortfolioConflict(
             request.name,
             Email.of(request.contact.email)
         )
@@ -29,13 +29,14 @@ class PortfolioAppService(
     }
 
     fun checkGeneralInfoConflict(portfolioId: PortfolioId, name: String) {
-        val isConflict = portfolioRepos.existsNameConflict(portfolioId, name)
+        val isConflict = portfolioRepos.checkNameConflict(portfolioId, name)
         if (isConflict) throw PortfolioAlreadyExistsException()
     }
 
     fun checkContactInfoConflict(portfolioId: PortfolioId, request: ContactData) {
-
-        val isConflict = portfolioRepos.existsContactConflict(portfolioId, request.email,)
+        val email = if (request.email != null) Email(request.email) else null;
+        
+        val isConflict = portfolioRepos.checkEmailConflict(portfolioId, email)
 
         if (isConflict) throw PortfolioAlreadyExistsException()
     }

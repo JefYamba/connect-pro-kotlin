@@ -28,7 +28,7 @@ class LikeCommandImpl(
     private val recommandationClient: RecommandationClient
 ) : LikeCommand {
 
-    override fun like(serviceId: ServiceId) {
+    override fun like(serviceId: ServiceId): Boolean {
         if (portfolioClient.notExistsAndValidService(serviceId)) {
             throw ServiceNotExistOrValidException()
         }
@@ -36,23 +36,14 @@ class LikeCommandImpl(
         val user = userClient.getCurrentUser()
         val id = LikeId.of(UserId(user.id), serviceId)
         
-        if (likeRepo.existsById(id)) return
-
-        likeRepo.save(Like(UserId(user.id), serviceId))
-        recommandationClient.trackEvent(EventType.LIKE, serviceId.value, TargetType.SERVICE)
-    }
-
-    override fun unlike(serviceId: ServiceId) {
-        if (portfolioClient.notExistsAndValidService(serviceId)) {
-            throw ServiceNotExistOrValidException()
+        if (likeRepo.existsById(id)) {
+            likeRepo.deleteById(id)
+            recommandationClient.untrackEvent(EventType.LIKE, serviceId.value, TargetType.SERVICE)
+            return false
+        } else {
+            likeRepo.save(Like(UserId(user.id), serviceId))
+            recommandationClient.trackEvent(EventType.LIKE, serviceId.value, TargetType.SERVICE)
+            return true
         }
-
-        val user = userClient.getCurrentUser()
-        val id = LikeId.of(UserId(user.id), serviceId)
-        
-        if (!likeRepo.existsById(id)) return
-
-        likeRepo.deleteById(id)
-        recommandationClient.untrackEvent(EventType.LIKE, serviceId.value, TargetType.SERVICE)
     }
 }

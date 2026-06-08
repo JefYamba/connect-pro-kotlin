@@ -91,7 +91,9 @@ class MarketPlaceListingQueryImpl(
         val reviewData = engagementClient.getReviewData(service.id)
         val portfolioData = getPortfolioData(service.portfolioId)
 
-        service.toListingResponse(portfolioData, category, award, reviewData, resolver)
+        val isLiked = engagementClient.isLiked(service.id)
+
+        service.toListingResponse(portfolioData, category, award, reviewData, resolver, isLiked)
     }
 
     private val mapToJobPostListingResponse: (JobPost) -> JobPostListingResponse = { jobPost ->
