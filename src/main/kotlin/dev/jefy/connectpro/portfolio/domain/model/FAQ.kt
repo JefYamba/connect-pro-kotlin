@@ -18,7 +18,7 @@ open class FAQ (service: Service, faq: FAQRequest) {
     @Column(nullable = false)
     var answer: String = faq.answer
         protected set
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = false)
     var service: Service = service
         protected set

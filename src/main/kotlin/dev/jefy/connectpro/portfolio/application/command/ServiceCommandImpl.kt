@@ -140,11 +140,14 @@ class ServiceCommandImpl(
             .also { serviceRepo.save(it) }
             .id
 
-    override fun removeFaq(serviceId: ServiceId, faqId: FAQId): ServiceId =
-        getService(serviceId)
-            .apply { removeFaq(faqId) }
-            .also { serviceRepo.save(it) }
-            .id
+    override fun removeFaq(serviceId: ServiceId, faqId: FAQId): ServiceId {
+        val service = getService(serviceId)
+
+        service.removeFaq(faqId)
+        serviceRepo.save(service)
+        return service.id
+    }
+        
 
     override fun setAward(serviceId: ServiceId, awardId: AwardId): ServiceId {
         if (managementClient.notExistsAward(awardId)) throw AwardNotFoundException()

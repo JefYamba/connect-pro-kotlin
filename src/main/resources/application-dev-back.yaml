@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/connect-pro-db
+    url: jdbc:postgresql://localhost:5432/connect-pro-db
     username: connect-pro
     password: connect-pro
     driver-class-name: org.postgresql.Driver
@@ -21,7 +21,7 @@ spring:
         generate_statistics: true
 
   mail:
-    host: mail-dev
+    host: ${HOST_ADDRESS:192.168.1.100}
     port: 1025
     username: contact.connect_pro@gmail.com
     password: dev
@@ -58,7 +58,7 @@ aws:
 
   s3:
     bucket-name: connect-pro-images
-    endpoint: http://localstack:4566
+    endpoint: http://${HOST_ADDRESS:192.168.1.100}:4566
     bucket-url-prefix: http://${HOST_ADDRESS:192.168.1.100}:4566/connect-pro-images/
     
 logging:

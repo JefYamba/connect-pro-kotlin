@@ -41,6 +41,24 @@ services:
     networks:
       - connect-pro-network
     restart: unless-stopped
+  
+  app:
+    container_name: connect-pro-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - HOST_ADDRESS=${HOST_ADDRESS:-192.168.1.100}
+    depends_on:
+      - postgres-db
+      - mail-dev
+      - localstack
+    networks:
+      - connect-pro-network
+    restart: unless-stopped
 
 networks:
   connect-pro-network:
